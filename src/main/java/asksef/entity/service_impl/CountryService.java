@@ -1,0 +1,134 @@
+package asksef.entity.service_impl;
+
+import asksef.entity.Country;
+import asksef.entity.dto.CountryAttrDTO;
+import asksef.entity.repository.CountryRepository;
+import asksef.entity.service_interface.CountryServiceInterface;
+import asksef.errors.CustomResourceExistsException;
+import asksef.errors.CustomResourceNotFoundException;
+import ch.qos.logback.core.util.StringUtil;
+import jakarta.transaction.Transactional;
+import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
+
+@Service
+public class CountryService implements CountryServiceInterface {
+
+    private static final Logger log = LoggerFactory.getLogger(CountryService.class);
+    private final CountryRepository countryRepository;
+
+    public CountryService(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
+    }
+
+    @Override
+    public Collection<Country> findAll() {
+        log.info("Find all countries");
+        return this.countryRepository.findAll();
+    }
+
+    @Override
+    public Collection<Country> findAll(int pageNumber, int pageSize) {
+        return this.countryRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
+    }
+
+    @Override
+    public Country findById(@NonNull Long id) {
+        Country country = this.countryRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        log.info("Find country by id: {}", id);
+        return country;
+    }
+
+    @Transactional
+    @Override
+    public Country save(@NonNull Country country) {
+        Optional<Country> existingEntity = this.countryRepository.findById(country.getCountryId());
+        if (existingEntity.isEmpty()) {
+            return this.countryRepository.save(country);
+        } else {
+            throw new CustomResourceExistsException("Country", "id", null, country.getCountryId());
+        }
+    }
+
+    @Transactional
+    @Override
+    public Country update(@NonNull Country country) {
+//        Long id = country.getCountryId();
+//        Optional<Country> existingEntity = this.countryRepository.findById(id);
+//        if (existingEntity.isEmpty()) {
+//            throw new CustomResourceNotFoundException("Country", "id", null, country.getCountryId());
+//        } else {
+//            Country updateEntity = existingEntity.get();
+//            updateEntity.setCountry(country.getCountry());
+//            updateEntity.setCityList(country.getCityList());
+//
+//            log.info("Updating country id: {}", updateEntity.getCountryId());
+        return this.countryRepository.save(country);
+        //   }
+    }
+
+    @Transactional
+    public Country update(@NonNull Long id, @NonNull CountryAttrDTO countryDto) {
+        Country country = countryRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        if (!StringUtil.isNullOrEmpty(countryDto.getCountry())) {
+            country.setCountry(countryDto.getCountry());
+        }
+        return update(country);
+    }
+
+    @Transactional
+    public void delete(@NonNull Long id) {
+        Country country = countryRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        log.info("Deleting country id: {}", id);
+        delete(country);
+    }
+
+    @Transactional
+    @Override
+    public void delete(@NonNull Country country) {
+        countryRepository.delete(country);
+    }
+
+    @Transactional
+    public void delete(@NonNull String countryName) {
+        Country country = findCountryByName(countryName);
+        if (Objects.nonNull(country)) {
+            log.info("Deleting country with name {}", country);
+            delete(country.getCountryId());
+        }
+    }
+
+    @Override
+    public Long count() {
+        return countryRepository.count();
+    }
+
+    public Country findCountryByName(@NonNull String countryName) {
+        log.info("Finding country by name {}", countryName);
+        Country country1;
+        try {
+            country1 = this.countryRepository.findCountryByName(countryName);
+        } catch (RuntimeException e) {
+            throw new CustomResourceNotFoundException("Country", "id", countryName, null);
+        }
+        return country1;
+    }
+
+    public ArrayList<Country> findLikeName(@NonNull String countryName) {
+        return new ArrayList<>(this.countryRepository.findLikeName(countryName));
+    }
+}

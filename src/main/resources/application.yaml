@@ -1,0 +1,87 @@
+
+server:
+  port: 8085
+
+spring:
+  application:
+    name: restapi-psql
+
+#  devtools:
+#    add-properties: false
+
+  jpa:
+    #   jpa hibernate config
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+
+      # hibernate.hbm2ddl.auto:none
+
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        #dialect: org.hibernate.dialect.PostgreSQLDialect
+        query:
+          mutation_strategy:
+            global_temporary:
+              create_table: false
+              drop_tables: false
+        hbm2ddl:
+          auto: none
+
+#hibernate.query.mutation_strategy.global_temporary.create_tables: false
+#hibernate.query.mutation_strategy.global_temporary.drop_tables: false
+  #  spring.jpa.properties.hibernate.query.mutation_strategy.global_temporary.create_tables=false
+  #  spring.jpa.properties.hibernate.query.mutation_strategy.global_temporary.drop_tables=false
+  datasource:
+    # DB configuration
+    url: jdbc:postgresql://localhost:5432/psql_db0625
+    username: db_user
+    password: AskS3f#59
+    driver-class-name: org.postgresql.Driver
+
+    #   HikariCP config
+    hikari:
+      maximum-pool-size: 4
+      #      minimum-pool-size: 4
+#      data-source-properties:
+#              oracle:
+#                jdbc:
+#                  defaultConnectionValidation: LOCAL
+
+
+#   Logging config
+logging:
+  level:
+    com:
+      zaxxer:
+        hikari: #TRACE
+          HikariConfig: DEBUG
+
+    org:
+      springframework:
+        jdbc: INFO
+
+      #    oracleucp:
+      #      database-name:
+      #    dbcp2:
+      #      driver:
+      #      hibernate:
+      #        ddl-auto: update
+      #      properties:
+      #        hibernate:
+      #          temp:
+      #            use_jdbc_metadata_defaults: false
+
+      #type:
+      # oracle.ucp.jdbc.PoolDataSource"
+    web: debug
+#    oracleucp:
+#      connection-factory-class-name: oracle.jdbc.pool.OracleDataSource
+
+#hibernate:query.mutation_strategy.global_temporary.create_tables: false
+#hibernate.query.mutation_strategy.global_temporary.drop_tables: false
