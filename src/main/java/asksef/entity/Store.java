@@ -41,7 +41,8 @@ public class Store implements Serializable, Comparable<Store> {
 
     @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "store_id_seq")
+    @SequenceGenerator(name = "store_id_seq", sequenceName = "store_store_id_seq", allocationSize = 1)
     @Column(name = "STORE_ID", nullable = false)
     private Long storeId;
 

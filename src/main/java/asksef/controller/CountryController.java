@@ -71,6 +71,24 @@ public class CountryController {
     }
 
     /// ///////////////////////////////////
+//    @PostMapping(
+//            path = "/add",
+//            produces = "application/json",
+//            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+//    )
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<EntityModel<Country>> add(@RequestBody CountryDetailsRequestModel requestModel) throws Exception {
+//        Country newCountry = new Country();
+//
+//        CountryAttrDTO countryAttrDTO = new CountryAttrDTO();
+//        BeanUtils.copyProperties(requestModel, countryAttrDTO);
+//
+//        CountryAttrDTO createdCountry = this.countryService.save(countryAttrDTO);
+//        BeanUtils.copyProperties(createdCountry, newCountry);
+//        EntityModel<Country> entityModel = this.countryModelAssembler.toModel(createdCountry);
+//        return ResponseEntity.created(linkTo(methodOn(CountryController.class)
+//                .add(createdCountry)).toUri()).body(entityModel);
+//    }
     @PostMapping(path = "/add", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<EntityModel<Country>> add(@RequestBody Country country) throws Exception {

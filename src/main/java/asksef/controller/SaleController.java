@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/sale")
+@RequestMapping(value = "/v0/sale")
 public class SaleController {
 
     private static final Logger log = LoggerFactory.getLogger(SaleController.class);

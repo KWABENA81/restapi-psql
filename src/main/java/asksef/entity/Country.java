@@ -39,8 +39,10 @@ public class Country implements Serializable, Comparable<Country> {
     }
 
     @Getter
+    @Setter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "country_id_seq")
+    @SequenceGenerator(name = "country_id_seq", sequenceName = "country_country_id_seq", allocationSize = 1)
     @Column(name = "COUNTRY_ID", nullable = false)
     private Long countryId;
 

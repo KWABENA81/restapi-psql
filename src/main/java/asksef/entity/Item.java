@@ -38,7 +38,8 @@ public class Item implements Serializable, Comparable<Item> {
 
     @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_id_seq")
+    @SequenceGenerator(name = "item_id_seq", sequenceName = "item_item_id_seq", allocationSize = 1)
     @Column(name = "ITEM_ID", nullable = false)
     private Long itemId;
 
@@ -117,7 +118,7 @@ public class Item implements Serializable, Comparable<Item> {
                 ", itemCost=" + itemCost +
                 ", saleInfo='" + saleInfo + '\'' +
                 ", lastUpdate=" + lastUpdate +
-           //     ", inventoryList=" + inventoryList +
+                //     ", inventoryList=" + inventoryList +
                 '}';
     }
 

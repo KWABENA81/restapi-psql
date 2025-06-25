@@ -6,7 +6,7 @@ spring:
   application:
     name: restapi-psql
 
-#  devtools:
+    #devtools:
 #    add-properties: false
 
   jpa:
@@ -18,13 +18,12 @@ spring:
     hibernate:
       ddl-auto: none
 
-
       # hibernate.hbm2ddl.auto:none
 
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
-        #dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect    #org.hibernate.dialect.PostgreSQLDialect
         query:
           mutation_strategy:
             global_temporary:
@@ -32,11 +31,14 @@ spring:
               drop_tables: false
         hbm2ddl:
           auto: none
+  mvc:
+    log-request-details: true
 
-#hibernate.query.mutation_strategy.global_temporary.create_tables: false
+  #hibernate.query.mutation_strategy.global_temporary.create_tables: false
 #hibernate.query.mutation_strategy.global_temporary.drop_tables: false
   #  spring.jpa.properties.hibernate.query.mutation_strategy.global_temporary.create_tables=false
   #  spring.jpa.properties.hibernate.query.mutation_strategy.global_temporary.drop_tables=false
+
   datasource:
     # DB configuration
     url: jdbc:postgresql://localhost:5432/psql_db0625
@@ -52,7 +54,8 @@ spring:
 #              oracle:
 #                jdbc:
 #                  defaultConnectionValidation: LOCAL
-
+ #logging.level.org.springframework.web=DEBUG
+  #spring.mvc.log-request-details=true
 
 #   Logging config
 logging:
@@ -65,23 +68,10 @@ logging:
     org:
       springframework:
         jdbc: INFO
+        web: debug
 
-      #    oracleucp:
-      #      database-name:
-      #    dbcp2:
-      #      driver:
-      #      hibernate:
-      #        ddl-auto: update
-      #      properties:
-      #        hibernate:
-      #          temp:
-      #            use_jdbc_metadata_defaults: false
+    #web: debug
 
-      #type:
-      # oracle.ucp.jdbc.PoolDataSource"
-    web: debug
-#    oracleucp:
-#      connection-factory-class-name: oracle.jdbc.pool.OracleDataSource
 
 #hibernate:query.mutation_strategy.global_temporary.create_tables: false
 #hibernate.query.mutation_strategy.global_temporary.drop_tables: false

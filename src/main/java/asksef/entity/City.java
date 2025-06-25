@@ -35,7 +35,8 @@ public class City implements Serializable, Comparable<City> {
 
     @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_id_seq")
+    @SequenceGenerator(name = "city_id_seq", sequenceName = "city_city_id_seq", allocationSize = 1)
     @Column(name = "CITY_ID", nullable = false)
     private Long cityId;
 

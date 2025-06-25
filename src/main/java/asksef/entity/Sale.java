@@ -39,7 +39,8 @@ public class Sale implements Serializable, Comparable<Sale> {
     @Getter
     @Setter
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sale_id_seq")
+    @SequenceGenerator(name = "sale_id_seq", sequenceName = "sale_sale_id_seq", allocationSize = 1)
     @Column(name = "SALE_ID", nullable = false)
     private Long saleId;
 

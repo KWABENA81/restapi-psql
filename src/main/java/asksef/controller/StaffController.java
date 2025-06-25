@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/staff")
+@RequestMapping(value = "/v0/staff")
 public class StaffController {
 
     private static final Logger log = LoggerFactory.getLogger(StaffController.class);
@@ -57,6 +57,7 @@ public class StaffController {
         return staffModelAssembler.toModel(staff);
     }
 
+    /// /////////////////////////
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody Staff staff) {
@@ -87,7 +88,7 @@ public class StaffController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.staffService.delete(id);
         log.info("Deleted staff: {}", id);
-        return new ResponseEntity<>("Country entity deleted successfully.", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Staff entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 //    public CollectionModel<EntityModel<Staff>> findByNames(@PathVariable String names) {
 //        List<EntityModel<Staff>> entityModelList = staffRepository.findByNames(names).
