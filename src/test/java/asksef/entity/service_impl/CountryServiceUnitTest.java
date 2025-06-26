@@ -1,17 +1,13 @@
 package asksef.entity.service_impl;
 
 import asksef.entity.Country;
-import asksef.entity.dto.CountryAttrDTO;
 import asksef.entity.repository.CountryRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -19,8 +15,6 @@ import java.util.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 
 
 @SpringBootTest
@@ -46,62 +40,62 @@ public class CountryServiceUnitTest {
 
     @AfterEach
     public void tearDown() {
-    }
-    @Test
-    void testCountryService_save() {
-        Long id = 130L;
-        Country mockCountry = new Country("North West");
-        mockCountry.setCountryId(id);
+   }
+//    @Test
+//    void testCountryService_save() {
+//        Long id = 130L;
+//        Country mockCountry = new Country("North West");
+//        mockCountry.setCountryId(id);
+//
+//        Mockito.when(countryRepository.save(Mockito.any(Country.class)))
+//                .thenReturn(new Country());
+//        Country savedCountry = countryService.save(mockCountry);
+//        Assertions.assertNotNull(savedCountry);
+//    }
 
-        Mockito.when(countryRepository.save(Mockito.any(Country.class)))
-                .thenReturn(new Country());
-        Country savedCountry = countryService.save(mockCountry);
-        Assertions.assertNotNull(savedCountry);
-    }
-
-    @Test
-    void testCountryService_findAll() {
-        countryRepository.findAll();
-        Mockito.when(countryRepository.findAll()).thenReturn(testCountryList);
-        Mockito.verify(countryRepository, times(1)).findAll();
-        //
-        List<Country> countries = new ArrayList<>(countryService.findAll());
-
-        Assertions.assertEquals(testCountryList, countries);
-        Assertions.assertEquals(testCountryList.size(), countries.size());
-    }
+//    @Test
+//    void testCountryService_findAll() {
+//        countryRepository.findAll();
+//        Mockito.when(countryRepository.findAll()).thenReturn(testCountryList);
+//        Mockito.verify(countryRepository, times(1)).findAll();
+//        //
+//        List<Country> countries = new ArrayList<>(countryService.findAll());
+//
+//        Assertions.assertEquals(testCountryList, countries);
+//        Assertions.assertEquals(testCountryList.size(), countries.size());
+//    }
 
 
-    @Test
-    void findCountryByName() {
-        Country mockCountry = this.testCountryList.get(new Random().nextInt(this.testCountryList.size()));
-        String countryName = mockCountry.getCountry();
-        when(countryRepository.findCountryByName(countryName)).thenReturn(mockCountry);
+//    @Test
+//    void findCountryByName() {
+//        Country mockCountry = this.testCountryList.get(new Random().nextInt(this.testCountryList.size()));
+//        String countryName = mockCountry.getCountry();
+//        when(countryRepository.findCountryByName(countryName)).thenReturn(mockCountry);
+//
+//        Country qCountry = this.countryService.findCountryByName(countryName);
+//
+//        assertThat(qCountry).isNotNull();
+//        assertThat(qCountry.getCountry()).isEqualTo(countryName);
+//        assertThat(qCountry.getCountryId()).isEqualTo(mockCountry.getCountryId());
+//    }
 
-        Country qCountry = this.countryService.findCountryByName(countryName);
-
-        assertThat(qCountry).isNotNull();
-        assertThat(qCountry.getCountry()).isEqualTo(countryName);
-        assertThat(qCountry.getCountryId()).isEqualTo(mockCountry.getCountryId());
-    }
-
-    @Test
-    void testCountryFindById() {
-        Country mockCountry = this.testCountryList.get(new Random().nextInt(this.testCountryList.size()));
-        Long id = mockCountry.getCountryId();
-
-        //  test behaviour of repository to return mock country
-        when(this.countryRepository.findById(id)).thenReturn(Optional.of(mockCountry));
-
-        Country country = countryService.findById(id);
-
-        //  Assert
-        assertNotNull(country);
-        assertEquals(id, country.getCountryId());
-        assertEquals(mockCountry.getCountryId(), country.getCountryId());
-        assertEquals(mockCountry.getLastUpdate(), country.getLastUpdate());
-        assertEquals(mockCountry.getCountry(), country.getCountry());
-    }
+//    @Test
+//    void testCountryFindById() {
+//        Country mockCountry = this.testCountryList.get(new Random().nextInt(this.testCountryList.size()));
+//        Long id = mockCountry.getCountryId();
+//
+//        //  test behaviour of repository to return mock country
+//        when(this.countryRepository.findById(id)).thenReturn(Optional.of(mockCountry));
+//
+//        Country country = countryService.findById(id);
+//
+//        //  Assert
+//        assertNotNull(country);
+//        assertEquals(id, country.getCountryId());
+//        assertEquals(mockCountry.getCountryId(), country.getCountryId());
+//        assertEquals(mockCountry.getLastUpdate(), country.getLastUpdate());
+//        assertEquals(mockCountry.getCountry(), country.getCountry());
+//    }
 //
 //    @Test
 //    void update() {

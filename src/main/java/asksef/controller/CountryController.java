@@ -2,13 +2,13 @@ package asksef.controller;
 
 import asksef.assembler.CountryModelAssembler;
 import asksef.entity.Country;
-import asksef.entity.dto.CountryAttrDTO;
+import asksef.entity.dto.CountryTransferObj;
 import asksef.entity.service_impl.CountryService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,18 +21,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/v0/country")
+@RequestMapping(value = "/api/country")
 public class CountryController {
     private static final Logger log = LoggerFactory.getLogger(CountryController.class);
 
     private final CountryModelAssembler countryModelAssembler;
     private final CountryService countryService;
-    //private final TypedEntityLinks<Country> entityLinks;
 
-    public CountryController(CountryModelAssembler assembler, CountryService countryService, EntityLinks entityLinks) {
+    public CountryController(CountryModelAssembler assembler, CountryService countryService) {
         this.countryModelAssembler = assembler;
         this.countryService = countryService;
-        //this.entityLinks = entityLinks.forType(Country::getCountryId);
         log.info("CountryController created");
     }
 
@@ -70,41 +68,24 @@ public class CountryController {
                 linkTo(methodOn(CountryController.class).findLikeName(name)).withSelfRel());
     }
 
-    /// ///////////////////////////////////
-//    @PostMapping(
-//            path = "/add",
-//            produces = "application/json",
-//            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
-//    )
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<EntityModel<Country>> add(@RequestBody CountryDetailsRequestModel requestModel) throws Exception {
-//        Country newCountry = new Country();
-//
-//        CountryAttrDTO countryAttrDTO = new CountryAttrDTO();
-//        BeanUtils.copyProperties(requestModel, countryAttrDTO);
-//
-//        CountryAttrDTO createdCountry = this.countryService.save(countryAttrDTO);
-//        BeanUtils.copyProperties(createdCountry, newCountry);
-//        EntityModel<Country> entityModel = this.countryModelAssembler.toModel(createdCountry);
-//        return ResponseEntity.created(linkTo(methodOn(CountryController.class)
-//                .add(createdCountry)).toUri()).body(entityModel);
-//    }
+
     @PostMapping(path = "/add", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<EntityModel<Country>> add(@RequestBody Country country) throws Exception {
-        Country newCountry = this.countryService.save(country);
+    public ResponseEntity<EntityModel<Country>> add(@RequestBody @Valid CountryTransferObj countryDto) {
+        Country newCountry = this.countryService.save(countryDto);
         EntityModel<Country> entityModel = this.countryModelAssembler.toModel(newCountry);
-        return ResponseEntity.created(linkTo(methodOn(CountryController.class)
-                .add(newCountry)).toUri()).body(entityModel);
+        return ResponseEntity
+                .created(linkTo(methodOn(CountryController.class).add(countryDto)).toUri()).body(entityModel);
     }
+
 
     @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Country newCountry) {
-        CountryAttrDTO countryAttrDTO =
-                CountryAttrDTO.builder().country(newCountry.getCountry()).build();
+        CountryTransferObj countryTransferObj =
+                CountryTransferObj.builder().country(newCountry.getCountry()).build();
 
-        Country updateCountry = this.countryService.update(id, countryAttrDTO);
+        Country updateCountry = this.countryService.update(id, countryTransferObj);
         EntityModel<Country> entityModel = this.countryModelAssembler.toModel(updateCountry);
         log.info("Updated country: {}", entityModel);
         //  Link link = entityLinks.linkToItemResource(updateCountry);

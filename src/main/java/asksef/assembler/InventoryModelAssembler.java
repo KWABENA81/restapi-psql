@@ -18,9 +18,9 @@ public class InventoryModelAssembler implements RepresentationModelAssembler<Inv
         try {
             return EntityModel.of(inventory,
                     linkTo(methodOn(InventoryController.class).one(inventory.getInventoryId())).withSelfRel(),
-                    linkTo(methodOn(InventoryController.class).add(inventory)).withSelfRel(),
-                    linkTo(methodOn(InventoryController.class).delete(inventory.getInventoryId())).withSelfRel(),
-                    linkTo(methodOn(InventoryController.class).update(inventory.getInventoryId(), inventory)).withSelfRel(),
+//                    linkTo(methodOn(InventoryController.class).add(inventory)).withSelfRel(),
+//                    linkTo(methodOn(InventoryController.class).delete(inventory.getInventoryId())).withSelfRel(),
+//                    linkTo(methodOn(InventoryController.class).update(inventory.getInventoryId(), inventory)).withSelfRel(),
                     linkTo(methodOn(InventoryController.class).all()).withRel("all"));
         } catch (Exception e) {
             throw new RuntimeException(e);

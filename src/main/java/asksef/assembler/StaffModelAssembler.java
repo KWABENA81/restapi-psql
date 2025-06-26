@@ -17,10 +17,10 @@ public class StaffModelAssembler implements RepresentationModelAssembler<Staff, 
     public EntityModel<Staff> toModel(Staff staff) {
         return EntityModel.of(staff,
                 linkTo(methodOn(StaffController.class).one(staff.getStaffId())).withSelfRel(),
-                linkTo(methodOn(StaffController.class).delete(staff.getStaffId())).withSelfRel(),
+                //linkTo(methodOn(StaffController.class).delete(staff.getStaffId())).withSelfRel(),
                 linkTo(methodOn(StaffController.class).findByUsername(staff.getUsername())).withSelfRel(),
-                linkTo(methodOn(StaffController.class).update(staff.getStaffId(), staff)).withSelfRel(),
-                linkTo(methodOn(StaffController.class).add(staff)).withSelfRel(),
+              //  linkTo(methodOn(StaffController.class).update(staff.getStaffId(), staff)).withSelfRel(),
+                //linkTo(methodOn(StaffController.class).add(staff)).withSelfRel(),
 //                linkTo(methodOn(StaffController.class).findByNames(staff.ge())).withSelfRel(),
                 linkTo(methodOn(StaffController.class).all()).withRel("all"));
     }

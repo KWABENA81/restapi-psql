@@ -1,10 +1,9 @@
 package asksef.entity.service_impl;
 
 import asksef.entity.Country;
-import asksef.entity.dto.CountryAttrDTO;
+import asksef.entity.dto.CountryTransferObj;
 import asksef.entity.repository.CountryRepository;
 import asksef.entity.service_interface.CountryServiceInterface;
-import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
 import ch.qos.logback.core.util.StringUtil;
 import jakarta.transaction.Transactional;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class CountryService implements CountryServiceInterface {
@@ -50,15 +48,23 @@ public class CountryService implements CountryServiceInterface {
     }
 
     @Transactional
-    @Override
-    public Country save(@NonNull Country country) {
-        Optional<Country> existingEntity = this.countryRepository.findById(country.getCountryId());
-        if (existingEntity.isEmpty()) {
+//    @Override
+    public Country save( CountryTransferObj countryDto) {
+        Country country = Country.builder()
+                .country(countryDto.getCountry()).build();
             return this.countryRepository.save(country);
-        } else {
-            throw new CustomResourceExistsException("Country", "id", null, country.getCountryId());
-        }
     }
+
+//    @Transactional
+//    @Override
+//    public Country save(@NonNull Country country) {
+//        Optional<Country> existingEntity = this.countryRepository.findById(country.getCountryId());
+//        if (existingEntity.isEmpty()) {
+//            return this.countryRepository.save(country);
+//        } else {
+//            throw new CustomResourceExistsException("Country", "id", null, country.getCountryId());
+//        }
+//    }
 
     @Transactional
     @Override
@@ -78,7 +84,7 @@ public class CountryService implements CountryServiceInterface {
     }
 
     @Transactional
-    public Country update(@NonNull Long id, @NonNull CountryAttrDTO countryDto) {
+    public Country update(@NonNull Long id, @NonNull CountryTransferObj countryDto) {
         Country country = countryRepository.findById(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Country", "id", null, id)
         );

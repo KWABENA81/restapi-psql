@@ -20,9 +20,9 @@ public class AddressModelAssembler implements RepresentationModelAssembler<Addre
                     linkTo(methodOn(AddressController.class).one(address.getAddressId())).withSelfRel(),
                     linkTo(methodOn(AddressController.class).findByLocation(address.getGpsCode())).withSelfRel(),
                     linkTo(methodOn(AddressController.class).findByPhone(address.getPhone())).withSelfRel(),
-                    linkTo(methodOn(AddressController.class).delete(address.getAddressId())).withSelfRel(),
-                    linkTo(methodOn(AddressController.class).update(address.getAddressId(), address)).withSelfRel(),
-                    linkTo(methodOn(AddressController.class).add(address)).withSelfRel(),
+//                    linkTo(methodOn(AddressController.class).delete(address.getAddressId())).withSelfRel(),
+//                    linkTo(methodOn(AddressController.class).update(address.getAddressId(), address)).withSelfRel(),
+//                    linkTo(methodOn(AddressController.class).add(address)).withSelfRel(),
                     linkTo(methodOn(AddressController.class).all()).withRel("all"));
         } catch (Exception e) {
             throw new RuntimeException(e);

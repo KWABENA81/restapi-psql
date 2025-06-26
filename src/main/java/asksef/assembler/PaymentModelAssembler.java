@@ -18,10 +18,10 @@ public class PaymentModelAssembler implements RepresentationModelAssembler<Payme
         try {
             return EntityModel.of(payment,
                     linkTo(methodOn(PaymentController.class).one(payment.getPaymentId())).withSelfRel(),
-                    linkTo(methodOn(PaymentController.class).add(payment)).withSelfRel(),
+                   // linkTo(methodOn(PaymentController.class).add(payment)).withSelfRel(),
                     linkTo(methodOn(PaymentController.class).paymentByNr(payment.getPaymentNr())).withSelfRel(),
-                    linkTo(methodOn(PaymentController.class).delete(payment.getPaymentId())).withSelfRel(),
-                    linkTo(methodOn(PaymentController.class).update(payment.getPaymentId(), payment)).withSelfRel(),
+                  //  linkTo(methodOn(PaymentController.class).delete(payment.getPaymentId())).withSelfRel(),
+                   // linkTo(methodOn(PaymentController.class).update(payment.getPaymentId(), payment)).withSelfRel(),
                     linkTo(methodOn(PaymentController.class).all()).withRel("all"));
         } catch (Exception e) {
             throw new RuntimeException(e);

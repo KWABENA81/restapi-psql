@@ -18,9 +18,9 @@ public class CustomerModelAssembler implements RepresentationModelAssembler<Cust
         try {
             return EntityModel.of(customer,
                     linkTo(methodOn(CustomerController.class).one(customer.getCustomerId())).withSelfRel(),
-                    linkTo(methodOn(CustomerController.class).add(customer)).withSelfRel(),
-                    linkTo(methodOn(CustomerController.class).delete(customer.getCustomerId())).withSelfRel(),
-                    linkTo(methodOn(CustomerController.class).update(customer.getCustomerId(), customer)).withSelfRel(),
+//                    linkTo(methodOn(CustomerController.class).add(customer)).withSelfRel(),
+//                    linkTo(methodOn(CustomerController.class).delete(customer.getCustomerId())).withSelfRel(),
+//                    linkTo(methodOn(CustomerController.class).update(customer.getCustomerId(), customer)).withSelfRel(),
                     linkTo(methodOn(CustomerController.class).all()).withRel("all"));
         } catch (Exception e) {
             throw new RuntimeException(e);

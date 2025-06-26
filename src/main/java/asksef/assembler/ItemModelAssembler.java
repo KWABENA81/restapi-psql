@@ -18,9 +18,9 @@ public class ItemModelAssembler implements RepresentationModelAssembler<Item, En
         try {
             return EntityModel.of(item,
                     linkTo(methodOn(ItemController.class).one(item.getItemId())).withSelfRel(),
-                    linkTo(methodOn(ItemController.class).add(item)).withSelfRel(),
-                    linkTo(methodOn(ItemController.class).update(item.getItemId(), item)).withSelfRel(),
-                    linkTo(methodOn(ItemController.class).delete(item.getItemId())).withSelfRel(),
+//                    linkTo(methodOn(ItemController.class).add(item)).withSelfRel(),
+//                    linkTo(methodOn(ItemController.class).update(item.getItemId(), item)).withSelfRel(),
+//                    linkTo(methodOn(ItemController.class).delete(item.getItemId())).withSelfRel(),
                     linkTo(methodOn(ItemController.class).itemByCode(item.getItemCode())).withSelfRel(),
                     linkTo(methodOn(ItemController.class).itemByDescLike(item.getItemDesc())).withSelfRel(),
                     linkTo(methodOn(ItemController.class).itemByNameLike(item.getItemName())).withSelfRel(),

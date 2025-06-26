@@ -18,8 +18,8 @@ public class InvoiceModelAssembler implements RepresentationModelAssembler<Invoi
         try {
             return EntityModel.of(invoice,
                     linkTo(methodOn(InvoiceController.class).one(invoice.getInvoiceId())).withSelfRel(),
-                    linkTo(methodOn(InvoiceController.class).add(invoice)).withSelfRel(),
-                    linkTo(methodOn(InvoiceController.class).delete(invoice.getInvoiceId())).withSelfRel(),
+//                    linkTo(methodOn(InvoiceController.class).add(invoice)).withSelfRel(),
+//                    linkTo(methodOn(InvoiceController.class).delete(invoice.getInvoiceId())).withSelfRel(),
                   //  linkTo(methodOn(InvoiceController.class).update(invoice.getInvoiceId(), invoice)).withSelfRel(),
                     linkTo(methodOn(InvoiceController.class).all()).withRel("all"));
         } catch (Exception e) {

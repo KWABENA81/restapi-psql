@@ -18,9 +18,9 @@ public class CityModelAssembler implements RepresentationModelAssembler<City, En
         try {
             return EntityModel.of(city,
                     linkTo(methodOn(CityController.class).one(city.getCityId())).withSelfRel(),
-                    linkTo(methodOn(CityController.class).add(city)).withSelfRel(),
-                    linkTo(methodOn(CityController.class).update(city.getCityId(), city)).withSelfRel(),
-                    linkTo(methodOn(CityController.class).delete(city.getCityId())).withSelfRel(),
+//                    linkTo(methodOn(CityController.class).add(city)).withSelfRel(),
+//                    linkTo(methodOn(CityController.class).update(city.getCityId(), city)).withSelfRel(),
+//                    linkTo(methodOn(CityController.class).delete(city.getCityId())).withSelfRel(),
                     linkTo(methodOn(CityController.class).all()).withRel("all"));
         } catch (Exception e) {
             throw new RuntimeException(e);

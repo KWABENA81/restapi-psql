@@ -18,9 +18,9 @@ public class SaleModelAssembler implements RepresentationModelAssembler<Sale, En
         return EntityModel.of(sale,
                 linkTo(methodOn(SaleController.class).one(sale.getSaleId())).withSelfRel(),
                 linkTo(methodOn(SaleController.class).findBySaleNr(sale.getSaleNr())).withSelfRel(),
-                linkTo(methodOn(SaleController.class).add(sale)).withSelfRel(),
-                linkTo(methodOn(SaleController.class).delete(sale.getSaleId())).withSelfRel(),
-                linkTo(methodOn(SaleController.class).update(sale.getSaleId(), sale)).withSelfRel(),
+                //linkTo(methodOn(SaleController.class).add(sale)).withSelfRel(),
+               // linkTo(methodOn(SaleController.class).delete(sale.getSaleId())).withSelfRel(),
+                //linkTo(methodOn(SaleController.class).update(sale.getSaleId(), sale)).withSelfRel(),
                 linkTo(methodOn(SaleController.class).all()).withRel("all"));
     }
 }
