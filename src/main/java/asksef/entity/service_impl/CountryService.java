@@ -2,20 +2,21 @@ package asksef.entity.service_impl;
 
 import asksef.entity.Country;
 import asksef.entity.dto.CountryTransferObj;
+import asksef.entity.model.CountryModel;
 import asksef.entity.repository.CountryRepository;
 import asksef.entity.service_interface.CountryServiceInterface;
 import asksef.errors.CustomResourceNotFoundException;
 import ch.qos.logback.core.util.StringUtil;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class CountryService implements CountryServiceInterface {
@@ -49,9 +50,9 @@ public class CountryService implements CountryServiceInterface {
 
     @Transactional
 //    @Override
-    public Country save( CountryTransferObj countryDto) {
+    public Country save(@Valid CountryModel countryModel) {
         Country country = Country.builder()
-                .country(countryDto.getCountry()).build();
+                .country(countryModel.getCountry()).build();
             return this.countryRepository.save(country);
     }
 
@@ -111,11 +112,8 @@ public class CountryService implements CountryServiceInterface {
 
     @Transactional
     public void delete(@NonNull String countryName) {
-        Country country = findCountryByName(countryName);
-        if (Objects.nonNull(country)) {
-            log.info("Deleting country with name {}", country);
-            delete(country.getCountryId());
-        }
+        Optional<Country> countryOptional = findByName(countryName);
+        countryOptional.ifPresent(country -> delete(country.getCountryId()));
     }
 
     @Override
@@ -123,18 +121,9 @@ public class CountryService implements CountryServiceInterface {
         return countryRepository.count();
     }
 
-    public Country findCountryByName(@NonNull String countryName) {
+    public Optional<Country> findByName(@NonNull String countryName) {
         log.info("Finding country by name {}", countryName);
-        Country country1;
-        try {
-            country1 = this.countryRepository.findCountryByName(countryName);
-        } catch (RuntimeException e) {
-            throw new CustomResourceNotFoundException("Country", "id", countryName, null);
-        }
-        return country1;
+        return this.countryRepository.findByName(countryName);
     }
 
-    public ArrayList<Country> findLikeName(@NonNull String countryName) {
-        return new ArrayList<>(this.countryRepository.findLikeName(countryName));
-    }
 }

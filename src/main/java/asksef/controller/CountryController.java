@@ -1,8 +1,11 @@
 package asksef.controller;
 
 import asksef.assembler.CountryModelAssembler;
+import asksef.assembler_support.CountryModelAssemblerSupport;
 import asksef.entity.Country;
 import asksef.entity.dto.CountryTransferObj;
+import asksef.entity.model.CountryModel;
+import asksef.entity.repository.CountryRepository;
 import asksef.entity.service_impl.CountryService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -13,9 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -27,27 +28,40 @@ public class CountryController {
 
     private final CountryModelAssembler countryModelAssembler;
     private final CountryService countryService;
+    private final CountryRepository countryRepository;
+    private final CountryModelAssemblerSupport modelAssemblerSupport;
 
-    public CountryController(CountryModelAssembler assembler, CountryService countryService) {
+    public CountryController(CountryModelAssembler assembler, CountryService countryService,
+                             CountryRepository countryRepository,
+                             CountryModelAssemblerSupport modelAssemblerSupport) {
         this.countryModelAssembler = assembler;
         this.countryService = countryService;
-        log.info("CountryController created");
+        this.countryRepository = countryRepository;
+        this.modelAssemblerSupport = modelAssemblerSupport;
     }
 
+
     @GetMapping("/all")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Country>> all() {
-        List<EntityModel<Country>> entityModelList = this.countryService.findAll().
-                stream().map(this.countryModelAssembler::toModel).collect(Collectors.toList());
-        return CollectionModel.of(entityModelList,
-                linkTo(methodOn(CountryController.class).all()).withSelfRel());
+    public ResponseEntity<CollectionModel<CountryModel>> all() {
+        List<Country> entityList = this.countryService.findAll().stream().toList();
+        return new ResponseEntity<>(this.modelAssemblerSupport
+                .toCollectionModel(entityList), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<CountryModel> findByName(@RequestParam(value = "name") String name) {
+        return this.countryService.findByName(name)
+                .map(modelAssemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Country> one(@PathVariable("id") Long id) {
-        Country country = this.countryService.findById(id);
-        return this.countryModelAssembler.toModel(country);
+    public ResponseEntity<CountryModel> one(@PathVariable("id") Long id) {
+        return this.countryRepository.findById(id)
+                .map(modelAssemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/delete/{id}")
@@ -57,26 +71,14 @@ public class CountryController {
         return new ResponseEntity<>("Country entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Country>> findLikeName(@RequestParam(value = "name") String name) {
-        Collection<EntityModel<Country>> entityModelList = this.countryService.findLikeName(name)
-                .stream().map(countryModelAssembler::toModel).collect(Collectors.toList());
-
-        log.info("Countries: {}", entityModelList);
-        return CollectionModel.of(entityModelList,
-                linkTo(methodOn(CountryController.class).findLikeName(name)).withSelfRel());
-    }
-
-
     @PostMapping(path = "/add", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<EntityModel<Country>> add(@RequestBody @Valid CountryTransferObj countryDto) {
-        Country newCountry = this.countryService.save(countryDto);
-        EntityModel<Country> entityModel = this.countryModelAssembler.toModel(newCountry);
-        return ResponseEntity
-                .created(linkTo(methodOn(CountryController.class).add(countryDto)).toUri()).body(entityModel);
+    public ResponseEntity<CountryModel> add(@RequestBody @Valid CountryModel countryModel) {
+        Country savedCountry = this.countryService.save(countryModel);
+        CountryModel entityModel = this.modelAssemblerSupport.toModel(savedCountry);
+        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
+
 
 
     @PutMapping("/update/{id}")

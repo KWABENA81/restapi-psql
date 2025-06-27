@@ -21,7 +21,7 @@ public class CountryModelAssembler implements RepresentationModelAssembler<Count
                     //linkTo(methodOn(CountryController.class).add(country)).withSelfRel(),
                     //linkTo(methodOn(CountryController.class).update(country.getCountryId(), country)).withSelfRel(),
                     //linkTo(methodOn(CountryController.class).delete(country.getCountryId())).withSelfRel(),
-                    linkTo(methodOn(CountryController.class).findLikeName(country.getCountry())).withSelfRel(),
+                    linkTo(methodOn(CountryController.class).findByName(country.getCountry())).withSelfRel(),
                     linkTo(methodOn(CountryController.class).all()).withRel("all")
             );
         } catch (Exception e) {

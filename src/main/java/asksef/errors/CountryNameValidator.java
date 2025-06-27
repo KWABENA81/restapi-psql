@@ -24,7 +24,7 @@ public class CountryNameValidator implements ConstraintValidator<UniqueCountryNa
         if (Objects.isNull(country)) {
             return true;
         } else {
-            return Objects.nonNull(countryService.findCountryByName(country.getCountry()));
+            return Objects.nonNull(countryService.findByName(country.getCountry()));
         }
     }
 }

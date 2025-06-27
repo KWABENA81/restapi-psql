@@ -8,14 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface CountryRepository extends JpaRepository<Country, Long> {
     @Query("SELECT c from Country c WHERE c.country=(:country)")
-    Country findCountryByName(@Param("country") String country);
-
-    @Query("SELECT c from Country c WHERE c.country LIKE %:country%")
-    Collection<Country> findLikeName(@Param("country") String country);
+    Optional<Country> findByName(@Param("country") String country);
 }

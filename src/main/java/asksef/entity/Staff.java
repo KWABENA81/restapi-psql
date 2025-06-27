@@ -1,7 +1,6 @@
 package asksef.entity;
 
 import asksef.config.DateConverter;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -10,6 +9,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,6 +20,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "STAFF", schema = "rest_app")
 public class Staff implements Serializable, Comparable<Staff> {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(Staff.class);
 
 
@@ -161,9 +163,9 @@ public class Staff implements Serializable, Comparable<Staff> {
                 ", lastName='" + lastName + '\'' +
                 ", username='" + username + '\'' +
                 ", lastUpdate=" + lastUpdate +
-            //    ", paymentList=" + paymentList +
-             //   ", saleList=" + saleList +
-              // ", storeList=" + storeList +
+                //    ", paymentList=" + paymentList +
+                //   ", saleList=" + saleList +
+                // ", storeList=" + storeList +
                 '}';
     }
 

@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -17,7 +18,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "PAYMENT", schema = "rest_app")
 public class Payment implements Serializable, Comparable<Payment> {
-
+    @Serial
+    private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(Payment.class);
 
     public Payment() {

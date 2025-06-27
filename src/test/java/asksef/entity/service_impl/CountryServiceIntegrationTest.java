@@ -182,7 +182,7 @@ public class CountryServiceIntegrationTest {
 //    }
 
     @Test
-    void findCountryByName() {
+    void findByName() {
     }
 
     @Test

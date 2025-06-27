@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -17,7 +18,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "INVENTORY", schema = "rest_app")
 public class Inventory implements Serializable, Comparable<Inventory> {
-
+    @Serial
+    private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(Inventory.class);
 
     public Inventory() {
@@ -34,7 +36,8 @@ public class Inventory implements Serializable, Comparable<Inventory> {
     @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ITEM_ID", referencedColumnName = "ITEM_ID")
-    @JsonBackReference   @JsonIgnore
+    @JsonBackReference
+    @JsonIgnore
     private Item item;
 
     public void setItem(Item item) {
@@ -45,7 +48,8 @@ public class Inventory implements Serializable, Comparable<Inventory> {
     @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_ID", referencedColumnName = "STORE_ID")
-    @JsonBackReference   @JsonIgnore
+    @JsonBackReference
+    @JsonIgnore
     private Store store;
 
     public void setStore(Store store) {

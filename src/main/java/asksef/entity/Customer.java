@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +21,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "CUSTOMER", schema = "rest_app")
 public class Customer implements Serializable, Comparable<Customer> {
-
+    @Serial
+    private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(Customer.class);
 
     public Customer() {
@@ -106,7 +108,7 @@ public class Customer implements Serializable, Comparable<Customer> {
                 ", firstName='" + firstName + '\'' + ", lastName='" +
                 lastName + '\'' + ", createDate='" + createDate + '\'' +
                 ", address=" + address + ", lastUpdate=" + lastUpdate +
-             //   ", invoiceList=" + invoiceList +
+                //   ", invoiceList=" + invoiceList +
                 '}';
     }
 

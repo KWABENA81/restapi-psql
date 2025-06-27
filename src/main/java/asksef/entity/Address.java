@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "ADDRESS", schema = "rest_app")
 public class Address implements Serializable, Comparable<Address> {
-
+    @Serial
+    private static final long serialVersionUID = 1L;
     public Address() {
         this.lastUpdate = LocalDateTime.now();
     }
