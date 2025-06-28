@@ -2,7 +2,7 @@ package asksef.controller;
 
 import asksef.assembler.InvoiceModelAssembler;
 import asksef.entity.Invoice;
-import asksef.entity.service_impl.InvoiceService;
+import asksef.entity.service.InvoiceService;
 import jakarta.servlet.ServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/v0/invoice")
+@RequestMapping(value = "/api/invoice")
 public class InvoiceController {
 
     private static final Logger log = LoggerFactory.getLogger(InvoiceController.class);

@@ -34,8 +34,8 @@ public class Address implements Serializable, Comparable<Address> {
 
     @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_sequence")
-    @SequenceGenerator(name = "address_sequence", sequenceName = "address_address_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_id_seq")
+    @SequenceGenerator(name = "address_id_seq", sequenceName = "rest_app.address_address_id_seq", allocationSize = 1)
     @Column(name = "ADDRESS_ID", nullable = false)
     private Long addressId;
 

@@ -1,0 +1,22 @@
+package asksef.entity.service;
+
+
+import asksef.entity.Payment;
+
+import java.util.Collection;
+
+public interface PaymentServiceInterface {
+    Collection<Payment> findAll();
+
+    Collection<Payment> findAll(int pageNumber, int pageSize);
+
+    Payment findById(Long id);
+
+    Payment save(Payment payment);
+
+    Payment update(Payment payment);
+
+    void delete(Payment payment);
+
+    Long count();
+}

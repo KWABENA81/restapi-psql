@@ -1,0 +1,38 @@
+package asksef.assembler_support;
+
+import asksef.controller.ItemController;
+import asksef.entity.Item;
+import asksef.entity.entity_model.ItemModel;
+import lombok.NonNull;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+import org.springframework.stereotype.Component;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Component
+public class ItemModelAssemblerSupport extends RepresentationModelAssemblerSupport<Item, ItemModel> {
+    public ItemModelAssemblerSupport() {
+        super(ItemController.class, ItemModel.class);
+    }
+
+    @NonNull
+    @Override
+    public ItemModel toModel(@NonNull Item item) {
+        ItemModel itemModel = instantiateModel(item);
+        itemModel.add(linkTo(methodOn(ItemController.class).all()).withRel("all"));
+        itemModel.add(linkTo(methodOn(ItemController.class).one(item.getItemId())).withRel("one"));
+
+        return itemModel;
+    }
+
+    @NonNull
+    @Override
+    public CollectionModel<ItemModel> toCollectionModel(@NonNull Iterable<? extends Item> items) {
+        CollectionModel<ItemModel> itemModels = super.toCollectionModel(items);
+        itemModels.add(linkTo(methodOn(ItemController.class).all()).withRel("all"));
+
+        return itemModels;
+    }
+}

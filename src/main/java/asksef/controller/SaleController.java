@@ -2,7 +2,7 @@ package asksef.controller;
 
 import asksef.assembler.SaleModelAssembler;
 import asksef.entity.Sale;
-import asksef.entity.service_impl.SaleService;
+import asksef.entity.service.SaleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/v0/sale")
+@RequestMapping(value = "/api/sale")
 public class SaleController {
 
     private static final Logger log = LoggerFactory.getLogger(SaleController.class);

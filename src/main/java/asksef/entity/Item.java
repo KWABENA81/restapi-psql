@@ -42,7 +42,7 @@ public class Item implements Serializable, Comparable<Item> {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_id_seq")
-    @SequenceGenerator(name = "item_id_seq", sequenceName = "item_item_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "item_id_seq", sequenceName = "rest_app.item_item_id_seq", allocationSize = 1)
     @Column(name = "ITEM_ID", nullable = false)
     private Long itemId;
 

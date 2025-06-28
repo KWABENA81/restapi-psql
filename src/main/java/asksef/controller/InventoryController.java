@@ -2,7 +2,7 @@ package asksef.controller;
 
 import asksef.assembler.InventoryModelAssembler;
 import asksef.entity.Inventory;
-import asksef.entity.service_impl.InventoryService;
+import asksef.entity.service.InventoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/v0/inventory")
+@RequestMapping(value = "/api/inventory")
 public class InventoryController {
     private static final Logger log = LoggerFactory.getLogger(InventoryController.class);
 

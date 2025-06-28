@@ -2,7 +2,7 @@ package asksef.controller;
 
 import asksef.assembler.PaymentModelAssembler;
 import asksef.entity.Payment;
-import asksef.entity.service_impl.PaymentService;
+import asksef.entity.service.PaymentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/v0/payment")
+@RequestMapping(value = "/api/payment")
 public class PaymentController {
 
     private static final Logger log = LoggerFactory.getLogger(PaymentController.class);

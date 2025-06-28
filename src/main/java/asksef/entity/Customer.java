@@ -33,7 +33,7 @@ public class Customer implements Serializable, Comparable<Customer> {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "customer_id_seq")
-    @SequenceGenerator(name = "customer_id_seq", sequenceName = "customer_customer_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "customer_id_seq", sequenceName = "rest_app.customer_customer_id_seq", allocationSize = 1)
     @Column(name = "CUSTOMER_ID", nullable = false)
     private Long customerId;
 

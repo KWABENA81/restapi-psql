@@ -2,7 +2,7 @@ package asksef.assembler_support;
 
 import asksef.controller.AddressController;
 import asksef.entity.Address;
-import asksef.entity.model.AddressModel;
+import asksef.entity.entity_model.AddressModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;
@@ -21,6 +21,10 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
     @Override
     public AddressModel toModel(@NonNull Address entity) {
         AddressModel addressModel = instantiateModel(entity);
+
+        addressModel.add(linkTo(methodOn(AddressController.class).one(entity.getAddressId())).withSelfRel());
+        addressModel.add(linkTo(methodOn(AddressController.class).all()).withRel("all"));
+
         addressModel.setAddressId(entity.getAddressId());
         addressModel.setGpsCode(entity.getGpsCode());
         addressModel.setPhone(entity.getPhone());

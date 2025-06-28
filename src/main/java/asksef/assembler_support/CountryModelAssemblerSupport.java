@@ -3,8 +3,8 @@ package asksef.assembler_support;
 import asksef.controller.CountryController;
 import asksef.entity.City;
 import asksef.entity.Country;
-import asksef.entity.model.CityModel;
-import asksef.entity.model.CountryModel;
+import asksef.entity.entity_model.CityModel;
+import asksef.entity.entity_model.CountryModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;
@@ -27,14 +27,22 @@ public class CountryModelAssemblerSupport extends RepresentationModelAssemblerSu
     @Override
     public CountryModel toModel(@NonNull Country entity) {
         CountryModel countryModel = instantiateModel(entity);
+        //
         countryModel.add(
-                linkTo(methodOn(CountryController.class).one(entity.getCountryId())).withSelfRel(),
-                linkTo(methodOn(CountryController.class).all()).withRel("all"),
-                linkTo(methodOn(CountryController.class).add(countryModel)).withSelfRel(),
-                linkTo(methodOn(CountryController.class).findByName(entity.getCountry())).withSelfRel());
+                linkTo(methodOn(CountryController.class).one(entity.getCountryId())).withSelfRel());
+        countryModel.add(
+                linkTo(methodOn(CountryController.class).all()).withRel("all"));
+        countryModel.add(
+                linkTo(methodOn(CountryController.class).add(countryModel)).withRel("add"));
+        countryModel.add(
+                linkTo(methodOn(CountryController.class).findByName(entity.getCountry())).withRel("findByName"));
+        countryModel.add(
+                linkTo(methodOn(CountryController.class).countryCities(entity.getCountryId())).withRel("countryCities"));
+        //
         countryModel.setCountryId(entity.getCountryId());
         countryModel.setCountry(entity.getCountry());
-        //countryModel.setCities(toCityModel(entity.getCityList()));
+        countryModel.setLastUpdate(entity.getLastUpdate());
+       // countryModel.setCityModels(toCityCollectionModel(entity.getCityList()));
         return countryModel;
     }
 
@@ -42,9 +50,8 @@ public class CountryModelAssemblerSupport extends RepresentationModelAssemblerSu
     @Override
     public CollectionModel<CountryModel> toCollectionModel(@NonNull Iterable<? extends Country> entities) {
         CollectionModel<CountryModel> countryModels = super.toCollectionModel(entities);
-        countryModels.add(linkTo(methodOn(CountryController.class).all()).withSelfRel()
+        countryModels.add(linkTo(methodOn(CountryController.class).all()).withRel("all") );
                 //  , linkTo(methodOn(CountryController.class).findLikeName()
-        );
         return countryModels;
     }
 
@@ -55,9 +62,46 @@ public class CountryModelAssemblerSupport extends RepresentationModelAssemblerSu
         return cities.stream().map(cty -> CityModel.builder()
                 .cityId(cty.getCityId())
                 .city(cty.getCity())
-                .country(cty.getCountry())
+                // .addressModels(toAddressCollectionModel(cty.getAddressList()))
+                .countryModel(toCountryModel(cty.getCountry()))
                 .build()
                 .add(linkTo(methodOn(CountryController.class).one(cty.getCountry().getCountryId()))
                         .withSelfRel())).collect(Collectors.toList());
     }
+
+    private CountryModel toCountryModel(Country country) {
+        CountryModel countryModel = CountryModel.builder()
+                .countryId(country.getCountryId())
+                .country(country.getCountry())
+                .lastUpdate(country.getLastUpdate())
+                //.cityModels(toCityModel(country.getCityList()))
+               // .cityModels(toCityCollectionModel(country.getCityList()))
+                .build();
+        countryModel.add(
+                linkTo(methodOn(CountryController.class).findByName(country.getCountry())).withSelfRel());
+        countryModel.add(
+                linkTo(methodOn(CountryController.class).all()).withRel("all"));
+        countryModel.add(
+                linkTo(methodOn(CountryController.class).one(country.getCountryId())).withSelfRel());
+//        countryModel.add(
+//                linkTo(methodOn(CountryController.class).countryCities(country.getCountryId())).withSelfRel());
+        return countryModel;
+    }
+
+    public List<CityModel> toCityCollectionModel(List<City> cities) {
+        if (cities == null || cities.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return cities.stream()
+                .map(cty -> CityModel.builder()
+                        .cityId(cty.getCityId())
+                        .city(cty.getCity())
+                        .countryModel(toModel(cty.getCountry()))
+                        .lastUpdate(cty.getLastUpdate())
+                        .build()
+                        .add(linkTo(methodOn(CountryController.class)
+                                .one(cty.getCountry().getCountryId()))
+                                .withSelfRel())).collect(Collectors.toList());
+    }
+
 }

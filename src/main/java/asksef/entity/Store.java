@@ -10,7 +10,6 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,8 +21,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "STORE", schema = "rest_app")
 public class Store implements Serializable, Comparable<Store> {
-    @Serial
-    private static final long serialVersionUID = 1L;
+
     private static final Logger log = LoggerFactory.getLogger(Store.class);
 
     public Store() {
@@ -44,7 +42,7 @@ public class Store implements Serializable, Comparable<Store> {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "store_id_seq")
-    @SequenceGenerator(name = "store_id_seq", sequenceName = "store_store_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "store_id_seq", sequenceName = "rest_app.store_store_id_seq", allocationSize = 1)
     @Column(name = "STORE_ID", nullable = false)
     private Long storeId;
 

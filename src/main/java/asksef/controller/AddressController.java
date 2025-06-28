@@ -2,7 +2,7 @@ package asksef.controller;
 
 import asksef.assembler.AddressModelAssembler;
 import asksef.entity.Address;
-import asksef.entity.service_impl.AddressService;
+import asksef.entity.service.AddressService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/v0/address")
+@RequestMapping(value = "/api/address")
 public class AddressController {
     private static final Logger log = LoggerFactory.getLogger(AddressController.class);
 

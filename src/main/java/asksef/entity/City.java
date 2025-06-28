@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -35,10 +36,18 @@ public class City implements Serializable, Comparable<City> {
         this.country = country;
     }
 
+    @Builder
+    public City(Long id, String city, Country country, LocalDateTime lastUpdate) {
+        this.cityId = id;
+        this.city = city;
+        this.country = country;
+        this.lastUpdate = lastUpdate;
+    }
+
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_id_seq")
-    @SequenceGenerator(name = "city_id_seq", sequenceName = "city_city_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "city_id_seq", sequenceName = "rest_app.city_city_id_seq", allocationSize = 1)
     @Column(name = "CITY_ID", nullable = false)
     private Long cityId;
 
@@ -76,6 +85,7 @@ public class City implements Serializable, Comparable<City> {
         address.setCity(this);
     }
 
+    @Getter
     @Basic(optional = true)    //@CreationTimestamp
     @Column(name = "LAST_UPDATE")
     @Temporal(TemporalType.TIMESTAMP)

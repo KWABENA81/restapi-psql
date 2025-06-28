@@ -34,7 +34,7 @@ public class Payment implements Serializable, Comparable<Payment> {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_id_seq")
-    @SequenceGenerator(name = "payment_id_seq", sequenceName = "payment_payment_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "payment_id_seq", sequenceName = "rest_app.payment_payment_id_seq", allocationSize = 1)
     @Column(name = "PAYMENT_ID", nullable = false)
     private Long paymentId;
 

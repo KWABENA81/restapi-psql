@@ -1,7 +1,7 @@
 package asksef.errors;
 
 import asksef.entity.Country;
-import asksef.entity.service_impl.CountryService;
+import asksef.entity.service.CountryService;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;

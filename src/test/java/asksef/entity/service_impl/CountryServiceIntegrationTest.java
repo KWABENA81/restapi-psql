@@ -2,6 +2,7 @@ package asksef.entity.service_impl;
 
 import asksef.entity.Country;
 import asksef.entity.repository.CountryRepository;
+import asksef.entity.service.CountryService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

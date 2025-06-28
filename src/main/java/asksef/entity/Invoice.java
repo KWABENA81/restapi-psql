@@ -33,7 +33,7 @@ public class Invoice implements Serializable, Comparable<Invoice> {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "invoice_id_seq")
-    @SequenceGenerator(name = "invoice_id_seq", sequenceName = "invoice_invoice_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "invoice_id_seq", sequenceName = "rest_app.invoice_invoice_id_seq", allocationSize = 1)
     @Column(name = "INVOICE_ID", nullable = false)
     private Long invoiceId;
 

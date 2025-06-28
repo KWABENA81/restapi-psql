@@ -2,11 +2,13 @@ package asksef.controller;
 
 import asksef.assembler.CountryModelAssembler;
 import asksef.assembler_support.CountryModelAssemblerSupport;
+import asksef.entity.City;
 import asksef.entity.Country;
-import asksef.entity.dto.CountryTransferObj;
-import asksef.entity.model.CountryModel;
+import asksef.entity.entity_dto.CountryTransferObj;
+import asksef.entity.entity_model.CityModel;
+import asksef.entity.entity_model.CountryModel;
 import asksef.entity.repository.CountryRepository;
-import asksef.entity.service_impl.CountryService;
+import asksef.entity.service.CountryService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -29,29 +32,35 @@ public class CountryController {
     private final CountryModelAssembler countryModelAssembler;
     private final CountryService countryService;
     private final CountryRepository countryRepository;
-    private final CountryModelAssemblerSupport modelAssemblerSupport;
+    private final CountryModelAssemblerSupport assemblerSupport;
 
-    public CountryController(CountryModelAssembler assembler, CountryService countryService,
+    public CountryController(CountryModelAssembler assembler,
+                             CountryService countryService,
                              CountryRepository countryRepository,
                              CountryModelAssemblerSupport modelAssemblerSupport) {
         this.countryModelAssembler = assembler;
         this.countryService = countryService;
         this.countryRepository = countryRepository;
-        this.modelAssemblerSupport = modelAssemblerSupport;
+        this.assemblerSupport = modelAssemblerSupport;
     }
-
 
     @GetMapping("/all")
     public ResponseEntity<CollectionModel<CountryModel>> all() {
         List<Country> entityList = this.countryService.findAll().stream().toList();
-        return new ResponseEntity<>(this.modelAssemblerSupport
-                .toCollectionModel(entityList), HttpStatus.OK);
+        return new ResponseEntity<>(this.assemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/city", produces = "application/hal+json")
+    public ResponseEntity<Collection<CityModel>> countryCities(@PathVariable("id") Long id) {
+        List<City> cityList = countryService.findById(id).getCityList().stream().toList();
+        Collection<CityModel> cityModels = this.assemblerSupport.toCityCollectionModel(cityList);
+        return new ResponseEntity<>(cityModels, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<CountryModel> findByName(@RequestParam(value = "name") String name) {
         return this.countryService.findByName(name)
-                .map(modelAssemblerSupport::toModel)
+                .map(assemblerSupport::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -59,27 +68,24 @@ public class CountryController {
     @GetMapping("/{id}")
     public ResponseEntity<CountryModel> one(@PathVariable("id") Long id) {
         return this.countryRepository.findById(id)
-                .map(modelAssemblerSupport::toModel)
+                .map(assemblerSupport::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
     @DeleteMapping("/delete/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         this.countryService.delete(id);
         return new ResponseEntity<>("Country entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(path = "/add", produces = "application/json")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CountryModel> add(@RequestBody @Valid CountryModel countryModel) {
         Country savedCountry = this.countryService.save(countryModel);
-        CountryModel entityModel = this.modelAssemblerSupport.toModel(savedCountry);
+        CountryModel entityModel = this.assemblerSupport.toModel(savedCountry);
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
-
-
 
     @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

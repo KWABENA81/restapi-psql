@@ -29,7 +29,7 @@ public class Inventory implements Serializable, Comparable<Inventory> {
     @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "inventory_id_seq")
-    @SequenceGenerator(name = "inventory_id_seq", sequenceName = "inventory_inventory_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "inventory_id_seq", sequenceName = "rest_app.inventory_inventory_id_seq", allocationSize = 1)
     @Column(name = "INVENTORY_ID", nullable = false)
     private Long inventoryId;
 

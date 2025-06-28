@@ -2,7 +2,7 @@ package asksef.controller;
 
 import asksef.assembler.CustomerModelAssembler;
 import asksef.entity.Customer;
-import asksef.entity.service_impl.CustomerService;
+import asksef.entity.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(value = "/v0/customer")
+@RequestMapping(value = "/api/customer")
 public class CustomerController {
     private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
     private final CustomerService customerService;
