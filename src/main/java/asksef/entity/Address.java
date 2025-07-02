@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,16 +22,20 @@ import java.util.Objects;
 public class Address implements Serializable, Comparable<Address> {
     @Serial
     private static final long serialVersionUID = 1L;
+
     public Address() {
         this.lastUpdate = LocalDateTime.now();
     }
 
-    public Address(String gpsCode, String phone, City city) {
-        this();
+    @Builder
+    public Address(Long id, String gpsCode, String phone, City city, LocalDateTime lastUpdate) {
+        this.addressId = id;
         this.gpsCode = gpsCode;
         this.phone = phone;
         this.city = city;
+        this.lastUpdate = lastUpdate;
     }
+
 
     @Getter
     @Id

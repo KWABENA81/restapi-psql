@@ -31,7 +31,7 @@ public class InvoiceController {
         this.invoiceModelAssembler = invoiceModelAssembler;
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Invoice>> all() {
         List<EntityModel<Invoice>> entityModelList = this.invoiceService.findAll().
@@ -40,21 +40,21 @@ public class InvoiceController {
                 linkTo(methodOn(InvoiceController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Invoice> one(@PathVariable("id") Long id) {
         Invoice invoice = this.invoiceService.findById(id);
         return invoiceModelAssembler.toModel(invoice);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.invoiceService.delete(id);
         return new ResponseEntity<>("Invoice entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody Invoice invoice) {
         Invoice savedInvoice = this.invoiceService.save(invoice);
@@ -65,7 +65,7 @@ public class InvoiceController {
                         .toUri()).body(entityModel);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Invoice newInvoice, ServletResponse servletResponse) {
         Invoice updateInvoice = this.invoiceService.update(id, newInvoice);

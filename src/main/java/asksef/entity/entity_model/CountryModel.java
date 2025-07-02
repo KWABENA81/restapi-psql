@@ -1,5 +1,6 @@
 package asksef.entity.entity_model;
 
+import asksef.entity.City;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -17,5 +18,5 @@ public class CountryModel extends RepresentationModel<CountryModel> {
     private Long countryId;
     private String country;
     private LocalDateTime lastUpdate;
-    private List<CityModel> cityModels;
+    private List<City> cityList;
 }

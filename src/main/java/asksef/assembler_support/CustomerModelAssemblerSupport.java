@@ -2,7 +2,6 @@ package asksef.assembler_support;
 
 import asksef.controller.CustomerController;
 import asksef.entity.Customer;
-import asksef.entity.entity_model.AddressModel;
 import asksef.entity.entity_model.CustomerModel;
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
@@ -24,12 +23,15 @@ public class CustomerModelAssemblerSupport extends RepresentationModelAssemblerS
         CustomerModel model = instantiateModel(entity);
 
         model.add(linkTo(methodOn(CustomerController.class).one(entity.getCustomerId())).withSelfRel());
+        model.add(
+                linkTo(methodOn(CustomerController.class).findAddressOfCustomer(entity.getCustomerId()))
+                        .withRel("addressOfCustomer"));
         model.add(linkTo(methodOn(CustomerController.class).all()).withRel("all"));
 
         model.setCustomerId(entity.getCustomerId());
         model.setFirstName(entity.getFirstName());
         model.setLastName(entity.getLastName());
-        model.setAddress(AddressModel.builder().build());
+        model.setAddress(entity.getAddress());
         model.setLastUpdate(entity.getLastUpdate());
         // model.setInvoiceModels(toInvoiceCollectionModel(entity.getInvoiceList()));
         return model;

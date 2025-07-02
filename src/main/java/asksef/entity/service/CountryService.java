@@ -1,7 +1,6 @@
 package asksef.entity.service;
 
 import asksef.entity.Country;
-import asksef.entity.entity_dto.CountryTransferObj;
 import asksef.entity.entity_model.CountryModel;
 import asksef.entity.repository.CountryRepository;
 import asksef.errors.CustomResourceNotFoundException;
@@ -54,9 +53,30 @@ public class CountryService implements CountryServiceInterface {
                 .country(countryModel.getCountry())
                 .lastUpdate(countryModel.getLastUpdate())
                 .build();
+        return save(country);
+    }
+
+    @Transactional
+    @Override
+    public Country save(Country country) {
         return this.countryRepository.save(country);
     }
 
+    @Transactional
+    public Country update(@NonNull Long id, @NonNull CountryModel countryModel) {
+        Country country = countryRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        Country updateCountry = Country.builder()
+                .id(countryModel.getCountryId())
+                .country(countryModel.getCountry())
+                .lastUpdate(countryModel.getLastUpdate())
+                .build();
+        if (!StringUtil.isNullOrEmpty(updateCountry.getCountry())) {
+            country.setCountry(countryModel.getCountry());
+        }
+        return update(updateCountry);
+    }
 //    @Transactional
 //    @Override
 //    public Country save(@NonNull Country country) {
@@ -81,20 +101,15 @@ public class CountryService implements CountryServiceInterface {
 //            updateEntity.setCityList(country.getCityList());
 //
 //            log.info("Updating country id: {}", updateEntity.getCountryId());
+//        Country country = Country.builder()
+//               // .id(countryModel.getCountryId())
+//                .country(countryModel.getCountry())
+//                .lastUpdate(countryModel.getLastUpdate())
+//                .build();
         return this.countryRepository.save(country);
         //   }
     }
 
-    @Transactional
-    public Country update(@NonNull Long id, @NonNull CountryTransferObj countryDto) {
-        Country country = countryRepository.findById(id).orElseThrow(
-                () -> new CustomResourceNotFoundException("Country", "id", null, id)
-        );
-        if (!StringUtil.isNullOrEmpty(countryDto.getCountry())) {
-            country.setCountry(countryDto.getCountry());
-        }
-        return update(country);
-    }
 
     @Transactional
     public void delete(@NonNull Long id) {

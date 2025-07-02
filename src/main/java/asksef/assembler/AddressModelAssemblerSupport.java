@@ -1,4 +1,4 @@
-package asksef.assembler_support;
+package asksef.assembler;
 
 import asksef.controller.AddressController;
 import asksef.entity.Address;
@@ -21,14 +21,22 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
     @Override
     public AddressModel toModel(@NonNull Address entity) {
         AddressModel addressModel = instantiateModel(entity);
-
-        addressModel.add(linkTo(methodOn(AddressController.class).one(entity.getAddressId())).withSelfRel());
+        addressModel.add(
+                linkTo(methodOn(AddressController.class).one(entity.getAddressId())).withSelfRel());
+        addressModel.add(
+                linkTo(methodOn(AddressController.class).findCityOfAddress(entity.getAddressId()))
+                        .withRel("cityOfAddress"));
         addressModel.add(linkTo(methodOn(AddressController.class).all()).withRel("all"));
+        addressModel.add(linkTo(methodOn(AddressController.class).findByPhone(entity.getPhone())).withRel("phone"));
 
         addressModel.setAddressId(entity.getAddressId());
         addressModel.setGpsCode(entity.getGpsCode());
         addressModel.setPhone(entity.getPhone());
         addressModel.setCity(entity.getCity());
+        addressModel.setLastUpdate(entity.getLastUpdate());
+        addressModel.setCustomerList(entity.getCustomerList());
+        addressModel.setStoreList(entity.getStoreList());
+
         return addressModel;
     }
 
@@ -36,7 +44,7 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
     @Override
     public CollectionModel<AddressModel> toCollectionModel(@NonNull Iterable<? extends Address> entities) {
         CollectionModel<AddressModel> addressModels = super.toCollectionModel(entities);
-        addressModels.add(linkTo(methodOn(AddressController.class).all()).withSelfRel());
+        addressModels.add(linkTo(methodOn(AddressController.class).all()).withRel("all"));
         return addressModels;
     }
 }

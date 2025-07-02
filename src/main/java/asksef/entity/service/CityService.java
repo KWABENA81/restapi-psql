@@ -1,6 +1,8 @@
 package asksef.entity.service;
 
+import asksef.entity.Address;
 import asksef.entity.City;
+import asksef.entity.Country;
 import asksef.entity.entity_model.CityModel;
 import asksef.entity.repository.CityRepository;
 import asksef.errors.CustomResourceNotFoundException;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -50,7 +53,7 @@ public class CityService implements CityServiceInterface {
         City city = City.builder()
                 .id(cityModel.getCityId())
                 .city(cityModel.getCity())
-              //  .country(cityModel.getCountryModel())
+                //  .country(cityModel.getCountryModel())
                 .lastUpdate(cityModel.getLastUpdate())
                 .build();
         return this.cityRepository.save(city);
@@ -133,4 +136,16 @@ public class CityService implements CityServiceInterface {
         return cityRepository.findCityByName(city);
     }
 
+    public Country findCountryOfCity(Long id) {
+        Optional<City> cityOptional = this.cityRepository.findCountryOfCity(id);
+        if (cityOptional.isEmpty()) {
+            throw new CustomResourceNotFoundException("city", "id", null, id);
+        }
+        return cityOptional.get().getCountry();
+    }
+
+    public List<Address> findAddressesOfCity(Long cityId) {
+        Collection<Address> addrs = this.cityRepository.findAddressesOfCity(cityId);
+        return addrs.stream().toList();
+    }
 }

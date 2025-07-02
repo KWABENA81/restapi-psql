@@ -1,5 +1,6 @@
 package asksef.entity.entity_model;
 
+import asksef.entity.Address;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -17,7 +18,7 @@ public class CustomerModel extends RepresentationModel<CustomerModel> {
     private Long customerId;
     private String firstName;
     private String lastName;
-    private AddressModel address;
+    private Address address;
     private LocalDateTime creationDate;
     private List<InvoiceModel> invoiceModels;
     private LocalDateTime lastUpdate;

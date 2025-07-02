@@ -1,6 +1,8 @@
 package asksef.entity.entity_model;
 
 import asksef.entity.City;
+import asksef.entity.Customer;
+import asksef.entity.Store;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -20,6 +22,6 @@ public class AddressModel extends RepresentationModel<AddressModel> {
     private String phone;
     private City city;
     private LocalDateTime lastUpdate;
-    private List<StoreModel> storeModels;
-    private List<CustomerModel> customerModels;
+    private List<Store> storeList;
+    private List<Customer> customerList;
 }

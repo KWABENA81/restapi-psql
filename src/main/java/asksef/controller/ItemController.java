@@ -31,7 +31,7 @@ public class ItemController {
         this.itemModelAssembler = itemModelAssembler;
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Item>> all() {
         List<EntityModel<Item>> entityModelList = this.itemService.findAll().stream()
@@ -40,7 +40,7 @@ public class ItemController {
                 linkTo(methodOn(ItemController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Item> one(@PathVariable("id") Long id) {
         Item item = this.itemService.findById(id);
@@ -48,14 +48,14 @@ public class ItemController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         this.itemService.delete(id);
         return new ResponseEntity<>("Item entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody Item item) {
         Item savedItem = this.itemService.save(item);
@@ -68,7 +68,7 @@ public class ItemController {
     }
 
 
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Item newItem) {
         Item updateItem = this.itemService.update(newItem, id);
@@ -82,7 +82,7 @@ public class ItemController {
     }
 
 
-    @GetMapping("/code")
+    @GetMapping(value = "/code", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Item> itemByCode(@RequestParam(value = "code") String code) {
         Item item = this.itemService.findByCode(code);
@@ -90,7 +90,7 @@ public class ItemController {
         return itemModelAssembler.toModel(item);
     }
 
-    @GetMapping("/desc")
+    @GetMapping(value = "/desc", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Item>> itemByDescLike(@RequestParam(value = "desc") String desc) {
         List<EntityModel<Item>> entityModelList = this.itemService.findByDescLike(desc)
@@ -99,7 +99,7 @@ public class ItemController {
                 linkTo(methodOn(ItemController.class).itemByDescLike(desc)).withSelfRel());
     }
 
-    @GetMapping("/name")
+    @GetMapping(value = "/name", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Item>> itemByNameLike(@RequestParam(value = "name") String name) {
         List<EntityModel<Item>> entityModelList = this.itemService.findByNameLike(name)

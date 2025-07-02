@@ -31,7 +31,7 @@ public class StaffController {
         log.info("StaffController created");
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Staff>> all() {
         List<EntityModel<Staff>> entityModelList
@@ -42,7 +42,7 @@ public class StaffController {
                 linkTo(methodOn(StaffController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Staff> one(@PathVariable Long id) {
         Staff staff = this.staffService.findById(id);
@@ -58,7 +58,7 @@ public class StaffController {
     }
 
     /// /////////////////////////
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody Staff staff) {
         Staff savedStaff = this.staffService.save(staff);
@@ -70,7 +70,7 @@ public class StaffController {
                         .toUri()).body(staffEntityModel);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Staff newStaff) {
         Staff updateStaff = this.staffService.update(id, newStaff);
@@ -83,7 +83,7 @@ public class StaffController {
                         .toUri()).body(entityModel);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.staffService.delete(id);

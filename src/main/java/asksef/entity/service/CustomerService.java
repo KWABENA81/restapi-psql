@@ -1,6 +1,8 @@
 package asksef.entity.service;
 
 
+import asksef.entity.Address;
+import asksef.entity.City;
 import asksef.entity.Customer;
 import asksef.entity.repository.CustomerRepository;
 import asksef.errors.CustomResourceExistsException;
@@ -99,4 +101,12 @@ public class CustomerService implements CustomerServiceInterface {
         customerRepository.delete(customer);
     }
 
+
+    public Address findAddressOfCustomer(Long id) {
+        Optional<Address> addressOptional = this.customerRepository.findAddressOfCustomer(id);
+        if (addressOptional.isEmpty()) {
+            throw new CustomResourceNotFoundException("customer", "id", null, id);
+        }
+        return addressOptional.get();
+    }
 }

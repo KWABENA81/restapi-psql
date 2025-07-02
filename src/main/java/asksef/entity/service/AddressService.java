@@ -2,8 +2,12 @@ package asksef.entity.service;
 
 
 import asksef.entity.Address;
-import asksef.errors.CustomResourceNotFoundException;
+import asksef.entity.City;
+import asksef.entity.entity_model.AddressModel;
 import asksef.entity.repository.AddressRepository;
+import asksef.errors.CustomResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class AddressService implements AddressServiceInterface {
@@ -42,9 +47,22 @@ public class AddressService implements AddressServiceInterface {
         return address;
     }
 
+    @Transactional
     @Override
     public Address save(Address address) {
         return addressRepository.save(address);
+    }
+
+    @Transactional
+    public Address save(@Valid AddressModel addressModel) {
+        Address address = asksef.entity.Address.builder()
+                .id(addressModel.getAddressId())
+                .city(addressModel.getCity())
+                .gpsCode(addressModel.getGpsCode())
+                .phone(addressModel.getPhone())
+                .lastUpdate(addressModel.getLastUpdate())
+                .build();
+        return save(address);
     }
 
     @Override
@@ -97,7 +115,15 @@ public class AddressService implements AddressServiceInterface {
         return addressRepository.findByCode(code);
     }
 
-    public Address findByPhone(String phone) {
+    public Optional<Address> findByPhone(String phone) {
         return addressRepository.findByPhone(phone);
+    }
+
+    public City findCityOfAddress(Long id) {
+        Optional<Address> addressOptional = this.addressRepository.findCityOfAddress(id);
+        if (addressOptional.isEmpty()) {
+            throw new CustomResourceNotFoundException("address", "id", null, id);
+        }
+        return addressOptional.get().getCity();
     }
 }

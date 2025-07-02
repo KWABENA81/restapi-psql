@@ -1,7 +1,9 @@
 package asksef.controller;
 
 import asksef.assembler.CustomerModelAssembler;
+import asksef.entity.Address;
 import asksef.entity.Customer;
+import asksef.entity.entity_model.AddressModel;
 import asksef.entity.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +32,7 @@ public class CustomerController {
         this.customerModelAssembler = customerModelAssembler;
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Customer>> all() {
         List<EntityModel<Customer>> entityModelList = customerService.findAll().
@@ -39,15 +41,35 @@ public class CustomerController {
                 linkTo(methodOn(CustomerController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Customer> one(@PathVariable("id") Long id) {
         Customer customer = customerService.findById(id);
         return customerModelAssembler.toModel(customer);
     }
 
+    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<AddressModel> findAddressOfCustomer(@PathVariable("id") Long id) {
+        Address address = this.customerService.findAddressOfCustomer(id);
+        //  build addree model
+        AddressModel addressModel = AddressModel.builder()
+                .addressId(address.getAddressId())
+                .phone(address.getPhone())
+                .city(address.getCity())
+                .gpsCode(address.getGpsCode())
+                .lastUpdate(address.getLastUpdate())
+                .customerList(address.getCustomerList())
+                .storeList(address.getStoreList())
+                .build();
+        addressModel.add(linkTo(methodOn(CustomerController.class)
+                .findAddressOfCustomer(id)).withSelfRel());
+        addressModel.add(linkTo(methodOn(CustomerController.class).one(id)).withRel("customer"));
+        return new ResponseEntity<>(addressModel,HttpStatus.OK);
+    }
 
-    @DeleteMapping("/delete/{id}")
+
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.customerService.delete(id);
@@ -56,7 +78,7 @@ public class CustomerController {
 
     /// ///////////////////
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody Customer customer) {
         Customer savedCust = customerService.save(customer);
@@ -69,7 +91,7 @@ public class CustomerController {
                         .toUri()).body(entityModel);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Customer newCustomer) {
         Customer updatedCcustomer = customerService.update(id, newCustomer);

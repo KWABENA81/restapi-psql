@@ -12,7 +12,7 @@ public interface CountryServiceInterface {
 
     Country findById(Long id);
 
-    //Country save(Country country);
+    Country save(Country country);
 
     Country update(Country country);
 
@@ -20,5 +20,5 @@ public interface CountryServiceInterface {
 
     Long count();
 
-  //  Country update(Long id, Country newCountry);
+    //  Country update(Long id, Country newCountry);
 }

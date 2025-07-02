@@ -51,6 +51,7 @@ public class Customer implements Serializable, Comparable<Customer> {
     @Column(name = "CREATE_DATE", nullable = false)
     private String createDate;
 
+    //    @Getter
     @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")

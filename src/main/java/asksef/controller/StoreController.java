@@ -31,7 +31,7 @@ public class StoreController {
         log.info("Store Controller");
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Store>> all() {
         List<EntityModel<Store>> entityModelList = this.storeService.findAll().
@@ -41,7 +41,7 @@ public class StoreController {
                 linkTo(methodOn(StoreController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Store> one(@PathVariable Long id) {
         Store store = this.storeService.findById(id);
@@ -59,7 +59,7 @@ public class StoreController {
                 linkTo(methodOn(StoreController.class).getStoreByName(storeName)).withSelfRel());
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody Store store) {
         Store savedStore = this.storeService.save(store);
@@ -71,7 +71,7 @@ public class StoreController {
                         .toUri()).body(storeEntityModel);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Store newStore) {
         Store updateStore = this.storeService.update(id, newStore);
@@ -83,7 +83,7 @@ public class StoreController {
                         .toUri()).body(entityModel);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.storeService.delete(id);

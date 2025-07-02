@@ -1,10 +1,13 @@
 package asksef.entity.entity_model;
 
+import asksef.entity.Address;
+import asksef.entity.Country;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
-import java.time.LocalDateTime;import java.util.List;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -18,7 +21,7 @@ public class CityModel extends RepresentationModel<CityModel> {
 
     private Long cityId;
     private String city;
-    private CountryModel countryModel;
+    private Country country;
     private LocalDateTime lastUpdate;
-     private List<AddressModel> addressModels;
+    private List<Address> addressList;
 }

@@ -31,7 +31,7 @@ public class SaleController {
         log.info("SaleController");
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Sale>> all() {
         List<EntityModel<Sale>> entityModelList = this.saleService.findAll().
@@ -41,7 +41,7 @@ public class SaleController {
                 linkTo(methodOn(SaleController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Sale> one(@PathVariable Long id) {
         Sale sale = this.saleService.findById(id);
@@ -57,7 +57,7 @@ public class SaleController {
         return saleModelAssembler.toModel(sale);
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<EntityModel<Sale>> add(@RequestBody Sale sale) {
         Sale newSale = this.saleService.save(sale);
@@ -69,7 +69,7 @@ public class SaleController {
                         .toUri()).body(entityModel);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Sale newSale) {
         Sale updateSale = this.saleService.update(id, newSale);
@@ -82,7 +82,7 @@ public class SaleController {
                         .toUri()).body(entityModel);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.saleService.delete(id);

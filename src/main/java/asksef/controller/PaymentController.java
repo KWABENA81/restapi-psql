@@ -30,7 +30,7 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Payment>> all() {
         List<EntityModel<Payment>> entityModelList = paymentService.findAll()
@@ -39,14 +39,14 @@ public class PaymentController {
                 linkTo(methodOn(PaymentController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Payment> one(@PathVariable("id") Long id) {
         Payment payment = this.paymentService.findById(id);
         return paymentModelAssembler.toModel(payment);
     }
 
-    @GetMapping("/nr")
+    @GetMapping(value = "/nr", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Payment> paymentByNr(@RequestParam(value = "pn") String nr) {
         Payment payment = this.paymentService.findByPayNr(nr);
@@ -54,7 +54,7 @@ public class PaymentController {
         return paymentModelAssembler.toModel(payment);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.paymentService.delete(id);
@@ -63,7 +63,7 @@ public class PaymentController {
         return new ResponseEntity<>("Payment entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody Payment payment) {
         Payment savedPayment = this.paymentService.save(payment);
@@ -76,7 +76,7 @@ public class PaymentController {
                         .toUri()).body(entityModel);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Payment newPayment) {
         Payment updatePayment = this.paymentService.update(id, newPayment);

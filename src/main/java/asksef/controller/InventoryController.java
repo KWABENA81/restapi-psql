@@ -30,7 +30,7 @@ public class InventoryController {
         this.inventoryModelAssembler = inventoryModelAssembler;
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Inventory>> all() {
         List<EntityModel<Inventory>> entityModelList = inventoryService.findAll()
@@ -40,21 +40,22 @@ public class InventoryController {
                 linkTo(methodOn(InventoryController.class).all()).withSelfRel());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public EntityModel<Inventory> one(@PathVariable("id") Long id) {
         Inventory inventory = this.inventoryService.findById(id);
         return this.inventoryModelAssembler.toModel(inventory);
     }
 
-    @DeleteMapping("/delete/{id}") @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.inventoryService.delete(id);
 
         return new ResponseEntity<>("Inventory deleted", HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> add(@RequestBody Inventory inventory) {
         Inventory savedInventory = this.inventoryService.save(inventory);
@@ -66,7 +67,7 @@ public class InventoryController {
                         .toUri()).body(entityModel);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Inventory inventory) {
         Inventory updateInventory = inventoryService.update(id, inventory);
 
@@ -77,5 +78,4 @@ public class InventoryController {
                 .created(linkTo(methodOn(InvoiceController.class).one(id))
                         .toUri()).body(entityModel);
     }
-
 }
