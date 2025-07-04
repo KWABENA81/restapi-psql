@@ -1,6 +1,7 @@
 package asksef.controller;
 
 import asksef.assembler.AddressModelAssemblerSupport;
+import asksef.assembler.CityModelAssemblerSupport;
 import asksef.entity.Address;
 import asksef.entity.City;
 import asksef.entity.entity_model.AddressModel;
@@ -8,25 +9,23 @@ import asksef.entity.entity_model.CityModel;
 import asksef.entity.repository.AddressRepository;
 import asksef.entity.service.AddressService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/address")
 public class AddressController {
-    private static final Logger log = LoggerFactory.getLogger(AddressController.class);
 
     private final AddressService addressService;
     private final AddressRepository addressRepository;
@@ -51,8 +50,12 @@ public class AddressController {
     @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CollectionModel<AddressModel>> all() {
-        List<Address> entityModelList = addressService.findAll().stream().toList();
-        return new ResponseEntity<>(this.addressModelAssemblerSupport.toCollectionModel(entityModelList), HttpStatus.OK);
+        Collection<Address> addressCollection = addressService.findAll();
+
+        CollectionModel<AddressModel> addressCollectionModels
+                = this.addressModelAssemblerSupport.toCollectionModel(addressCollection);
+        log.debug("All addresses addressCollectionModels: {}", addressCollectionModels);
+        return new ResponseEntity<>(addressCollectionModels, HttpStatus.OK);
     }
 
     //    @GetMapping(value = "/{id}", produces = "application/hal+json")
@@ -74,12 +77,13 @@ public class AddressController {
     public ResponseEntity<CityModel> findCityOfAddress(@PathVariable("id") Long id) {
         City city = addressService.findCityOfAddress(id);
         //  build a model
-        CityModel cityModel = CityModel.builder()
-                .cityId(city.getCityId())
-                .city(city.getCity())
-                .country(city.getCountry())
-                .lastUpdate(city.getLastUpdate())
-                .build();
+        CityModel cityModel =new CityModelAssemblerSupport().toModel(city);
+//                CityModel.builder()
+//                .cityId(city.getCityId())
+//                .city(city.getCity())
+//                .country(city.getCountry())
+//                .lastUpdate(city.getLastUpdate())
+//                .build();
         //  add links
         cityModel.add(linkTo(methodOn(AddressController.class).findCityOfAddress(id)).withSelfRel());
         cityModel.add(linkTo(methodOn(CityController.class).one(id)).withRel("address"));

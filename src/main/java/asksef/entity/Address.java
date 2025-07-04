@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Setter
 @Entity
 @Table(name = "ADDRESS", schema = "rest_app")
@@ -35,7 +37,6 @@ public class Address implements Serializable, Comparable<Address> {
         this.city = city;
         this.lastUpdate = lastUpdate;
     }
-
 
     @Getter
     @Id
@@ -67,7 +68,7 @@ public class Address implements Serializable, Comparable<Address> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Store.class, mappedBy = "address", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Store.class, mappedBy = "address", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonManagedReference
     @JsonIgnore
     private List<Store> storeList;
@@ -85,7 +86,7 @@ public class Address implements Serializable, Comparable<Address> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Customer.class, mappedBy = "address", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Customer.class, mappedBy = "address", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonManagedReference
     @JsonIgnore
     private List<Customer> customerList;
@@ -102,24 +103,6 @@ public class Address implements Serializable, Comparable<Address> {
         }
         customer.setAddress(this);
     }
-
-//    @Setter
-//    @OneToMany(targetEntity = Staff.class, mappedBy = "address", cascade = CascadeType.ALL)
-//    @JsonManagedReference
-//    @JsonIgnore
-//    private List<Staff> staffList;
-//
-//    public List<Staff> getStaffList() {
-//        return (Objects.isNull(staffList)) ? new ArrayList<>() : staffList;
-//    }
-//
-//    public void addStaff(Staff staff) {
-//        List<Staff> staffs = getStaffList();
-//        if (!staffs.contains(staff)) {
-//            staffs.add(staff);
-//        }
-//        staff.setAddress(this);
-//    }
 
     @Convert(converter = DateConverter.class)
     private LocalDateTime lastUpdate;
@@ -160,3 +143,21 @@ public class Address implements Serializable, Comparable<Address> {
         return value;
     }
 }
+
+//    @Setter
+//    @OneToMany(targetEntity = Staff.class, mappedBy = "address", cascade = CascadeType.ALL)
+//    @JsonManagedReference
+//    @JsonIgnore
+//    private List<Staff> staffList;
+//
+//    public List<Staff> getStaffList() {
+//        return (Objects.isNull(staffList)) ? new ArrayList<>() : staffList;
+//    }
+//
+//    public void addStaff(Staff staff) {
+//        List<Staff> staffs = getStaffList();
+//        if (!staffs.contains(staff)) {
+//            staffs.add(staff);
+//        }
+//        staff.setAddress(this);
+//    }

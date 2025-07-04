@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -27,6 +28,15 @@ public class Customer implements Serializable, Comparable<Customer> {
 
     public Customer() {
         this.lastUpdate = LocalDateTime.now();
+    }
+    @Builder
+    public Customer(Long id,String firstName, String lastName, Address address,LocalDateTime ctime,LocalDateTime localDateTime) {
+        this.customerId= id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.lastUpdate = ctime;
+        //this.createDate=ctime;
     }
 
     @Setter
@@ -53,7 +63,7 @@ public class Customer implements Serializable, Comparable<Customer> {
 
     //    @Getter
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType. EAGER)
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")
     @JsonBackReference
     private Address address;

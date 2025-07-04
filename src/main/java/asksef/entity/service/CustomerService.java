@@ -2,11 +2,12 @@ package asksef.entity.service;
 
 
 import asksef.entity.Address;
-import asksef.entity.City;
 import asksef.entity.Customer;
+import asksef.entity.entity_model.CustomerModel;
 import asksef.entity.repository.CustomerRepository;
-import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -47,14 +48,22 @@ public class CustomerService implements CustomerServiceInterface {
         return customer;
     }
 
+    @Transactional
     @Override
     public Customer save(Customer customer) {
-        Optional<Customer> optional = this.customerRepository.findById(customer.getCustomerId());
-        if (optional.isEmpty()) {
-            return customerRepository.save(customer);
-        } else {
-            throw new CustomResourceExistsException("Customer", "id", null, customer.getCustomerId());
-        }
+        return customerRepository.save(customer);
+    }
+
+    @Transactional
+    public Customer save(@Valid CustomerModel custModel) {
+        Customer customer = Customer.builder()
+                .ctime(custModel.getCreationDate())
+                .address(custModel.getAddress())
+                .firstName(custModel.getFirstName())
+                .lastName(custModel.getLastName())
+                .localDateTime(custModel.getLastUpdate())
+                .build();
+        return save(customer);
     }
 
     @Override

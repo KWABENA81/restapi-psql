@@ -1,8 +1,15 @@
 package asksef.controller;
 
+import asksef.assembler.InvoiceModelAssemblerSupport;
 import asksef.assembler.PaymentModelAssembler;
+import asksef.assembler_support.StaffModelAssemblerSupport;
+import asksef.entity.Invoice;
 import asksef.entity.Payment;
+import asksef.entity.Staff;
+import asksef.entity.entity_model.InvoiceModel;
+import asksef.entity.entity_model.StaffModel;
 import asksef.entity.service.PaymentService;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
@@ -89,4 +96,19 @@ public class PaymentController {
                         .toUri()).body(entityModel);
     }
 
+    @GetMapping(value = "{id}/staff", produces = "application/hal+json")
+    public ResponseEntity<StaffModel> findStaffOnPayment(@PathVariable("id") Long id) {
+        Staff staff = this.paymentService.findStaffOnPayment(id);
+        @NonNull StaffModel staffModel = new StaffModelAssemblerSupport().toModel(staff);
+        staffModel.add(linkTo(methodOn(InvoiceController.class).findCustomerOnInvoice(id)).withRel("Customer On Invoice"));
+        return new ResponseEntity<>(staffModel, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "{id}/invoice", produces = "application/hal+json")
+    public ResponseEntity<InvoiceModel> findInvoiceOnPayment(@PathVariable("id") Long id) {
+        Invoice invoice = this.paymentService.findInvoiceOnPayment(id);
+        @NonNull InvoiceModel invoiceModel = new InvoiceModelAssemblerSupport().toModel(invoice);
+        invoiceModel.add(linkTo(methodOn(InvoiceController.class).findCustomerOnInvoice(id)).withRel("Customer On Invoice"));
+        return new ResponseEntity<>(invoiceModel, HttpStatus.OK);
+    }
 }

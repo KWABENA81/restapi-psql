@@ -1,4 +1,4 @@
-package asksef.assembler_support;
+package asksef.assembler;
 
 import asksef.controller.CustomerController;
 import asksef.entity.Customer;
@@ -22,11 +22,16 @@ public class CustomerModelAssemblerSupport extends RepresentationModelAssemblerS
     public CustomerModel toModel(@NonNull Customer entity) {
         CustomerModel model = instantiateModel(entity);
 
-        model.add(linkTo(methodOn(CustomerController.class).one(entity.getCustomerId())).withSelfRel());
+        model.add(linkTo(methodOn(CustomerController.class).one(entity.getCustomerId())).withRel("Id Link"));
         model.add(
                 linkTo(methodOn(CustomerController.class).findAddressOfCustomer(entity.getCustomerId()))
-                        .withRel("addressOfCustomer"));
+                        .withRel("address Of Customer"));
         model.add(linkTo(methodOn(CustomerController.class).all()).withRel("all"));
+        model.add(linkTo(methodOn(CustomerController.class).add(CustomerModel.builder().build())).withRel("create"));
+        model.add(linkTo(methodOn(CustomerController.class)
+                .delete(entity.getCustomerId())).withRel("delete Customer"));
+        model.add(linkTo(methodOn(CustomerController.class)
+                .update(entity.getCustomerId(), Customer.builder().build())).withRel("update Customer"));
 
         model.setCustomerId(entity.getCustomerId());
         model.setFirstName(entity.getFirstName());
@@ -37,11 +42,6 @@ public class CustomerModelAssemblerSupport extends RepresentationModelAssemblerS
         return model;
     }
 
-//    private CollectionModel<InvoiceModel> toInvoiceCollectionModel(List<Invoice> invoiceList) {
-//        InvoiceModelAssemblerSupport sup = new InvoiceModelAssemblerSupport();
-//        Object collection = sup.toCollectionModel(invoiceList);
-//        return sup;
-//    }
 
     @NonNull
     @Override

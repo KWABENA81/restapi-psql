@@ -8,8 +8,7 @@ import asksef.entity.repository.AddressRepository;
 import asksef.errors.CustomResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +16,10 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class AddressService implements AddressServiceInterface {
 
-    private static final Logger log = LoggerFactory.getLogger(AddressService.class);
     private final AddressRepository addressRepository;
 
     public AddressService(AddressRepository addressRepository) {

@@ -82,20 +82,21 @@ public class CountryController {
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Country newCountry) {
-        CountryModel countryModel = CountryModel.builder()
-                .countryId(newCountry.getCountryId())
-                .country(newCountry.getCountry())
-                .lastUpdate(newCountry.getLastUpdate())
-                .build();
+        CountryModel countryModel = countryModelAssemblerSupport.toModel(newCountry);
+//                CountryModel.builder()
+//                .countryId(newCountry.getCountryId())
+//                .country(newCountry.getCountry())
+//                .lastUpdate(newCountry.getLastUpdate())
+//                .build();
         //CountryTransferObj.builder().country(newCountry.getCountry()).build();
 
         Country updateCountry = this.countryService.update(id, countryModel);
-        CountryModel l = this.countryModelAssemblerSupport.toModel(updateCountry);
+        CountryModel updatedCountry = this.countryModelAssemblerSupport.toModel(updateCountry);
         //log.info("Updated country: {}", entityModel);
         //  Link link = entityLinks.linkToItemResource(updateCountry);
 //        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
         return ResponseEntity.created(linkTo(methodOn(CountryController.class).one(id))
-                .toUri()).body(l);
+                .toUri()).body(updatedCountry);
     }
 
 }

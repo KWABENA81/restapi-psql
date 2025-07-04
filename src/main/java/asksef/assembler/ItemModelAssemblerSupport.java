@@ -1,4 +1,4 @@
-package asksef.assembler_support;
+package asksef.assembler;
 
 import asksef.controller.ItemController;
 import asksef.entity.Item;
@@ -23,7 +23,10 @@ public class ItemModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         ItemModel itemModel = instantiateModel(item);
         itemModel.add(linkTo(methodOn(ItemController.class).all()).withRel("all"));
         itemModel.add(linkTo(methodOn(ItemController.class).one(item.getItemId())).withRel("one"));
-
+        itemModel.add(linkTo(methodOn(ItemController.class).itemByCode(item.getItemCode())).withRel("Item Code"));
+        itemModel.add(linkTo(methodOn(ItemController.class).itemByNameLike(item.getItemName())).withRel("Item Name"));
+        itemModel.add(linkTo(methodOn(ItemController.class).itemByDescLike(item.getItemDesc())).withRel("Item Desc"));
+//      itemModel.add(linkTo(methodOn(ItemController.class).all()).withRel("all"));
         return itemModel;
     }
 

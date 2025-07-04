@@ -1,6 +1,8 @@
 package asksef.entity.service;
 
+import asksef.entity.Invoice;
 import asksef.entity.Payment;
+import asksef.entity.Staff;
 import asksef.entity.repository.PaymentRepository;
 import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
@@ -102,5 +104,17 @@ public class PaymentService implements PaymentServiceInterface {
 
     public Payment findByPayNr(String pn) {
         return this.paymentRepository.findByPaymentNr(pn);
+    }
+
+    public Invoice findInvoiceOnPayment(Long id) {
+        return this.paymentRepository.findInvoiceOnPayment(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Invoice", "id", null, id)
+        );
+    }
+
+    public Staff findStaffOnPayment(Long id) {
+        return this.paymentRepository.findStaffOnPayment(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Staff", "id", null, id)
+        );
     }
 }

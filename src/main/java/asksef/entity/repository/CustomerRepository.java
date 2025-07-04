@@ -20,7 +20,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     @Query(
             nativeQuery = true,
-            value = "SELECT adr.address_id, adr.gps_code, adr.phone, adr.city_id, adr.last_updste, cust.customer_id " +
+            value = "SELECT adr.address_id, adr.gps_code, adr.phone, adr.city_id, adr.last_update, cust.customer_id " +
                     "FROM rest_app.Address adr " +
                     "INNER JOIN rest_app.Customer cust " +
                     "ON adr.address_id = cust.address_id " +

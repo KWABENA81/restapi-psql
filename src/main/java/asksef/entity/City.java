@@ -68,7 +68,7 @@ public class City implements Serializable, Comparable<City> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Address.class, mappedBy = "city", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Address.class, mappedBy = "city", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonManagedReference
     @JsonIgnore
     private List<Address> addressList;

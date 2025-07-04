@@ -4,6 +4,7 @@ import asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -24,6 +25,16 @@ public class Inventory implements Serializable, Comparable<Inventory> {
 
     public Inventory() {
         this.lastUpdate = LocalDateTime.now();
+    }
+
+    @Builder
+    public Inventory(Long inventoryId, Item item, Store store, Integer stockQty, Integer reorderQty, LocalDateTime lastUpdate) {
+        this.inventoryId = inventoryId;
+        this.item = item;
+        this.store = store;
+        this.stockQty = stockQty;
+        this.reorderQty = reorderQty;
+        this.lastUpdate = lastUpdate;
     }
 
     @Getter

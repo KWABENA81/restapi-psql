@@ -77,16 +77,6 @@ public class CountryService implements CountryServiceInterface {
         }
         return update(updateCountry);
     }
-//    @Transactional
-//    @Override
-//    public Country save(@NonNull Country country) {
-//        Optional<Country> existingEntity = this.countryRepository.findById(country.getCountryId());
-//        if (existingEntity.isEmpty()) {
-//            return this.countryRepository.save(country);
-//        } else {
-//            throw new CustomResourceExistsException("Country", "id", null, country.getCountryId());
-//        }
-//    }
 
     @Transactional
     @Override
@@ -143,3 +133,13 @@ public class CountryService implements CountryServiceInterface {
     }
 
 }
+//    @Transactional
+//    @Override
+//    public Country save(@NonNull Country country) {
+//        Optional<Country> existingEntity = this.countryRepository.findById(country.getCountryId());
+//        if (existingEntity.isEmpty()) {
+//            return this.countryRepository.save(country);
+//        } else {
+//            throw new CustomResourceExistsException("Country", "id", null, country.getCountryId());
+//        }
+//    }

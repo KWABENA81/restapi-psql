@@ -1,71 +1,73 @@
 package asksef.controller;
 
-import asksef.assembler.CustomerModelAssembler;
+import asksef.assembler.AddressModelAssemblerSupport;
+import asksef.assembler.CustomerModelAssemblerSupport;
 import asksef.entity.Address;
 import asksef.entity.Customer;
 import asksef.entity.entity_model.AddressModel;
+import asksef.entity.entity_model.CustomerModel;
+import asksef.entity.repository.CustomerRepository;
 import asksef.entity.service.CustomerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/customer")
 public class CustomerController {
-    private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
     private final CustomerService customerService;
-    private final CustomerModelAssembler customerModelAssembler;
+    private final CustomerRepository customerRepository;
+    private final CustomerModelAssemblerSupport assemblerSupport;
 
-
-    public CustomerController(CustomerService customerService, CustomerModelAssembler customerModelAssembler) {
+    public CustomerController(CustomerService customerService, CustomerRepository customerRepository,
+                              CustomerModelAssemblerSupport assemblerSupport) {
         this.customerService = customerService;
-        this.customerModelAssembler = customerModelAssembler;
+        this.customerRepository = customerRepository;
+        this.assemblerSupport = assemblerSupport;
     }
 
     @GetMapping(value = "/all", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Customer>> all() {
-        List<EntityModel<Customer>> entityModelList = customerService.findAll().
-                stream().map(customerModelAssembler::toModel).collect(Collectors.toList());
-        return CollectionModel.of(entityModelList,
-                linkTo(methodOn(CustomerController.class).all()).withSelfRel());
+    public ResponseEntity<CollectionModel<CustomerModel>> all() {
+        List<Customer> entityList = customerService.findAll().stream().toList();
+        return new ResponseEntity<>(this.assemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Customer> one(@PathVariable("id") Long id) {
-        Customer customer = customerService.findById(id);
-        return customerModelAssembler.toModel(customer);
+    public ResponseEntity<CustomerModel> one(@PathVariable("id") Long id) {
+        return this.customerRepository.findById(id)
+                .map(assemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping(value = "/{id}/address", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AddressModel> findAddressOfCustomer(@PathVariable("id") Long id) {
         Address address = this.customerService.findAddressOfCustomer(id);
-        //  build addree model
-        AddressModel addressModel = AddressModel.builder()
-                .addressId(address.getAddressId())
-                .phone(address.getPhone())
-                .city(address.getCity())
-                .gpsCode(address.getGpsCode())
-                .lastUpdate(address.getLastUpdate())
-                .customerList(address.getCustomerList())
-                .storeList(address.getStoreList())
-                .build();
-        addressModel.add(linkTo(methodOn(CustomerController.class)
-                .findAddressOfCustomer(id)).withSelfRel());
+        //  build address model
+        AddressModel addressModel = new AddressModelAssemblerSupport().toModel(address);
+//        AddressModel.builder()
+//                .addressId(address.getAddressId())
+//                .phone(address.getPhone())
+//                .city(address.getCity())
+//                .gpsCode(address.getGpsCode())
+//                .lastUpdate(address.getLastUpdate())
+//                .customerList(address.getCustomerList())
+//                .storeList(address.getStoreList())
+//                .build();
+        // add links
+        addressModel.add(linkTo(methodOn(CustomerController.class).findAddressOfCustomer(id)).withRel("Address of Customer"));
         addressModel.add(linkTo(methodOn(CustomerController.class).one(id)).withRel("customer"));
-        return new ResponseEntity<>(addressModel,HttpStatus.OK);
+        return new ResponseEntity<>(addressModel, HttpStatus.OK);
     }
 
 
@@ -79,23 +81,22 @@ public class CustomerController {
     /// ///////////////////
 
     @PostMapping(value = "/add", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> add(@RequestBody Customer customer) {
-        Customer savedCust = customerService.save(customer);
-        EntityModel<Customer> entityModel
-                = customerModelAssembler.toModel(savedCust);
+    public ResponseEntity<CustomerModel> add(@RequestBody CustomerModel customerModel) {
+        Customer savedCust = customerService.save(customerModel);
+        @NonNull CustomerModel entityModel = assemblerSupport.toModel(savedCust);
         log.info("CustomerController: addCustomer");
-        //return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
-        return ResponseEntity
-                .created(linkTo(methodOn(CustomerController.class).one(savedCust.getCustomerId()))
-                        .toUri()).body(entityModel);
+        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
+        //.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+//        return ResponseEntity
+//                .created(linkTo(methodOn(CustomerController.class).one(savedCust.getCustomerId()))
+//                        .toUri()).body(entityModel);
     }
 
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Customer newCustomer) {
         Customer updatedCcustomer = customerService.update(id, newCustomer);
-        EntityModel<Customer> entityModel = customerModelAssembler.toModel(updatedCcustomer);
+        @NonNull CustomerModel entityModel = this.assemblerSupport.toModel(updatedCcustomer);
         log.info("CustomerController: updateCustomer");
 //        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
         return ResponseEntity

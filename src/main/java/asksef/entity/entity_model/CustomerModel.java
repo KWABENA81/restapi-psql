@@ -1,6 +1,7 @@
 package asksef.entity.entity_model;
 
 import asksef.entity.Address;
+import asksef.entity.Invoice;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -10,6 +11,8 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +23,7 @@ public class CustomerModel extends RepresentationModel<CustomerModel> {
     private String lastName;
     private Address address;
     private LocalDateTime creationDate;
-    private List<InvoiceModel> invoiceModels;
     private LocalDateTime lastUpdate;
+
+    private List<Invoice> invoices;
 }

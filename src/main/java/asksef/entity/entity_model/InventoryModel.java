@@ -1,5 +1,6 @@
 package asksef.entity.entity_model;
 
+import asksef.entity.Inventory;
 import asksef.entity.Item;
 import asksef.entity.Store;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,4 +22,12 @@ public class InventoryModel extends RepresentationModel<InventoryModel> {
     private Integer stockQty;
     private Integer reorderQty;
     private LocalDateTime lastUpdate;
+
+//    public Inventory toEntity(InventoryModel model){
+//        Inventory inventory = InventoryModel.builder()
+//                .inventoryId(model.getInventoryId())
+//                .item(model.getItem())
+//                .store(model.getStore())
+//                .build().toEntity();
+  //  }
 }

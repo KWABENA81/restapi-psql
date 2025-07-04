@@ -3,6 +3,7 @@ package asksef.assembler;
 import asksef.controller.AddressController;
 import asksef.entity.Address;
 import asksef.entity.entity_model.AddressModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Component;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @Component
 public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSupport<Address, AddressModel> {
+
     public AddressModelAssemblerSupport() {
         super(AddressController.class, AddressModel.class);
     }
@@ -34,9 +37,9 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
         addressModel.setPhone(entity.getPhone());
         addressModel.setCity(entity.getCity());
         addressModel.setLastUpdate(entity.getLastUpdate());
-        addressModel.setCustomerList(entity.getCustomerList());
-        addressModel.setStoreList(entity.getStoreList());
-
+       // addressModel.setCustomerList(entity.getCustomerList());
+       // addressModel.setStoreList(entity.getStoreList());
+        log.info("All addresses addressModel: {}", addressModel);
         return addressModel;
     }
 
@@ -45,6 +48,7 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
     public CollectionModel<AddressModel> toCollectionModel(@NonNull Iterable<? extends Address> entities) {
         CollectionModel<AddressModel> addressModels = super.toCollectionModel(entities);
         addressModels.add(linkTo(methodOn(AddressController.class).all()).withRel("all"));
+        log.info("All addresses Collections addressModels: {}", addressModels);
         return addressModels;
     }
 }

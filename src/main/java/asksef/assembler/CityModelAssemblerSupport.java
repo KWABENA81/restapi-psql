@@ -34,11 +34,12 @@ public class CityModelAssemblerSupport extends RepresentationModelAssemblerSuppo
 
         cityModel.setCityId(entity.getCityId());
         cityModel.setCity(entity.getCity());
-        //    cityModel.setCountry(entity.getCountry());
+            cityModel.setCountry(entity.getCountry());
         cityModel.setLastUpdate(entity.getLastUpdate());
         //cityModel.setAddressModels(toAddressModel(entity.getAddressList()));
         return cityModel;
     }
+
     @NonNull
     @Override
     public CollectionModel<CityModel> toCollectionModel(@NonNull Iterable<? extends City> cities) {
@@ -47,6 +48,14 @@ public class CityModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         return cityModels;
     }
 
+    public City toEntity(CityModel cityModel) {
+        return City.builder()
+                .id(cityModel.getCityId())
+                .city(cityModel.getCity())
+                .country(cityModel.getCountry())
+                .lastUpdate(cityModel.getLastUpdate())
+                .build();
+    }
 //    private List<AddressModel> toAddressModel(List<Address> addressList) {
 //        if (addressList.isEmpty()) {
 //            return Collections.emptyList();

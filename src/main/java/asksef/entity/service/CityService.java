@@ -49,6 +49,12 @@ public class CityService implements CityServiceInterface {
     }
 
     @Transactional
+    @Override
+    public City save(City city) {
+        return this.cityRepository.save(city);
+    }
+
+    @Transactional
     public City save(@Valid CityModel cityModel) {
         City city = City.builder()
                 .id(cityModel.getCityId())
@@ -56,7 +62,7 @@ public class CityService implements CityServiceInterface {
                 //  .country(cityModel.getCountryModel())
                 .lastUpdate(cityModel.getLastUpdate())
                 .build();
-        return this.cityRepository.save(city);
+        return save(city);
 //        Optional<City> optionalCity = this.cityRepository.findById(city.getCityId());
 //        if (optionalCity.isEmpty()) {
 //            log.info("To Save city: {}", city);
@@ -110,6 +116,25 @@ public class CityService implements CityServiceInterface {
         return cityRepository.count();
     }
 
+    public City findCityByName(String city) {
+        log.info("Find city by name: {}", city);
+        return cityRepository.findCityByName(city);
+    }
+
+    public Country findCountryOfCity(Long id) {
+        Optional<City> cityOptional = this.cityRepository.findCountryOfCity(id);
+        if (cityOptional.isEmpty()) {
+            throw new CustomResourceNotFoundException("city", "id", null, id);
+        }
+        return cityOptional.get().getCountry();
+    }
+
+    public List<Address> findAddressesOfCity(Long cityId) {
+        return this.cityRepository.findAddressesOfCity(cityId).stream().toList();
+    }
+}
+
+
 //    @Override
 //    public CityDTO addCity(CityDTO cityDTO) {
 //        City city = new City();
@@ -125,27 +150,6 @@ public class CityService implements CityServiceInterface {
 //        savedCityDTO.setCountry(savedCity.getCountry().getCountry());
 //        return savedCityDTO;
 //    }
-
 //    private Country findCountry(String countryName) {
 //        return countryRepository.findCountryByName(countryName);
 //    }
-
-
-    public City findCityByName(String city) {
-        log.info("Find city by name: {}", city);
-        return cityRepository.findCityByName(city);
-    }
-
-    public Country findCountryOfCity(Long id) {
-        Optional<City> cityOptional = this.cityRepository.findCountryOfCity(id);
-        if (cityOptional.isEmpty()) {
-            throw new CustomResourceNotFoundException("city", "id", null, id);
-        }
-        return cityOptional.get().getCountry();
-    }
-
-    public List<Address> findAddressesOfCity(Long cityId) {
-        Collection<Address> addrs = this.cityRepository.findAddressesOfCity(cityId);
-        return addrs.stream().toList();
-    }
-}

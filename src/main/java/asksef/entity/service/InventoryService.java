@@ -1,11 +1,14 @@
 package asksef.entity.service;
 
 import asksef.entity.Inventory;
+import asksef.entity.Item;
+import asksef.entity.Store;
+import asksef.entity.entity_model.InventoryModel;
 import asksef.entity.repository.InventoryRepository;
-import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +16,9 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class InventoryService implements InventoryServiceInterface {
-
-    private static final Logger log = LoggerFactory.getLogger(InventoryService.class);
     private final InventoryRepository inventoryRepository;
 
     public InventoryService(InventoryRepository inventoryRepository) {
@@ -36,21 +38,28 @@ public class InventoryService implements InventoryServiceInterface {
 
     @Override
     public Inventory findById(Long id) {
-        Inventory inventory = inventoryRepository.findById(id).orElseThrow(
+        return inventoryRepository.findById(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Inventory", "id", null, id)
         );
-        log.info("find inventory with id: {}", id);
-        return inventory;
     }
 
+    @Transactional
     @Override
     public Inventory save(Inventory inventory) {
-        Optional<Inventory> optional = this.inventoryRepository.findById(inventory.getInventoryId());
-        if (optional.isEmpty()) {
-            return inventoryRepository.save(inventory);
-        } else {
-            throw new CustomResourceExistsException("Inventory", "id", null, inventory.getInventoryId());
-        }
+        return inventoryRepository.save(inventory);
+    }
+
+    @Transactional
+    public Inventory save(@Valid InventoryModel inventoryModel) {
+        Inventory inventory = Inventory.builder()
+                .inventoryId(inventoryModel.getInventoryId())
+                .item(inventoryModel.getItem())
+                .store(inventoryModel.getStore())
+                .lastUpdate(inventoryModel.getLastUpdate())
+                .reorderQty(inventoryModel.getReorderQty())
+                .stockQty(inventoryModel.getStockQty())
+                .build();
+        return save(inventory);
     }
 
     @Override
@@ -58,7 +67,7 @@ public class InventoryService implements InventoryServiceInterface {
         Long id = inventory.getInventoryId();
         Optional<Inventory> optional = inventoryRepository.findById(id);
         if (optional.isEmpty()) {
-            throw new CustomResourceNotFoundException("Inventory", "id", null, id)                    ;
+            throw new CustomResourceNotFoundException("Inventory", "id", null, id);
         } else {
             Inventory inventory1 = optional.get();
             inventory1.setStockQty(inventory.getStockQty());
@@ -98,4 +107,20 @@ public class InventoryService implements InventoryServiceInterface {
         return inventoryRepository.count();
     }
 
+    public Store findStoreOfInventory(Long id) {
+        return this.inventoryRepository.findStoreOfInventory(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Store", "id", null, id)
+        );
+    }
+
+    public Item findItemOfInventory(Long id) {
+        return this.inventoryRepository.findItemOfInventory(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("item", "id", null, id)
+        );
+    }
 }
+//Inventory inventory = inventoryRepository.findById(id).orElseThrow(
+//        () -> new CustomResourceNotFoundException("Inventory", "id", null, id)
+//);
+//        log.info("find inventory with id: {}", id);
+//        return inventory;

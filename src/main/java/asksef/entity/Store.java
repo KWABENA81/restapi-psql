@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -33,8 +34,14 @@ public class Store implements Serializable, Comparable<Store> {
         this.storeName = storeName;
     }
 
+//    public Store(Long id, String storeName) {
+//        this();
+//        this.storeName = storeName;
+//        this.storeId = id;
+//    }
+@Builder
     public Store(Long id, String storeName) {
-        this();
+    this.lastUpdate = LocalDateTime.now();
         this.storeName = storeName;
         this.storeId = id;
     }
@@ -64,7 +71,7 @@ public class Store implements Serializable, Comparable<Store> {
     }
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")
     @JsonBackReference
     private Address address;

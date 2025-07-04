@@ -1,9 +1,12 @@
 package asksef.entity.service;
 
 import asksef.entity.Item;
+import asksef.entity.entity_model.ItemModel;
 import asksef.entity.repository.ItemRepository;
 import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -44,6 +47,20 @@ public class ItemService implements ItemServiceInterface {
         return item;
     }
 
+    @Transactional
+    public Item save(@Valid ItemModel itemModel) {
+        Item item = Item.builder()
+                .id(itemModel.getItemId())
+                .itemCode(itemModel.getItemCode())
+                .itemCost(itemModel.getItemCost())
+                .itemDesc(itemModel.getItemDesc())
+                .itemName(itemModel.getItemName())
+                .saleInfo(itemModel.getSaleInfo())
+                .build();
+        return save(item);
+    }
+
+    @Transactional
     @Override
     public Item save(Item item) {
         Optional<Item> optional = this.itemRepository.findById(item.getItemId());

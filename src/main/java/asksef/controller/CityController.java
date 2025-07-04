@@ -1,7 +1,8 @@
 package asksef.controller;
 
-import asksef.assembler_support.AddressModelAssemblerSupport;
+import asksef.assembler.AddressModelAssemblerSupport;
 import asksef.assembler.CityModelAssemblerSupport;
+import asksef.assembler.CountryModelAssemblerSupport;
 import asksef.entity.City;
 import asksef.entity.Country;
 import asksef.entity.entity_model.AddressModel;
@@ -9,8 +10,8 @@ import asksef.entity.entity_model.CityModel;
 import asksef.entity.entity_model.CountryModel;
 import asksef.entity.repository.CityRepository;
 import asksef.entity.service.CityService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
@@ -24,18 +25,16 @@ import java.util.stream.Collectors;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/city")
 public class CityController {
 
-    private static final Logger log = LoggerFactory.getLogger(CityController.class);
     private final CityService cityService;
     private final CityRepository cityRepository;
     private final CityModelAssemblerSupport assemblerSupport;
 
-    public CityController(CityService cityService,
-                          CityRepository cityRepository,
+    public CityController(CityService cityService, CityRepository cityRepository,
                           CityModelAssemblerSupport cityModelAssemblerSupport) {
         this.cityService = cityService;
         this.cityRepository = cityRepository;
@@ -74,12 +73,12 @@ public class CityController {
     @GetMapping(value = "{id}/country", produces = "application/hal+json")
     public ResponseEntity<CountryModel> findCountryOfCity(@PathVariable("id") Long id) {
         Country country = cityService.findCountryOfCity(id);
+
         //  build a model
-        CountryModel countryModel = CountryModel.builder()
-                .countryId(country.getCountryId())
-                .lastUpdate(country.getLastUpdate())
-                .country(country.getCountry())
-                .build();
+        CountryModel countryModel = new CountryModelAssemblerSupport().toModel(country);
+//        CountryModel.builder()
+//                .countryId(country.getCountryId())           .lastUpdate(country.getLastUpdate())
+//                .country(country.getCountry())              .build();
         //  add links
         countryModel.add(linkTo(methodOn(CityController.class).findCountryOfCity(id)).withSelfRel());
         countryModel.add(linkTo(methodOn(CityController.class).one(id)).withRel("city"));
@@ -93,34 +92,11 @@ public class CityController {
         return new ResponseEntity<>("City entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
-//    @PostMapping(path = "/add",
-//            produces = "application/ld+json"
-
-    /// /            produces = "application/json;charset=utf-8"
-//    )
-//    //@Produces({MediaType.APPLICATION_JSON_VALUE,"application/json;charset=utf-8"})
-//    //@Produces("application/json;charset=utf-8")application/ld+json
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<EntityModel<City>> add(@RequestBody City city) throws Exception {
-//        City savedCity = cityService.save(city);
-//
-//        log.info("Inside add to save city {}",savedCity);
-//        //City newCity = this.cityService.findById(savedCityDTO.getCityId());
-//                EntityModel<City> entityModel = this.cityModelAssembler.toModel(savedCity);
-//        log.info("Saved new city: {}", entityModel);
-//        return ResponseEntity
-//                .created(linkTo(methodOn(CityController.class).add(savedCity)).toUri()).body(entityModel);
-//    }
     @PostMapping(path = "/add", produces = "application/hal+json")
     public ResponseEntity<CityModel> add(@RequestBody CityModel cityModel) {
         City savedCity = cityService.save(cityModel);
-        CityModel entityModel = this.assemblerSupport.toModel(savedCity);
-//        EntityModel<City> entityModel = this.cityModelAssembler.toModel(savedCity);
-//        log.info("Inside add to save city {}", savedCity);
+        @NonNull CityModel entityModel = this.assemblerSupport.toModel(savedCity);
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
-//                ResponseEntity.created(linkTo(methodOn(CityController.class)
-//                        .add(savedCity)).toUri()).body(entityModel);        //entityModel
-        //.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
     }
 
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
@@ -155,3 +131,22 @@ public class CityController {
 //           // return ResponseEntity.notFound().build();//<>( HttpStatus.OK);
 //    }
 
+
+//    @PostMapping(path = "/add",
+//            produces = "application/ld+json"
+
+/// /            produces = "application/json;charset=utf-8"
+//    )
+//    //@Produces({MediaType.APPLICATION_JSON_VALUE,"application/json;charset=utf-8"})
+//    //@Produces("application/json;charset=utf-8")application/ld+json
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<EntityModel<City>> add(@RequestBody City city) throws Exception {
+//        City savedCity = cityService.save(city);
+//
+//        log.info("Inside add to save city {}",savedCity);
+//        //City newCity = this.cityService.findById(savedCityDTO.getCityId());
+//                EntityModel<City> entityModel = this.cityModelAssembler.toModel(savedCity);
+//        log.info("Saved new city: {}", entityModel);
+//        return ResponseEntity
+//                .created(linkTo(methodOn(CityController.class).add(savedCity)).toUri()).body(entityModel);
+//    }

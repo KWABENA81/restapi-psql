@@ -1,50 +1,54 @@
 package asksef.controller;
 
-import asksef.assembler.InvoiceModelAssembler;
+import asksef.assembler.CustomerModelAssemblerSupport;
+import asksef.assembler.InvoiceModelAssemblerSupport;
+import asksef.entity.Customer;
 import asksef.entity.Invoice;
+import asksef.entity.entity_model.CustomerModel;
+import asksef.entity.entity_model.InvoiceModel;
+import asksef.entity.repository.InvoiceRepository;
 import asksef.entity.service.InvoiceService;
 import jakarta.servlet.ServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/invoice")
 public class InvoiceController {
-
-    private static final Logger log = LoggerFactory.getLogger(InvoiceController.class);
     private final InvoiceService invoiceService;
-    private final InvoiceModelAssembler invoiceModelAssembler;
+    private final InvoiceRepository invoiceRepository;
+    private final InvoiceModelAssemblerSupport invoiceModelAssemblerSupport;
 
-    public InvoiceController(InvoiceService invoiceService, InvoiceModelAssembler invoiceModelAssembler) {
+    public InvoiceController(InvoiceService invoiceService, InvoiceRepository invoiceRepository,
+                             InvoiceModelAssemblerSupport invoiceModelAssemblerSupport) {
         this.invoiceService = invoiceService;
-        this.invoiceModelAssembler = invoiceModelAssembler;
+        this.invoiceRepository = invoiceRepository;
+        this.invoiceModelAssemblerSupport = invoiceModelAssemblerSupport;
     }
 
     @GetMapping(value = "/all", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Invoice>> all() {
-        List<EntityModel<Invoice>> entityModelList = this.invoiceService.findAll().
-                stream().map(invoiceModelAssembler::toModel).collect(Collectors.toList());
-        return CollectionModel.of(entityModelList,
-                linkTo(methodOn(InvoiceController.class).all()).withSelfRel());
+    public ResponseEntity<CollectionModel<InvoiceModel>> all() {
+        List<Invoice> entityList = this.invoiceService.findAll().
+                stream().toList();
+        return new ResponseEntity<>(this.invoiceModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Invoice> one(@PathVariable("id") Long id) {
-        Invoice invoice = this.invoiceService.findById(id);
-        return invoiceModelAssembler.toModel(invoice);
+    public ResponseEntity<InvoiceModel> one(@PathVariable("id") Long id) {
+        return this.invoiceRepository.findById(id)
+                .map(invoiceModelAssemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
@@ -56,13 +60,11 @@ public class InvoiceController {
 
     @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> add(@RequestBody Invoice invoice) {
-        Invoice savedInvoice = this.invoiceService.save(invoice);
-        EntityModel<Invoice> entityModel = invoiceModelAssembler.toModel(savedInvoice);
+    public ResponseEntity<InvoiceModel> add(@RequestBody InvoiceModel invoiceModel) {
+        Invoice savedInvoice = this.invoiceService.save(invoiceModel);
+        @NonNull InvoiceModel entityModel = invoiceModelAssemblerSupport.toModel(savedInvoice);
         log.info("Invoice addInvoice");
-        return ResponseEntity
-                .created(linkTo(methodOn(InvoiceController.class).one(savedInvoice.getInvoiceId()))
-                        .toUri()).body(entityModel);
+        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
@@ -70,7 +72,7 @@ public class InvoiceController {
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Invoice newInvoice, ServletResponse servletResponse) {
         Invoice updateInvoice = this.invoiceService.update(id, newInvoice);
 
-        EntityModel<Invoice> entityModel = invoiceModelAssembler.toModel(updateInvoice);
+        @NonNull InvoiceModel entityModel = invoiceModelAssemblerSupport.toModel(updateInvoice);
         log.info("Invoice updated");
 //        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
         return ResponseEntity
@@ -78,4 +80,11 @@ public class InvoiceController {
                         .toUri()).body(entityModel);
     }
 
+    @GetMapping(value = "{id}/customer", produces = "application/hal+json")
+    public ResponseEntity<CustomerModel> findCustomerOnInvoice(@PathVariable("id") Long id) {
+        Customer customer = this.invoiceService.findCustomerOnInvoice(id);
+        @NonNull CustomerModel customerModel = new CustomerModelAssemblerSupport().toModel(customer);
+        customerModel.add(linkTo(methodOn(InvoiceController.class).findCustomerOnInvoice(id)).withRel("Customer On Invoice"));
+        return new ResponseEntity<>(customerModel, HttpStatus.OK);
+    }
 }

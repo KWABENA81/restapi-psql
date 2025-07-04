@@ -4,6 +4,7 @@ import asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 
 @Setter
 @Entity
@@ -37,6 +39,16 @@ public class Item implements Serializable, Comparable<Item> {
     public Item(Long id) {
         this();
         this.itemId = id;
+    }
+
+    @Builder
+    public Item(Long id, String saleInfo, String itemName, String itemCode, String itemDesc, Float itemCost) {
+        this.itemId = id;
+        this.itemName = itemName;
+        this.itemCode = itemCode;
+        this.itemCost = itemCost;
+        this.saleInfo = saleInfo;
+        this.itemDesc = itemDesc;
     }
 
     @Getter

@@ -1,10 +1,14 @@
 package asksef.entity.service;
 
 
+import asksef.entity.Customer;
 import asksef.entity.Invoice;
+import asksef.entity.entity_model.InvoiceModel;
 import asksef.entity.repository.InvoiceRepository;
 import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -44,6 +48,18 @@ public class InvoiceService implements InvoiceServiceInterface {
         return invoice;
     }
 
+    @Transactional
+    public Invoice save(@Valid InvoiceModel invoiceModel) {
+        Invoice invoice = Invoice.builder()
+                .invoiceId(invoiceModel.getInvoiceId())
+                .invoiceNr(invoiceModel.getInvoiceNr())
+                .customer(invoiceModel.getCustomer())
+                .lastUpdate(invoiceModel.getLastUpdate())
+                .build();
+        return save(invoice);
+    }
+
+    @Transactional
     @Override
     public Invoice save(Invoice invoice) {
         Optional<Invoice> optional = this.invoiceRepository.findById(invoice.getInvoiceId());
@@ -105,5 +121,11 @@ public class InvoiceService implements InvoiceServiceInterface {
     @Override
     public Long count() {
         return this.invoiceRepository.count();
+    }
+
+    public Customer findCustomerOnInvoice(Long id) {
+        return this.invoiceRepository.findCustomerOnInvoice(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Customer", "id", null, id)
+        );
     }
 }

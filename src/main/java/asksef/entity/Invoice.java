@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -28,6 +29,14 @@ public class Invoice implements Serializable, Comparable<Invoice> {
     public Invoice() {
         this.lastUpdate = LocalDateTime.now();
         this.invoiceNr = String.valueOf(Math.abs(LocalDateTime.now().hashCode()));
+    }
+
+    @Builder
+    public Invoice(Long invoiceId, String invoiceNr, Customer customer, LocalDateTime lastUpdate) {
+        this.invoiceId = invoiceId;
+        this.invoiceNr = invoiceNr;
+        this.customer = customer;
+        this.lastUpdate = lastUpdate;
     }
 
     @Getter

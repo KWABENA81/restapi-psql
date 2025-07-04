@@ -1,4 +1,4 @@
-package asksef.assembler_support;
+package asksef.assembler;
 
 import asksef.controller.InvoiceController;
 import asksef.entity.Invoice;
@@ -25,7 +25,16 @@ public class InvoiceModelAssemblerSupport extends RepresentationModelAssemblerSu
         InvoiceModel invoiceModel = instantiateModel(entity);
         invoiceModel.add(linkTo(methodOn(InvoiceController.class).all()).withRel("all"));
         invoiceModel.add(linkTo(methodOn(InvoiceController.class).one(entity.getInvoiceId())).withRel("one"));
-        // invoiceModel.add(linkTo(methodOn(InvoiceController.class).add(invoiceModel)).withRel("add"));
+       //  invoiceModel.add(linkTo(methodOn(InvoiceController.class).add(entity)).withRel("add"));
+         invoiceModel.add(linkTo(methodOn(InvoiceController.class).findCustomerOnInvoice(entity.getInvoiceId())).withRel("Customer On Invoice"));
+        //invoiceModel.add(linkTo(methodOn(InvoiceController.class).))
+
+        invoiceModel.setInvoiceId(entity.getInvoiceId());
+        invoiceModel.setInvoiceNr(entity.getInvoiceNr());
+        invoiceModel.setCustomer(entity.getCustomer());
+        invoiceModel.setLastUpdate(entity.getLastUpdate());
+        //invoiceModel.setSaleModels(entity.getSaleList());
+        //invoiceModel.setPaymentModels(entity.getSaleList());
         return invoiceModel;
     }
 

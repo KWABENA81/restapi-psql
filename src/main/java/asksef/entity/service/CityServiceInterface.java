@@ -12,7 +12,7 @@ public interface CityServiceInterface {
 
     City findById(Long id);
 
-   // City save(City city);
+    City save(City city);
 
     City update(City city);
 
