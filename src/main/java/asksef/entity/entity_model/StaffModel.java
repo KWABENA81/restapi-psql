@@ -1,5 +1,6 @@
 package asksef.entity.entity_model;
 
+import asksef.entity.Address;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -19,7 +20,7 @@ public class StaffModel extends RepresentationModel<StaffModel> {
     private String lastName;
     private String username;
     private LocalDateTime lastUpdate;
-    private AddressModel addressModel;
+    private Address address;
 
     private List<PaymentModel> paymentModels;
     private List<SaleModel> saleModels;

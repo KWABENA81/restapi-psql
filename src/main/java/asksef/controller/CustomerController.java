@@ -53,10 +53,7 @@ public class CustomerController {
     public ResponseEntity<AddressModel> findAddressOfCustomer(@PathVariable("id") Long id) {
         Address address = this.customerService.findAddressOfCustomer(id);
         //  build address model
-        AddressModel addressModel = new AddressModelAssemblerSupport().toModel(address);
-        addressModel.add(linkTo(methodOn(CustomerController.class).findAddressOfCustomer(id)).withRel("Address of Customer"));
-        addressModel.add(linkTo(methodOn(CustomerController.class).one(id)).withRel("customer"));
-        return new ResponseEntity<>(addressModel, HttpStatus.OK);
+        return new ResponseEntity<>(new AddressModelAssemblerSupport().toModel(address), HttpStatus.OK);
     }
 
 
@@ -80,7 +77,6 @@ public class CustomerController {
         Customer updatedCcustomer = customerService.update(id, newCustomer);
         @NonNull CustomerModel entityModel = this.assemblerSupport.toModel(updatedCcustomer);
         log.info("CustomerController: updateCustomer");
-//        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
         return ResponseEntity
                 .created(linkTo(methodOn(CustomerController.class).one(updatedCcustomer.getCustomerId()))
                         .toUri()).body(entityModel);

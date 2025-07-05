@@ -1,6 +1,7 @@
 package asksef.entity;
 
 import asksef.config.DateConverter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -31,12 +32,13 @@ public class Staff implements Serializable, Comparable<Staff> {
     }
 
     @Builder
-    public Staff(long staffId, String firstName, String lastName, String username,  LocalDateTime lastUpdate) {
+    public Staff(long staffId, String firstName, String lastName, String username, LocalDateTime lastUpdate, Address address) {
         this.staffId = staffId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.lastUpdate = lastUpdate;
+       // this.address = address;
     }
 
     public Staff(Long id, String firstName, String lastName, String username) {
@@ -125,6 +127,17 @@ public class Staff implements Serializable, Comparable<Staff> {
             sales.add(sale);
         sale.setStaff(this);
     }
+//
+//    @Getter
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")
+//    @JsonBackReference
+//    private Address address;
+//
+//    public void setAddress(Address address) {
+//        this.address = address;
+//        address.addStaff(this);
+//    }
 
     @Setter
     @OneToMany(targetEntity = Store.class, mappedBy = "staff", cascade = CascadeType.ALL)

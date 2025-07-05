@@ -30,7 +30,7 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
         staffModel.add(linkTo(methodOn(StaffController.class).one(entity.getStaffId())).withSelfRel());
         //staffModel.add(linkTo(methodOn(StaffController.class).add(entity)).withRel("add"));
         staffModel.add(linkTo(methodOn(StaffController.class).delete(entity.getStaffId())).withRel("delete"));
-        staffModel.add(linkTo(methodOn(StaffController.class).findAddressOfStaff(entity.getStaffId())).withRel("Address"));
+//        staffModel.add(linkTo(methodOn(StaffController.class).findAddressOfStaff(entity.getStaffId())).withRel("Address"));
         staffModel.add(linkTo(methodOn(StaffController.class).findByUsername(entity.getUsername())).withRel("Username"));
 
         staffModel.setStaffId(entity.getStaffId());
@@ -38,7 +38,7 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
         staffModel.setLastName(entity.getLastName());
         staffModel.setUsername(entity.getUsername());
         staffModel.setLastUpdate(entity.getLastUpdate());
-        staffModel.setAddressModel(AddressModel.builder().build());
+        //staffModel.setAddress(entity.getA);
 //        staffModel.setPaymentModels(toPaymentCollectionModel(entity.getPaymentList()));
 //        staffModel.setSaleModels(toSaleCollectionModel(entity.getSaleList()));
 //        staffModel.setStoreModels(toStoreCollectionModel(entity.getStoreList()));

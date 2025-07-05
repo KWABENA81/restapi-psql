@@ -1,10 +1,14 @@
 package asksef.entity.service;
 
 
+import asksef.entity.Address;
+import asksef.entity.Staff;
 import asksef.entity.Store;
+import asksef.entity.entity_model.StoreModel;
 import asksef.entity.repository.StoreRepository;
-import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -44,14 +48,22 @@ public class StoreService implements StoreServiceInterface {
         return store;
     }
 
+    @Transactional
     @Override
     public Store save(Store store) {
-        Optional<Store> optional = this.storeRepository.findById(store.getStoreId());
-
-        if (optional.isPresent()) {
-            throw new CustomResourceExistsException("Store", "id", null, store.getStoreId());
-        }
         return this.storeRepository.save(store);
+    }
+
+    @Transactional
+    public Store save(@Valid StoreModel storemodel) {
+        Store store = Store.builder()
+                .id(storemodel.getStoreId())
+                .storeName(storemodel.getStoreName())
+                .staff(storemodel.getStaff())
+                .address(storemodel.getAddress())
+                .lastUpdate(storemodel.getLastUpdate())
+                .build();
+        return save(store);
     }
 
     @Override
@@ -98,5 +110,21 @@ public class StoreService implements StoreServiceInterface {
 
     public Collection<Store> findByStoreName(String name) {
         return this.storeRepository.findByStoreName(name);
+    }
+
+    public Address findAddressOfStore(Long id) {
+        Optional<Address> addressOptional = this.storeRepository.findAddressOfStore(id);
+        if (addressOptional.isEmpty()) {
+            throw new CustomResourceNotFoundException("Store", "id", null, id);
+        }
+        return addressOptional.get();
+    }
+
+    public Staff findStaffOfStore(Long id) {
+        Optional<Staff> staffOptional = this.storeRepository.findStaffOfStore(id);
+        if (staffOptional.isEmpty()) {
+            throw new CustomResourceNotFoundException("Store", "id", null, id);
+        }
+        return staffOptional.get();
     }
 }

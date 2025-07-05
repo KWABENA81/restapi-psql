@@ -110,7 +110,6 @@ public class CustomerService implements CustomerServiceInterface {
         customerRepository.delete(customer);
     }
 
-
     public Address findAddressOfCustomer(Long id) {
         Optional<Address> addressOptional = this.customerRepository.findAddressOfCustomer(id);
         if (addressOptional.isEmpty()) {

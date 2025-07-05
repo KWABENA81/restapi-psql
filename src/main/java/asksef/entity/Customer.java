@@ -36,8 +36,8 @@ public class Customer implements Serializable, Comparable<Customer> {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
-        this.lastUpdate = ctime;
-        //this.createDate=ctime;
+        this.lastUpdate = localDateTime;
+        this.createDate = ctime;
     }
 
     @Setter
@@ -60,7 +60,7 @@ public class Customer implements Serializable, Comparable<Customer> {
 
     //@CreationTimestamp
     @Column(name = "CREATE_DATE", nullable = false)
-    private String createDate;
+    private LocalDateTime createDate;
 
     //    @Getter
     @Getter

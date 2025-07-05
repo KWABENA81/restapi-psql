@@ -1,93 +1,105 @@
 package asksef.controller;
 
+import asksef.assembler.AddressModelAssemblerSupport;
+import asksef.assembler.StaffModelAssemblerSupport;
 import asksef.assembler.StoreModelAssembler;
+import asksef.assembler.StoreModelAssemblerSupport;
+import asksef.entity.Address;
+import asksef.entity.Staff;
 import asksef.entity.Store;
+import asksef.entity.entity_model.AddressModel;
+import asksef.entity.entity_model.StaffModel;
+import asksef.entity.entity_model.StoreModel;
+import asksef.entity.repository.StoreRepository;
 import asksef.entity.service.StoreService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/store")
 public class StoreController {
 
-    private static final Logger log = LoggerFactory.getLogger(StoreController.class);
     private final StoreService storeService;
+    private final StoreRepository storeRepository;
     private final StoreModelAssembler storeModelAssembler;
+    private final StoreModelAssemblerSupport storeModelAssemblerSupport;
 
-    public StoreController(StoreService storeService, StoreModelAssembler storeModelAssembler) {
+    public StoreController(StoreService storeService, StoreRepository storeRepository,
+                           StoreModelAssembler storeModelAssembler, StoreModelAssemblerSupport storeModelAssemblerSupport) {
         this.storeService = storeService;
+        this.storeRepository = storeRepository;
         this.storeModelAssembler = storeModelAssembler;
-        log.info("Store Controller");
+        this.storeModelAssemblerSupport = storeModelAssemblerSupport;
     }
 
     @GetMapping(value = "/all", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Store>> all() {
-        List<EntityModel<Store>> entityModelList = this.storeService.findAll().
-                stream().map(storeModelAssembler::toModel).collect(Collectors.toList());
-        log.info("All stores found");
-        return CollectionModel.of(entityModelList,
-                linkTo(methodOn(StoreController.class).all()).withSelfRel());
+    public ResponseEntity<CollectionModel<StoreModel>> all() {
+        List<Store> entityList = this.storeService.findAll().stream().toList();
+        return new ResponseEntity<>(this.storeModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Store> one(@PathVariable Long id) {
-        Store store = this.storeService.findById(id);
-        log.info("Found store with id {}", id);
-        return storeModelAssembler.toModel(store);
+    public ResponseEntity<StoreModel> one(@PathVariable("id") Long id) {
+        return this.storeRepository.findById(id)
+                .map(storeModelAssemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Store>> getStoreByName(@RequestParam(name = "storeName") String storeName) {
-        List<EntityModel<Store>> entityModelList = this.storeService.findByStoreName(storeName)
-                .stream().map(storeModelAssembler::toModel).toList();
+    public ResponseEntity<CollectionModel<StoreModel>> getStoreByName(@RequestParam(name = "storeName") String storeName) {
+        List<Store> entityModelList = this.storeService.findByStoreName(storeName).stream().toList();
         log.info("Found store with name {}", storeName);
-        return CollectionModel.of(entityModelList,
-                linkTo(methodOn(StoreController.class).getStoreByName(storeName)).withSelfRel());
+        return new ResponseEntity<>(storeModelAssemblerSupport.toCollectionModel(entityModelList), HttpStatus.FOUND);
     }
 
     @PostMapping(value = "/add", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> add(@RequestBody Store store) {
-        Store savedStore = this.storeService.save(store);
-        EntityModel<Store> storeEntityModel = storeModelAssembler.toModel(savedStore);
-        log.info("Store added: {}", storeEntityModel);
+    public ResponseEntity<?> add(@RequestBody StoreModel storeModel) {
+        Store savedStore = this.storeService.save(storeModel);
+        StoreModel storeModelSup = storeModelAssemblerSupport.toModel(savedStore);
+        log.info("Store added: {}", storeModel);
 //        return ResponseEntity.created(storeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(storeEntityModel);
-        return ResponseEntity
-                .created(linkTo(methodOn(StoreController.class).one(savedStore.getStoreId()))
-                        .toUri()).body(storeEntityModel);
+        return new ResponseEntity<>(storeModelSup, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Store newStore) {
         Store updateStore = this.storeService.update(id, newStore);
-        EntityModel<Store> entityModel = storeModelAssembler.toModel(updateStore);
-        log.info("Updating store with id: {}", id);
-//        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+        StoreModel model = storeModelAssemblerSupport.toModel(updateStore);
+
         return ResponseEntity
                 .created(linkTo(methodOn(StoreController.class).one(id))
-                        .toUri()).body(entityModel);
+                        .toUri()).body(model);
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.storeService.delete(id);
         log.info("Deleted store with id {}", id);
         return new ResponseEntity<>("Store entity deleted successfully.", HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
+    public ResponseEntity<AddressModel> findAddressOfStore(@PathVariable("id") Long id) {
+        Address address = this.storeService.findAddressOfStore(id);
+
+        return new ResponseEntity<>(new AddressModelAssemblerSupport().toModel(address), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/staff", produces = "application/hal+json")
+    public ResponseEntity<StaffModel> findStaffOfStore(@PathVariable("id") Long id) {
+        Staff staff = this.storeService.findStaffOfStore(id);
+        //  build staff model
+        return new ResponseEntity<>(new StaffModelAssemblerSupport().toModel(staff), HttpStatus.OK);
     }
 }

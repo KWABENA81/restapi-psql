@@ -116,9 +116,9 @@ public class StaffService implements StaffServiceInterface {
         );
     }
 
-    public Address findAddressOfCustomer(Long id) {
-        return this.staffRepository.findAddressOfCustomer(id).orElseThrow(
-                () -> new CustomResourceNotFoundException("staff", "id", null, id)
-        );
-    }
+//    public Address findAddressOfCustomer(Long id) {
+//        return this.staffRepository.findAddressOfCustomer(id).orElseThrow(
+//                () -> new CustomResourceNotFoundException("staff", "id", null, id)
+//        );
+//    }
 }

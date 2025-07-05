@@ -52,7 +52,7 @@ public class StaffController {
     public ResponseEntity<StaffModel> findByUsername(@RequestParam(name = "username") String username) {
         Staff staff = this.staffService.findByUsername(username);
         log.info("Fetching staff : {}", staff);
-        return new ResponseEntity<>(staffModelAssemblerSupport.toModel(staff),HttpStatus.FOUND);
+        return new ResponseEntity<>(staffModelAssemblerSupport.toModel(staff), HttpStatus.FOUND);
     }
 
 
@@ -79,18 +79,22 @@ public class StaffController {
         log.info("Deleted staff: {}", id);
         return new ResponseEntity<>("Staff entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
-
-    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-    public ResponseEntity<AddressModel> findAddressOfStaff(@PathVariable("id") Long id) {
-        Address address = this.staffService.findAddressOfCustomer(id);
-        //  build address model
-        AddressModel addressModel = new AddressModelAssemblerSupport().toModel(address);
-        addressModel.add(linkTo(methodOn(CustomerController.class).findAddressOfCustomer(id)).withRel("Address of Customer"));
-        addressModel.add(linkTo(methodOn(CustomerController.class).one(id)).withRel("customer"));
-        return new ResponseEntity<>(addressModel, HttpStatus.OK);
-    }
-
 }
+//    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
+//    public ResponseEntity<AddressModel> findAddressOfStaff(@PathVariable("id") Long id) {
+//        Address address = this.staffService.findAddressOfCustomer(id);
+//        //  build address model
+//        return getAddressModelResponseEntity(id, address);
+//    }
+
+//    static ResponseEntity<AddressModel> getAddressModelResponseEntity(@PathVariable("id") Long id, Address address) {
+//        AddressModel addressModel = new AddressModelAssemblerSupport().toModel(address);
+//        //addressModel.add(linkTo(methodOn(CustomerController.class).findAddressOfCustomer(id)).withRel("Address of Customer"));
+//        addressModel.add(linkTo(methodOn(CustomerController.class).one(id)).withRel("customer"));
+//        return new ResponseEntity<>(addressModel, HttpStatus.OK);
+//    }
+
+
 
 
 //    public CollectionModel<EntityModel<Staff>> findByNames(@PathVariable String names) {

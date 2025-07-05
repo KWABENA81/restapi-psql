@@ -22,12 +22,12 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     @Query("SELECT s from Staff s WHERE s.username=(:username)")
     Optional<Staff> findByUsername(@Param("username") String username);
 
-    @Query(
-            nativeQuery = true,
-            value = "SELECT adr.address_id, adr.gps_code, adr.phone, adr.city_id, adr.last_update, st.staff_id " +
-                    "FROM rest_app.Address adr " +
-                    "INNER JOIN rest_app.Staff st " +
-                    "ON adr.address_id = st.address_id " +
-                    "WHERE st.staff_id=:staffId")
-    Optional<Address> findAddressOfCustomer(@Param("staffId") Long staffId);
+//    @Query(
+//            nativeQuery = true,
+//            value = "SELECT adr.address_id, adr.gps_code, adr.phone, adr.city_id, adr.last_update, st.staff_id " +
+//                    "FROM rest_app.Address adr " +
+//                    "INNER JOIN rest_app.Staff st " +
+//                    "ON adr.address_id = st.address_id " +
+//                    "WHERE st.staff_id=:staffId")
+//    Optional<Address> findAddressOfCustomer(@Param("staffId") Long staffId);
 }

@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-
 //    @Query("SELECT c from Customer c WHERE c.lastName LIKE %:names% OR c.firstName LIKE %:names")
 //    Collection<Customer> findLikeNames(@Param("names") String names);
 

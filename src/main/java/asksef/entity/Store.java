@@ -40,10 +40,12 @@ public class Store implements Serializable, Comparable<Store> {
 //        this.storeId = id;
 //    }
 @Builder
-    public Store(Long id, String storeName) {
-    this.lastUpdate = LocalDateTime.now();
+    public Store(Long id, String storeName,Staff staff, Address address, LocalDateTime lastUpdate) {
+    this.lastUpdate = lastUpdate;
         this.storeName = storeName;
         this.storeId = id;
+        this.address = address;
+        this.staff = staff;
     }
 
     @Getter

@@ -21,7 +21,14 @@ public class StoreModelAssemblerSupport extends RepresentationModelAssemblerSupp
     @Override
     public StoreModel toModel(@NonNull Store entity) {
         StoreModel model = instantiateModel(entity);
+
+        model.add(linkTo(methodOn(StoreController.class).all()).withSelfRel());
+        model.add(linkTo(methodOn(StoreController.class).all()).withRel("store"));
+        model.add(linkTo(methodOn(StoreController.class).findStaffOfStore(entity.getStoreId())).withRel("staff"));
+        model.add(linkTo(methodOn(StoreController.class).findAddressOfStore(entity.getStoreId())).withRel("Address"));
         model.add(linkTo(methodOn(StoreController.class).one(entity.getStoreId())).withSelfRel());
+        model.add(linkTo(methodOn(StoreController.class).getStoreByName(entity.getStoreName())).withRel("store"));
+
         model.setStoreId(entity.getStoreId());
         model.setStoreName(entity.getStoreName());
         model.setStaff(model.getStaff());
