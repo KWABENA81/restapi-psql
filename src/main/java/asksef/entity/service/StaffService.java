@@ -1,22 +1,25 @@
 package asksef.entity.service;
 
+import asksef.entity.Address;
 import asksef.entity.Staff;
+import asksef.entity.entity_model.StaffModel;
 import asksef.entity.repository.StaffRepository;
-import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class StaffService implements StaffServiceInterface {
 
-    private static final Logger log = LoggerFactory.getLogger(StaffService.class);
     private final StaffRepository staffRepository;
 
     public StaffService(StaffRepository staffRepository) {
@@ -43,14 +46,24 @@ public class StaffService implements StaffServiceInterface {
         return staff;
     }
 
+    @Transactional
     @Override
     public Staff save(Staff staff) {
-        Optional<Staff> optional = this.staffRepository.findById(staff.getStaffId());
-        if (optional.isPresent()) {
-            throw new CustomResourceExistsException("Staff", "id", null, staff.getStaffId());
-        }
         return staffRepository.save(staff);
     }
+
+    @Transactional
+    public Staff save(@Valid StaffModel staffModel) {
+        Staff staff = Staff.builder()
+                .staffId(staffModel.getStaffId())
+                .firstName(staffModel.getFirstName())
+                .lastName(staffModel.getLastName())
+                .username(staffModel.getUsername())
+                .lastUpdate(LocalDateTime.now())
+                .build();
+        return staffRepository.save(staff);
+    }
+
 
     @Override
     public Staff update(Staff staff) {
@@ -98,6 +111,14 @@ public class StaffService implements StaffServiceInterface {
     }
 
     public Staff findByUsername(String username) {
-        return this.staffRepository.findByUsername(username);
+        return this.staffRepository.findByUsername(username).orElseThrow(
+                () -> new CustomResourceNotFoundException("staff", "username", null, username)
+        );
+    }
+
+    public Address findAddressOfCustomer(Long id) {
+        return this.staffRepository.findAddressOfCustomer(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("staff", "id", null, id)
+        );
     }
 }

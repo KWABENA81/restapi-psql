@@ -1,31 +1,30 @@
 package asksef.errors;
 
 import ch.qos.logback.core.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.Serial;
 
+@Slf4j
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class CustomResourceNotFoundException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final Logger log = LoggerFactory.getLogger(CustomResourceNotFoundException.class);
+    private final String strObjValue;
 
-    private final Long lgValue;
-
-    public Long getValue() {
-        return lgValue;
+    public String getValue() {
+        return strObjValue;
     }
 
-    public CustomResourceNotFoundException(String resource, String field, String prop, Long value) {
+    public CustomResourceNotFoundException(String resource, String field, String prop, Object value) {
         super(String.format("Resource %s not found, with %s: ", resource, field));
-        this.lgValue = StringUtil.isNullOrEmpty(String.valueOf(value)) ? 0L : value;
         String property = StringUtil.isNullOrEmpty(prop) ? "Property Unknown" : prop;
-        log.info("Resource {} not found, with {}: {} {} ", resource, field, property, this.lgValue);
+
+        strObjValue = String.valueOf(value);;
+        log.info("Resource {} not found, with {}: {} {} ", resource, field, property, strObjValue);
     }
 
 }

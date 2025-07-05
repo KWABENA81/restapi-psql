@@ -50,21 +50,10 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AddressModel> findAddressOfCustomer(@PathVariable("id") Long id) {
         Address address = this.customerService.findAddressOfCustomer(id);
         //  build address model
         AddressModel addressModel = new AddressModelAssemblerSupport().toModel(address);
-//        AddressModel.builder()
-//                .addressId(address.getAddressId())
-//                .phone(address.getPhone())
-//                .city(address.getCity())
-//                .gpsCode(address.getGpsCode())
-//                .lastUpdate(address.getLastUpdate())
-//                .customerList(address.getCustomerList())
-//                .storeList(address.getStoreList())
-//                .build();
-        // add links
         addressModel.add(linkTo(methodOn(CustomerController.class).findAddressOfCustomer(id)).withRel("Address of Customer"));
         addressModel.add(linkTo(methodOn(CustomerController.class).one(id)).withRel("customer"));
         return new ResponseEntity<>(addressModel, HttpStatus.OK);
@@ -72,13 +61,11 @@ public class CustomerController {
 
 
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.customerService.delete(id);
         return new ResponseEntity<>("Customer entity deleted", HttpStatus.NO_CONTENT);
     }
 
-    /// ///////////////////
 
     @PostMapping(value = "/add", produces = "application/hal+json")
     public ResponseEntity<CustomerModel> add(@RequestBody CustomerModel customerModel) {
@@ -86,14 +73,9 @@ public class CustomerController {
         @NonNull CustomerModel entityModel = assemblerSupport.toModel(savedCust);
         log.info("CustomerController: addCustomer");
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
-        //.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
-//        return ResponseEntity
-//                .created(linkTo(methodOn(CustomerController.class).one(savedCust.getCustomerId()))
-//                        .toUri()).body(entityModel);
     }
 
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Customer newCustomer) {
         Customer updatedCcustomer = customerService.update(id, newCustomer);
         @NonNull CustomerModel entityModel = this.assemblerSupport.toModel(updatedCcustomer);

@@ -3,6 +3,7 @@ package asksef.entity;
 import asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -29,6 +30,17 @@ public class Payment implements Serializable, Comparable<Payment> {
     public Payment(Long id) {
         this();
         this.paymentId = id;
+    }
+
+    @Builder
+    public Payment(Long id, Staff staff, Invoice invoice, String paymentNr, Float amount, Date paymentDate, LocalDateTime lastUpdate) {
+        this.paymentId = id;
+        this.staff = staff;
+        this.invoice = invoice;
+        this.paymentNr = paymentNr;
+        this.amount = amount;
+        this.paymentDate = paymentDate;
+        this.lastUpdate = lastUpdate;
     }
 
     @Getter

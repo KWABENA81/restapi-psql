@@ -23,15 +23,15 @@ public class CustomerModelAssemblerSupport extends RepresentationModelAssemblerS
         CustomerModel model = instantiateModel(entity);
 
         model.add(linkTo(methodOn(CustomerController.class).one(entity.getCustomerId())).withRel("Id Link"));
-        model.add(
-                linkTo(methodOn(CustomerController.class).findAddressOfCustomer(entity.getCustomerId()))
-                        .withRel("address Of Customer"));
         model.add(linkTo(methodOn(CustomerController.class).all()).withRel("all"));
         model.add(linkTo(methodOn(CustomerController.class).add(CustomerModel.builder().build())).withRel("create"));
         model.add(linkTo(methodOn(CustomerController.class)
                 .delete(entity.getCustomerId())).withRel("delete Customer"));
         model.add(linkTo(methodOn(CustomerController.class)
                 .update(entity.getCustomerId(), Customer.builder().build())).withRel("update Customer"));
+        model.add(
+                linkTo(methodOn(CustomerController.class).findAddressOfCustomer(entity.getCustomerId()))
+                        .withRel("customer address"));
 
         model.setCustomerId(entity.getCustomerId());
         model.setFirstName(entity.getFirstName());

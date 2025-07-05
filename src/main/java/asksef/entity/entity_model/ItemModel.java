@@ -1,5 +1,6 @@
 package asksef.entity.entity_model;
 
+import asksef.entity.Inventory;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -21,5 +22,5 @@ public class ItemModel extends RepresentationModel<ItemModel> {
     private String saleInfo;
     private Float itemCost;
     private LocalDateTime lastUpdate;
-    private List<InventoryModel> inventoryModels;
+    private List<Inventory> inventoryList;
 }

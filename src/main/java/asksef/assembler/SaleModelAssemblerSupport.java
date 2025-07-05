@@ -1,4 +1,4 @@
-package asksef.assembler_support;
+package asksef.assembler;
 
 import asksef.controller.SaleController;
 import asksef.entity.Sale;
@@ -29,8 +29,8 @@ public class SaleModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         saleModel.setSaleDate(entity.getSaleDate());
         saleModel.setSaleNr(entity.getSaleNr());
         saleModel.setLastUpdate(entity.getLastUpdate());
-        saleModel.setStaffModel(StaffModel.builder().build());
-        saleModel.setInvoiceModel(InvoiceModel.builder().build());
+        saleModel.setStaff(entity.getStaff());
+        saleModel.setInvoice(entity.getInvoice());
 
         return saleModel;
     }

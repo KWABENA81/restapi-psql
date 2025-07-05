@@ -2,7 +2,7 @@ package asksef.controller;
 
 import asksef.assembler.InventoryModelAssemblerSupport;
 import asksef.assembler.ItemModelAssemblerSupport;
-import asksef.assembler_support.StoreModelAssemblerSupport;
+import asksef.assembler.StoreModelAssemblerSupport;
 import asksef.entity.Inventory;
 import asksef.entity.Item;
 import asksef.entity.Store;

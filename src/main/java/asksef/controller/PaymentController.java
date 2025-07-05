@@ -1,94 +1,88 @@
 package asksef.controller;
 
 import asksef.assembler.InvoiceModelAssemblerSupport;
-import asksef.assembler.PaymentModelAssembler;
-import asksef.assembler_support.StaffModelAssemblerSupport;
+import asksef.assembler.PaymentModelAssemblerSupport;
+import asksef.assembler.StaffModelAssemblerSupport;
 import asksef.entity.Invoice;
 import asksef.entity.Payment;
 import asksef.entity.Staff;
 import asksef.entity.entity_model.InvoiceModel;
+import asksef.entity.entity_model.PaymentModel;
 import asksef.entity.entity_model.StaffModel;
+import asksef.entity.repository.PaymentRepository;
 import asksef.entity.service.PaymentService;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/payment")
 public class PaymentController {
 
-    private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
-    private final PaymentModelAssembler paymentModelAssembler;
+    private final PaymentModelAssemblerSupport paymentModelAssemblerSupport;
     private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
 
-    public PaymentController(PaymentModelAssembler paymentModelAssembler, PaymentService paymentService) {
-        this.paymentModelAssembler = paymentModelAssembler;
+    public PaymentController(PaymentModelAssemblerSupport paymentModelAssemblerSupport,
+                             PaymentService paymentService,
+                             PaymentRepository paymentRepository) {
+        this.paymentModelAssemblerSupport = paymentModelAssemblerSupport;
         this.paymentService = paymentService;
+        this.paymentRepository = paymentRepository;
     }
 
     @GetMapping(value = "/all", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Payment>> all() {
-        List<EntityModel<Payment>> entityModelList = paymentService.findAll()
-                .stream().map(paymentModelAssembler::toModel).collect(Collectors.toList());
-        return CollectionModel.of(entityModelList,
-                linkTo(methodOn(PaymentController.class).all()).withSelfRel());
+    public ResponseEntity<CollectionModel<PaymentModel>> all() {
+        List<Payment> entityList = paymentService.findAll().stream().toList();
+        return new ResponseEntity<>(this.paymentModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Payment> one(@PathVariable("id") Long id) {
-        Payment payment = this.paymentService.findById(id);
-        return paymentModelAssembler.toModel(payment);
+    public ResponseEntity<PaymentModel> one(@PathVariable("id") Long id) {
+        return this.paymentRepository.findById(id)
+                .map(this.paymentModelAssemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping(value = "/nr", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Payment> paymentByNr(@RequestParam(value = "pn") String nr) {
+    public ResponseEntity<PaymentModel> paymentByNr(@RequestParam(value = "pn") String nr) {
         Payment payment = this.paymentService.findByPayNr(nr);
         log.info("Payment found: {}", payment);
-        return paymentModelAssembler.toModel(payment);
+        return new ResponseEntity<>(paymentModelAssemblerSupport.toModel(payment), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.paymentService.delete(id);
-
         log.info("Payment deleted: {}", id);
         return new ResponseEntity<>("Payment entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(value = "/add", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> add(@RequestBody Payment payment) {
-        Payment savedPayment = this.paymentService.save(payment);
-        EntityModel<Payment> entityModel = paymentModelAssembler.toModel(savedPayment);
+    public ResponseEntity<PaymentModel> add(@RequestBody PaymentModel paymentModel) {
+        Payment savedPayment = this.paymentService.save(paymentModel);
+        @NonNull PaymentModel entityModel = this.paymentModelAssemblerSupport.toModel(savedPayment);
         log.info("Added payment: {}", entityModel);
 
-//        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
-        return ResponseEntity
-                .created(linkTo(methodOn(PaymentController.class).one(savedPayment.getPaymentId()))
-                        .toUri()).body(entityModel);
+        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Payment newPayment) {
         Payment updatePayment = this.paymentService.update(id, newPayment);
 
-        EntityModel<Payment> entityModel = paymentModelAssembler.toModel(updatePayment);
+        @NonNull PaymentModel entityModel = paymentModelAssemblerSupport.toModel(updatePayment);
         log.info("Updated payment: {}", entityModel);
 //        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
         return ResponseEntity
@@ -100,7 +94,7 @@ public class PaymentController {
     public ResponseEntity<StaffModel> findStaffOnPayment(@PathVariable("id") Long id) {
         Staff staff = this.paymentService.findStaffOnPayment(id);
         @NonNull StaffModel staffModel = new StaffModelAssemblerSupport().toModel(staff);
-        staffModel.add(linkTo(methodOn(InvoiceController.class).findCustomerOnInvoice(id)).withRel("Customer On Invoice"));
+        staffModel.add(linkTo(methodOn(PaymentController.class).findStaffOnPayment(id)).withRel("Staff on Payment"));
         return new ResponseEntity<>(staffModel, HttpStatus.OK);
     }
 
@@ -108,7 +102,7 @@ public class PaymentController {
     public ResponseEntity<InvoiceModel> findInvoiceOnPayment(@PathVariable("id") Long id) {
         Invoice invoice = this.paymentService.findInvoiceOnPayment(id);
         @NonNull InvoiceModel invoiceModel = new InvoiceModelAssemblerSupport().toModel(invoice);
-        invoiceModel.add(linkTo(methodOn(InvoiceController.class).findCustomerOnInvoice(id)).withRel("Customer On Invoice"));
+        invoiceModel.add(linkTo(methodOn(PaymentController.class).findInvoiceOnPayment(id)).withRel("Payment Invoice"));
         return new ResponseEntity<>(invoiceModel, HttpStatus.OK);
     }
 }

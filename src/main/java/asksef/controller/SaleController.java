@@ -1,18 +1,29 @@
 package asksef.controller;
 
-import asksef.assembler.SaleModelAssembler;
+import asksef.assembler.AddressModelAssemblerSupport;
+import asksef.assembler.InvoiceModelAssemblerSupport;
+import asksef.assembler.SaleModelAssemblerSupport;
+import asksef.assembler.StaffModelAssemblerSupport;
+import asksef.entity.Address;
+import asksef.entity.Invoice;
 import asksef.entity.Sale;
+import asksef.entity.Staff;
+import asksef.entity.entity_model.AddressModel;
+import asksef.entity.entity_model.InvoiceModel;
+import asksef.entity.entity_model.SaleModel;
+import asksef.entity.entity_model.StaffModel;
+import asksef.entity.repository.SaleRepository;
 import asksef.entity.service.SaleService;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -23,72 +34,77 @@ public class SaleController {
 
     private static final Logger log = LoggerFactory.getLogger(SaleController.class);
     private final SaleService saleService;
-    private final SaleModelAssembler saleModelAssembler;
+    private final SaleRepository saleRepository;
+    private final SaleModelAssemblerSupport saleModelAssemblerSupport;
 
-    public SaleController(SaleService saleService, SaleModelAssembler saleModelAssembler) {
+    public SaleController(SaleService saleService, SaleRepository saleRepository, SaleModelAssemblerSupport saleModelAssemblerSupport) {
         this.saleService = saleService;
-        this.saleModelAssembler = saleModelAssembler;
-        log.info("SaleController");
+        this.saleRepository = saleRepository;
+        this.saleModelAssemblerSupport = saleModelAssemblerSupport;
     }
 
     @GetMapping(value = "/all", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Sale>> all() {
-        List<EntityModel<Sale>> entityModelList = this.saleService.findAll().
-                stream().map(saleModelAssembler::toModel).collect(Collectors.toList());
-        log.info("All sales found");
-        return CollectionModel.of(entityModelList,
-                linkTo(methodOn(SaleController.class).all()).withSelfRel());
+    public ResponseEntity<CollectionModel<SaleModel>> all() {
+        List<Sale> entityList = this.saleService.findAll().stream().toList();
+        return new ResponseEntity<>(this.saleModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Sale> one(@PathVariable Long id) {
-        Sale sale = this.saleService.findById(id);
-        log.info("Found sale with id: {}", id);
-        return saleModelAssembler.toModel(sale);
+    public ResponseEntity<SaleModel> one(@PathVariable Long id) {
+        return this.saleRepository.findById(id)
+                .map(saleModelAssemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Sale> findBySaleNr(@RequestParam(name = "nr") String nr) {
+    public ResponseEntity<SaleModel> findBySaleNr(@RequestParam(name = "nr") String nr) {
         Sale sale = this.saleService.findBySaleNr(nr);
         log.info("Found sale with nr: {}", nr);
-        return saleModelAssembler.toModel(sale);
+        return new ResponseEntity<>(saleModelAssemblerSupport.toModel(sale), HttpStatus.OK);
     }
 
     @PostMapping(value = "/add", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<EntityModel<Sale>> add(@RequestBody Sale sale) {
-        Sale newSale = this.saleService.save(sale);
-        EntityModel<Sale> entityModel = this.saleModelAssembler.toModel(sale);
-        log.info("Sale added: {}", entityModel);
-//        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
-        return ResponseEntity
-                .created(linkTo(methodOn(SaleController.class).one(sale.getSaleId()))
-                        .toUri()).body(entityModel);
+    public ResponseEntity<SaleModel> add(@RequestBody SaleModel saleModel) {
+        Sale savedSale = this.saleService.save(saleModel);
+        SaleModel entityModel = this.saleModelAssemblerSupport.toModel(savedSale);
+//
+        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Sale newSale) {
         Sale updateSale = this.saleService.update(id, newSale);
-
-        EntityModel<Sale> entityModel = this.saleModelAssembler.toModel(updateSale);
-        log.info("Updating sale with id: " + id);
-        //return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+        SaleModel entityModel = this.saleModelAssemblerSupport.toModel(updateSale);
+        //
         return ResponseEntity
                 .created(linkTo(methodOn(SaleController.class).one(id))
                         .toUri()).body(entityModel);
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.saleService.delete(id);
-
         log.info("Deleted Sale with id {}", id);
         return new ResponseEntity<>("Sale entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping(value = "/{id}/invoice", produces = "application/hal+json")
+    public ResponseEntity<InvoiceModel> findInvoiceOfSale(@PathVariable("id") Long id) {
+        @NonNull Invoice invoice = this.saleService.findInvoiceOfSale(id);
+        //  build  model
+        @NonNull InvoiceModel invoiceModel = new InvoiceModelAssemblerSupport().toModel(invoice);
+        invoiceModel.add(linkTo(methodOn(SaleController.class).findInvoiceOfSale(id)).withRel("Sale Invoice"));
+        invoiceModel.add(linkTo(methodOn(SaleController.class).one(id)).withRel("Sale"));
+        return new ResponseEntity<>(invoiceModel, HttpStatus.OK);
+    }
+    @GetMapping(value = "/{id}/staff", produces = "application/hal+json")
+    public ResponseEntity<StaffModel> findStaffOfSale(@PathVariable("id") Long id) {
+        Staff staff = this.saleService.findStaffOfSale(id);
+        //  build  model
+        @NonNull StaffModel staffModel = new StaffModelAssemblerSupport().toModel(staff);
+        staffModel.add(linkTo(methodOn(SaleController.class).findStaffOfSale(id)).withRel("Sale Staff"));
+        staffModel.add(linkTo(methodOn(SaleController.class).one(id)).withRel("Sale"));
+        return new ResponseEntity<>(staffModel, HttpStatus.OK);
+    }
 }

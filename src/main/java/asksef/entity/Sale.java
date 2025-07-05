@@ -3,6 +3,7 @@ package asksef.entity;
 import asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -29,9 +30,14 @@ public class Sale implements Serializable, Comparable<Sale> {
         this.saleDate = new Timestamp(System.currentTimeMillis());
     }
 
-    public Sale(String saleNr) {
+    @Builder
+    public Sale(Long id, Date saleDate, LocalDateTime lastUpdate, Staff staff, Invoice invoice, String saleNr) {
+        this.saleId = id;
         this.saleNr = saleNr;
-        this.saleDate = new Timestamp(System.currentTimeMillis());
+        this.saleDate = saleDate;
+        this.staff = staff;
+        this.lastUpdate = lastUpdate;
+        this.invoice = invoice;
     }
 
     public Sale(Long l, String saleNr) {

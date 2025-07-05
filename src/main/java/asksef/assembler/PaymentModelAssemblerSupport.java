@@ -1,4 +1,4 @@
-package asksef.assembler_support;
+package asksef.assembler;
 
 import asksef.controller.PaymentController;
 import asksef.entity.Payment;
@@ -20,15 +20,22 @@ public class PaymentModelAssemblerSupport extends RepresentationModelAssemblerSu
     @NonNull
     @Override
     public PaymentModel toModel(@NonNull Payment payment) {
-        PaymentModel paymentModel = instantiateModel(payment);
+        PaymentModel model = instantiateModel(payment);
         //
-        paymentModel.setPaymentId(payment.getPaymentId());
-        paymentModel.setPaymentNr(payment.getPaymentNr());
-        paymentModel.setPaymentDate(payment.getPaymentDate());
-        paymentModel.setAmount(payment.getAmount());
-//        paymentModel.setInvoice(payment.getInvoice());
-//        paymentModel.setStaff(payment.getStaff());
-        return paymentModel;
+        model.add(linkTo(methodOn(PaymentController.class).all()).withSelfRel());
+        model.add(linkTo(methodOn(PaymentController.class).paymentByNr(payment.getPaymentNr())).withSelfRel());
+        model.add(linkTo(methodOn(PaymentController.class).one(payment.getPaymentId())).withSelfRel());
+        //model.add(linkTo(methodOn(PaymentController.class).all()).withRel("payments"));
+        model.add(linkTo(methodOn(PaymentController.class).findInvoiceOnPayment(payment.getPaymentId())).withRel("Payment Invoice"));
+        model.add(linkTo(methodOn(PaymentController.class).findStaffOnPayment(payment.getPaymentId())).withRel("Staff on Payment"));
+
+        model.setPaymentId(payment.getPaymentId());
+        model.setPaymentNr(payment.getPaymentNr());
+        model.setPaymentDate(payment.getPaymentDate());
+        model.setAmount(payment.getAmount());
+        model.setInvoice(payment.getInvoice());
+        model.setStaff(payment.getStaff());
+        return model;
     }
 
     @NonNull

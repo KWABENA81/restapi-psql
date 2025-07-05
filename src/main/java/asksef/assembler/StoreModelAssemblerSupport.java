@@ -1,4 +1,4 @@
-package asksef.assembler_support;
+package asksef.assembler;
 
 import asksef.controller.StoreController;
 import asksef.entity.Store;

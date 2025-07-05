@@ -3,9 +3,11 @@ package asksef.entity.service;
 import asksef.entity.Invoice;
 import asksef.entity.Payment;
 import asksef.entity.Staff;
+import asksef.entity.entity_model.PaymentModel;
 import asksef.entity.repository.PaymentRepository;
-import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -46,14 +48,24 @@ public class PaymentService implements PaymentServiceInterface {
         return payment;
     }
 
+    @Transactional
     @Override
     public Payment save(Payment payment) {
-        Optional<Payment> optional = this.paymentRepository.findById(payment.getPaymentId());
-
-        if (optional.isPresent()) {
-            throw new CustomResourceExistsException("Payment", "id", null, payment.getPaymentId());
-        }
         return this.paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public Payment save(@Valid PaymentModel paymentModel) {
+        Payment payment = Payment.builder()
+                .id(paymentModel.getPaymentId())
+                .paymentNr(paymentModel.getPaymentNr())
+                .paymentDate(paymentModel.getPaymentDate())
+                .amount(paymentModel.getAmount())
+                .lastUpdate(paymentModel.getLastUpdate())
+                .invoice(paymentModel.getInvoice())
+                .staff(paymentModel.getStaff())
+                .build();
+        return this.save(payment);
     }
 
     @Override

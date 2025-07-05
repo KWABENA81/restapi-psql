@@ -23,11 +23,11 @@ public class InventoryModel extends RepresentationModel<InventoryModel> {
     private Integer reorderQty;
     private LocalDateTime lastUpdate;
 
-//    public Inventory toEntity(InventoryModel model){
-//        Inventory inventory = InventoryModel.builder()
-//                .inventoryId(model.getInventoryId())
-//                .item(model.getItem())
-//                .store(model.getStore())
+//    public Inventory toEntity(){
+//        return InventoryModel.builder()
+//                .inventoryId(this.getInventoryId())
+//                .item(this.getItem())
+//                .store(this.getStore())
 //                .build().toEntity();
-  //  }
+//    }
 }

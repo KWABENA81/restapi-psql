@@ -1,5 +1,7 @@
 package asksef.entity.entity_model;
 
+import asksef.entity.Invoice;
+import asksef.entity.Staff;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -16,8 +18,8 @@ import java.util.Date;
 public class SaleModel extends RepresentationModel<SaleModel> {
     private Long saleId;
     private Date saleDate;
-    private InvoiceModel invoiceModel;
+    private Invoice invoice;
     private String saleNr;
     private LocalDateTime lastUpdate;
-    private StaffModel staffModel;
+    private Staff staff;
 }

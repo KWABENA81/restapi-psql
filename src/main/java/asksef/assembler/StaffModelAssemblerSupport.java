@@ -1,4 +1,4 @@
-package asksef.assembler_support;
+package asksef.assembler;
 
 import asksef.controller.StaffController;
 import asksef.entity.Staff;
@@ -28,10 +28,10 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
 
         staffModel.add(linkTo(methodOn(StaffController.class).all()).withRel("all"));
         staffModel.add(linkTo(methodOn(StaffController.class).one(entity.getStaffId())).withSelfRel());
-        staffModel.add(linkTo(methodOn(StaffController.class).add(entity)).withRel("add"));
+        //staffModel.add(linkTo(methodOn(StaffController.class).add(entity)).withRel("add"));
         staffModel.add(linkTo(methodOn(StaffController.class).delete(entity.getStaffId())).withRel("delete"));
-        //staffModel.add(linkTo(methodOn(StaffController.class).update(entity.getStaffId(), entity)).withRel("update"));
-        staffModel.add(linkTo(methodOn(StaffController.class).findByUsername(entity.getUsername())).withRel("username"));
+        staffModel.add(linkTo(methodOn(StaffController.class).findAddressOfStaff(entity.getStaffId())).withRel("Address"));
+        staffModel.add(linkTo(methodOn(StaffController.class).findByUsername(entity.getUsername())).withRel("Username"));
 
         staffModel.setStaffId(entity.getStaffId());
         staffModel.setFirstName(entity.getFirstName());

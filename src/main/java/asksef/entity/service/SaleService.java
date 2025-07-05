@@ -1,9 +1,14 @@
 package asksef.entity.service;
 
+import asksef.entity.Invoice;
 import asksef.entity.Sale;
+import asksef.entity.Staff;
+import asksef.entity.entity_model.SaleModel;
 import asksef.entity.repository.SaleRepository;
-import asksef.errors.CustomResourceExistsException;
 import asksef.errors.CustomResourceNotFoundException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -43,13 +48,23 @@ public class SaleService implements SaleServiceInterface {
         return sale;
     }
 
+    @Transactional
     @Override
     public Sale save(Sale sale) {
-        Optional<Sale> optional = this.saleRepository.findById(sale.getSaleId());
-        if (optional.isPresent()) {
-            throw new CustomResourceExistsException("Sale", "id", null, optional.get().getSaleId());
-        }
-        return saleRepository.save(sale);
+        return this.saleRepository.save(sale);
+    }
+
+    @Transactional
+    public Sale save(@Valid SaleModel saleModel) {
+        Sale sale = Sale.builder()
+                .id(saleModel.getSaleId())
+                .saleDate(saleModel.getSaleDate())
+                .saleNr(saleModel.getSaleNr())
+                .staff(saleModel.getStaff())
+                .invoice(saleModel.getInvoice())
+                .lastUpdate(saleModel.getLastUpdate())
+                .build();
+        return save(sale);
     }
 
     @Override
@@ -108,5 +123,17 @@ public class SaleService implements SaleServiceInterface {
 
     public Sale findBySaleNr(String nr) {
         return this.saleRepository.findBySaleNr(nr);
+    }
+
+    public Staff findStaffOfSale(Long id) {
+        return saleRepository.findStaffOfSale(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Sale", "id", null, id)
+        );
+    }
+
+    public @NonNull Invoice findInvoiceOfSale(Long id) {
+        return saleRepository.findInvoiceOfSale(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Sale", "id", null, id)
+        );
     }
 }

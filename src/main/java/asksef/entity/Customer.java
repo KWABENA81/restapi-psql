@@ -29,9 +29,10 @@ public class Customer implements Serializable, Comparable<Customer> {
     public Customer() {
         this.lastUpdate = LocalDateTime.now();
     }
+
     @Builder
-    public Customer(Long id,String firstName, String lastName, Address address,LocalDateTime ctime,LocalDateTime localDateTime) {
-        this.customerId= id;
+    public Customer(Long id, String firstName, String lastName, Address address, LocalDateTime ctime, LocalDateTime localDateTime) {
+        this.customerId = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -63,7 +64,7 @@ public class Customer implements Serializable, Comparable<Customer> {
 
     //    @Getter
     @Getter
-    @ManyToOne(fetch = FetchType. EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")
     @JsonBackReference
     private Address address;

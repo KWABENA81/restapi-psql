@@ -4,6 +4,7 @@ import asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -29,11 +30,13 @@ public class Staff implements Serializable, Comparable<Staff> {
         this.lastUpdate = LocalDateTime.now();
     }
 
-    public Staff(String firstName, String lastName, String username) {
-        this();
+    @Builder
+    public Staff(long staffId, String firstName, String lastName, String username,  LocalDateTime lastUpdate) {
+        this.staffId = staffId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
+        this.lastUpdate = lastUpdate;
     }
 
     public Staff(Long id, String firstName, String lastName, String username) {

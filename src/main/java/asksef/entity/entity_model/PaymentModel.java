@@ -1,5 +1,8 @@
 package asksef.entity.entity_model;
 
+import asksef.entity.Invoice;
+import asksef.entity.Payment;
+import asksef.entity.Staff;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -15,10 +18,16 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentModel extends RepresentationModel<PaymentModel> {
     private Long paymentId;
-    private StaffModel staff;
-    private InvoiceModel invoice;
+    private Staff staff;
+    private Invoice invoice;
     private String paymentNr;
     private Date paymentDate;
     private LocalDateTime lastUpdate;
     private Float amount;
+
+//    public Payment toEntity() {
+//        return PaymentModel.builder()
+//                .paymentId(this.paymentId)
+//                .paymentNr(this.)
+//    }
 }
