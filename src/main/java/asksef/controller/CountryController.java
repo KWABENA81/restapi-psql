@@ -1,15 +1,14 @@
 package asksef.controller;
 
 import asksef.assembler.CountryModelAssemblerSupport;
-import asksef.entity.City;
-import asksef.entity.Country;
-import asksef.entity.entity_model.CityModel;
-import asksef.entity.entity_model.CountryModel;
+import asksef.entity.core.City;
+import asksef.entity.core.Country;
+import asksef.entity.model.CityModel;
+import asksef.entity.model.CountryModel;
 import asksef.entity.repository.CountryRepository;
-import asksef.entity.service.CountryService;
+import asksef.entity.service_impl.CountryService;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +20,10 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/country")
 public class CountryController {
-    private static final Logger log = LoggerFactory.getLogger(CountryController.class);
-
     private final CountryService countryService;
     private final CountryRepository countryRepository;
     private final CountryModelAssemblerSupport countryModelAssemblerSupport;
@@ -88,7 +86,6 @@ public class CountryController {
 //                .country(newCountry.getCountry())
 //                .lastUpdate(newCountry.getLastUpdate())
 //                .build();
-        //CountryTransferObj.builder().country(newCountry.getCountry()).build();
 
         Country updateCountry = this.countryService.update(id, countryModel);
         CountryModel updatedCountry = this.countryModelAssemblerSupport.toModel(updateCountry);

@@ -1,8 +1,8 @@
 package asksef.assembler;
 
 import asksef.controller.StoreController;
-import asksef.entity.Store;
-import asksef.entity.entity_model.StoreModel;
+import asksef.entity.core.Store;
+import asksef.entity.model.StoreModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;

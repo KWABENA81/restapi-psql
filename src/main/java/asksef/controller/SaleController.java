@@ -1,19 +1,16 @@
 package asksef.controller;
 
-import asksef.assembler.AddressModelAssemblerSupport;
 import asksef.assembler.InvoiceModelAssemblerSupport;
 import asksef.assembler.SaleModelAssemblerSupport;
 import asksef.assembler.StaffModelAssemblerSupport;
-import asksef.entity.Address;
-import asksef.entity.Invoice;
-import asksef.entity.Sale;
-import asksef.entity.Staff;
-import asksef.entity.entity_model.AddressModel;
-import asksef.entity.entity_model.InvoiceModel;
-import asksef.entity.entity_model.SaleModel;
-import asksef.entity.entity_model.StaffModel;
+import asksef.entity.core.Invoice;
+import asksef.entity.core.Sale;
+import asksef.entity.core.Staff;
+import asksef.entity.model.InvoiceModel;
+import asksef.entity.model.SaleModel;
+import asksef.entity.model.StaffModel;
 import asksef.entity.repository.SaleRepository;
-import asksef.entity.service.SaleService;
+import asksef.entity.service_impl.SaleService;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

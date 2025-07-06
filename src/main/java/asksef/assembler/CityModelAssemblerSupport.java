@@ -1,8 +1,8 @@
 package asksef.assembler;
 
 import asksef.controller.CityController;
-import asksef.entity.City;
-import asksef.entity.entity_model.CityModel;
+import asksef.entity.core.City;
+import asksef.entity.model.CityModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;

@@ -2,16 +2,15 @@ package asksef.controller;
 
 import asksef.assembler.AddressModelAssemblerSupport;
 import asksef.assembler.StaffModelAssemblerSupport;
-import asksef.assembler.StoreModelAssembler;
 import asksef.assembler.StoreModelAssemblerSupport;
-import asksef.entity.Address;
-import asksef.entity.Staff;
-import asksef.entity.Store;
-import asksef.entity.entity_model.AddressModel;
-import asksef.entity.entity_model.StaffModel;
-import asksef.entity.entity_model.StoreModel;
+import asksef.entity.core.Address;
+import asksef.entity.core.Staff;
+import asksef.entity.core.Store;
+import asksef.entity.model.AddressModel;
+import asksef.entity.model.StaffModel;
+import asksef.entity.model.StoreModel;
 import asksef.entity.repository.StoreRepository;
-import asksef.entity.service.StoreService;
+import asksef.entity.service_impl.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -30,14 +29,12 @@ public class StoreController {
 
     private final StoreService storeService;
     private final StoreRepository storeRepository;
-    private final StoreModelAssembler storeModelAssembler;
     private final StoreModelAssemblerSupport storeModelAssemblerSupport;
 
     public StoreController(StoreService storeService, StoreRepository storeRepository,
-                           StoreModelAssembler storeModelAssembler, StoreModelAssemblerSupport storeModelAssemblerSupport) {
+                           StoreModelAssemblerSupport storeModelAssemblerSupport) {
         this.storeService = storeService;
         this.storeRepository = storeRepository;
-        this.storeModelAssembler = storeModelAssembler;
         this.storeModelAssemblerSupport = storeModelAssemblerSupport;
     }
 
@@ -67,7 +64,6 @@ public class StoreController {
         Store savedStore = this.storeService.save(storeModel);
         StoreModel storeModelSup = storeModelAssemblerSupport.toModel(savedStore);
         log.info("Store added: {}", storeModel);
-//        return ResponseEntity.created(storeEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(storeEntityModel);
         return new ResponseEntity<>(storeModelSup, HttpStatus.CREATED);
     }
 
@@ -92,14 +88,19 @@ public class StoreController {
     @GetMapping(value = "/{id}/address", produces = "application/hal+json")
     public ResponseEntity<AddressModel> findAddressOfStore(@PathVariable("id") Long id) {
         Address address = this.storeService.findAddressOfStore(id);
-
-        return new ResponseEntity<>(new AddressModelAssemblerSupport().toModel(address), HttpStatus.OK);
+        AddressModel model = new AddressModelAssemblerSupport().toModel(address);
+        model.add(linkTo(methodOn(StoreController.class).one(id)).withSelfRel());
+        model.add(linkTo(methodOn(StoreController.class).findAddressOfStore(id)).withRel("Store Address"));
+        return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/staff", produces = "application/hal+json")
     public ResponseEntity<StaffModel> findStaffOfStore(@PathVariable("id") Long id) {
         Staff staff = this.storeService.findStaffOfStore(id);
         //  build staff model
-        return new ResponseEntity<>(new StaffModelAssemblerSupport().toModel(staff), HttpStatus.OK);
+        StaffModel staffModel = new StaffModelAssemblerSupport().toModel(staff);
+        staffModel.add(linkTo(methodOn(StoreController.class).one(id)).withRel("staff"));
+        staffModel.add(linkTo(methodOn(StoreController.class).findStaffOfStore(id)).withRel("staff"));
+        return new ResponseEntity<>(staffModel, HttpStatus.OK);
     }
 }

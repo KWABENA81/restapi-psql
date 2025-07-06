@@ -3,14 +3,14 @@ package asksef.controller;
 import asksef.assembler.InventoryModelAssemblerSupport;
 import asksef.assembler.ItemModelAssemblerSupport;
 import asksef.assembler.StoreModelAssemblerSupport;
-import asksef.entity.Inventory;
-import asksef.entity.Item;
-import asksef.entity.Store;
-import asksef.entity.entity_model.InventoryModel;
-import asksef.entity.entity_model.ItemModel;
-import asksef.entity.entity_model.StoreModel;
+import asksef.entity.core.Inventory;
+import asksef.entity.core.Item;
+import asksef.entity.core.Store;
+import asksef.entity.model.InventoryModel;
+import asksef.entity.model.ItemModel;
+import asksef.entity.model.StoreModel;
 import asksef.entity.repository.InventoryRepository;
-import asksef.entity.service.InventoryService;
+import asksef.entity.service_impl.InventoryService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
@@ -91,14 +91,7 @@ public class InventoryController {
         Item item =this.inventoryService.findItemOfInventory(id);
         //  build model
         ItemModel itemModel = new ItemModelAssemblerSupport().toModel(item);
-//        ItemModel.builder()
-//                .itemId(item.getItemId())
-//                .itemCost(item.getItemCost())
-//                .itemDesc(item.getItemDesc())
-//                .itemName(item.getItemName())
-//                .saleInfo(item.getSaleInfo())
-//                .lastUpdate(item.getLastUpdate())
-//               // .inventoryModels(item.getInventoryList())                .build();
+
         itemModel.add(linkTo(methodOn(InventoryController.class).findItemOfInventory(id)).withSelfRel());
                return new ResponseEntity<>(itemModel, HttpStatus.OK);
     }
@@ -108,13 +101,10 @@ public class InventoryController {
         Store store = this.inventoryService.findStoreOfInventory(id);
         //  build model
         StoreModel storemodel = new StoreModelAssemblerSupport().toModel(store);
-//                StoreModel.builder()
-//                .storeName(store.getStoreName())
-//                .storeId(store.getStoreId())
-//                .build();
+
         storemodel.add(linkTo(methodOn(InventoryController.class).findStoreOfInventory(id)).withRel("store of Inventory"));
-//        storemodel.add(linkTo(methodOn(InventoryController.class).one(id)).withRel("inventory"));
-//        storemodel.add(linkTo(methodOn(StoreController.class).one(id)).withRel("store"));
+        storemodel.add(linkTo(methodOn(InventoryController.class).one(id)).withRel("inventory"));
+        storemodel.add(linkTo(methodOn(StoreController.class).one(id)).withRel("store"));
         return new ResponseEntity<>(storemodel, HttpStatus.OK);
     }
 }

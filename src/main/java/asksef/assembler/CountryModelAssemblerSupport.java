@@ -1,10 +1,10 @@
 package asksef.assembler;
 
 import asksef.controller.CountryController;
-import asksef.entity.City;
-import asksef.entity.Country;
-import asksef.entity.entity_model.CityModel;
-import asksef.entity.entity_model.CountryModel;
+import asksef.entity.core.City;
+import asksef.entity.core.Country;
+import asksef.entity.model.CityModel;
+import asksef.entity.model.CountryModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;

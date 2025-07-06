@@ -1,8 +1,8 @@
 package asksef.assembler;
 
 import asksef.controller.ItemController;
-import asksef.entity.Item;
-import asksef.entity.entity_model.ItemModel;
+import asksef.entity.core.Item;
+import asksef.entity.model.ItemModel;
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;

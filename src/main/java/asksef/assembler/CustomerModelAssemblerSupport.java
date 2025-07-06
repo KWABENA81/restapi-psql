@@ -1,8 +1,8 @@
 package asksef.assembler;
 
 import asksef.controller.CustomerController;
-import asksef.entity.Customer;
-import asksef.entity.entity_model.CustomerModel;
+import asksef.entity.core.Customer;
+import asksef.entity.model.CustomerModel;
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;

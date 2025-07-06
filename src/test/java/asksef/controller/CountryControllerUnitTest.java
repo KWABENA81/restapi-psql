@@ -1,7 +1,7 @@
 package asksef.controller;
 
-import asksef.entity.Country;
-import asksef.entity.service.CountryService;
+import asksef.entity.core.Country;
+import asksef.entity.service_impl.CountryService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

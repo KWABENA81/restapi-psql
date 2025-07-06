@@ -2,12 +2,12 @@ package asksef.controller;
 
 import asksef.assembler.AddressModelAssemblerSupport;
 import asksef.assembler.CustomerModelAssemblerSupport;
-import asksef.entity.Address;
-import asksef.entity.Customer;
-import asksef.entity.entity_model.AddressModel;
-import asksef.entity.entity_model.CustomerModel;
+import asksef.entity.core.Address;
+import asksef.entity.core.Customer;
+import asksef.entity.model.AddressModel;
+import asksef.entity.model.CustomerModel;
 import asksef.entity.repository.CustomerRepository;
-import asksef.entity.service.CustomerService;
+import asksef.entity.service_impl.CustomerService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
@@ -49,20 +49,11 @@ public class CustomerController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-    public ResponseEntity<AddressModel> findAddressOfCustomer(@PathVariable("id") Long id) {
-        Address address = this.customerService.findAddressOfCustomer(id);
-        //  build address model
-        return new ResponseEntity<>(new AddressModelAssemblerSupport().toModel(address), HttpStatus.OK);
-    }
-
-
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         this.customerService.delete(id);
         return new ResponseEntity<>("Customer entity deleted", HttpStatus.NO_CONTENT);
     }
-
 
     @PostMapping(value = "/add", produces = "application/hal+json")
     public ResponseEntity<CustomerModel> add(@RequestBody CustomerModel customerModel) {
@@ -80,6 +71,13 @@ public class CustomerController {
         return ResponseEntity
                 .created(linkTo(methodOn(CustomerController.class).one(updatedCcustomer.getCustomerId()))
                         .toUri()).body(entityModel);
+    }
+
+    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
+    public ResponseEntity<AddressModel> findAddressOfCustomer(@PathVariable("id") Long id) {
+        Address address = this.customerService.findAddressOfCustomer(id);
+        //  build address model
+        return new ResponseEntity<>(new AddressModelAssemblerSupport().toModel(address), HttpStatus.OK);
     }
 
 }

@@ -2,12 +2,12 @@ package asksef.controller;
 
 import asksef.assembler.CustomerModelAssemblerSupport;
 import asksef.assembler.InvoiceModelAssemblerSupport;
-import asksef.entity.Customer;
-import asksef.entity.Invoice;
-import asksef.entity.entity_model.CustomerModel;
-import asksef.entity.entity_model.InvoiceModel;
+import asksef.entity.core.Customer;
+import asksef.entity.core.Invoice;
+import asksef.entity.model.CustomerModel;
+import asksef.entity.model.InvoiceModel;
 import asksef.entity.repository.InvoiceRepository;
-import asksef.entity.service.InvoiceService;
+import asksef.entity.service_impl.InvoiceService;
 import jakarta.servlet.ServletResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

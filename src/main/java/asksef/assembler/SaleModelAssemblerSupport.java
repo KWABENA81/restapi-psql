@@ -1,10 +1,8 @@
 package asksef.assembler;
 
 import asksef.controller.SaleController;
-import asksef.entity.Sale;
-import asksef.entity.entity_model.InvoiceModel;
-import asksef.entity.entity_model.SaleModel;
-import asksef.entity.entity_model.StaffModel;
+import asksef.entity.core.Sale;
+import asksef.entity.model.SaleModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;

@@ -1,8 +1,7 @@
 package asksef.entity.service_impl;
 
-import asksef.entity.Country;
+import asksef.entity.core.Country;
 import asksef.entity.repository.CountryRepository;
-import asksef.entity.service.CountryService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;

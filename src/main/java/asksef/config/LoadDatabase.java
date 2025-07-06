@@ -1,11 +1,5 @@
 package asksef.config;
 
-import asksef.entity.Country;
-import asksef.entity.repository.CountryRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-
 //@Configuration
 public class LoadDatabase /*implements CommandLineRunner*/ {
 

@@ -1,9 +1,8 @@
 package asksef.assembler;
 
 import asksef.controller.StaffController;
-import asksef.entity.Staff;
-import asksef.entity.entity_model.AddressModel;
-import asksef.entity.entity_model.StaffModel;
+import asksef.entity.core.Staff;
+import asksef.entity.model.StaffModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;

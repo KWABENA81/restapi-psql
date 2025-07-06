@@ -1,8 +1,8 @@
 package asksef.assembler;
 
 import asksef.controller.PaymentController;
-import asksef.entity.Payment;
-import asksef.entity.entity_model.PaymentModel;
+import asksef.entity.core.Payment;
+import asksef.entity.model.PaymentModel;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.lang.NonNull;

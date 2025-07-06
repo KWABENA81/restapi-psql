@@ -1,13 +1,10 @@
 package asksef.controller;
 
-import asksef.assembler.AddressModelAssemblerSupport;
 import asksef.assembler.StaffModelAssemblerSupport;
-import asksef.entity.Address;
-import asksef.entity.Staff;
-import asksef.entity.entity_model.AddressModel;
-import asksef.entity.entity_model.StaffModel;
+import asksef.entity.core.Staff;
+import asksef.entity.model.StaffModel;
 import asksef.entity.repository.StaffRepository;
-import asksef.entity.service.StaffService;
+import asksef.entity.service_impl.StaffService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Slf4j
 @RestController

@@ -1,9 +1,8 @@
 package asksef.entity.repository;
 
 
-import asksef.entity.Customer;
-import asksef.entity.Invoice;
-import asksef.entity.Item;
+import asksef.entity.core.Customer;
+import asksef.entity.core.Invoice;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

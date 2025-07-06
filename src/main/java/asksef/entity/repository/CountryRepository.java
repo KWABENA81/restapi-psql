@@ -1,7 +1,7 @@
 package asksef.entity.repository;
 
 
-import asksef.entity.Country;
+import asksef.entity.core.Country;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

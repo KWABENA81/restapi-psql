@@ -1,10 +1,10 @@
 package asksef.controller;
 
 import asksef.assembler.ItemModelAssemblerSupport;
-import asksef.entity.Item;
-import asksef.entity.entity_model.ItemModel;
+import asksef.entity.core.Item;
+import asksef.entity.model.ItemModel;
 import asksef.entity.repository.ItemRepository;
-import asksef.entity.service.ItemService;
+import asksef.entity.service_impl.ItemService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;

@@ -1,8 +1,8 @@
 package asksef.assembler;
 
 import asksef.controller.AddressController;
-import asksef.entity.Address;
-import asksef.entity.entity_model.AddressModel;
+import asksef.entity.core.Address;
+import asksef.entity.model.AddressModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;

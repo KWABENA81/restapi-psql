@@ -3,13 +3,13 @@ package asksef.controller;
 import asksef.assembler.AddressModelAssemblerSupport;
 import asksef.assembler.CityModelAssemblerSupport;
 import asksef.assembler.CountryModelAssemblerSupport;
-import asksef.entity.City;
-import asksef.entity.Country;
-import asksef.entity.entity_model.AddressModel;
-import asksef.entity.entity_model.CityModel;
-import asksef.entity.entity_model.CountryModel;
+import asksef.entity.core.City;
+import asksef.entity.core.Country;
+import asksef.entity.model.AddressModel;
+import asksef.entity.model.CityModel;
+import asksef.entity.model.CountryModel;
 import asksef.entity.repository.CityRepository;
-import asksef.entity.service.CityService;
+import asksef.entity.service_impl.CityService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
@@ -70,22 +70,6 @@ public class CityController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping(value = "{id}/country", produces = "application/hal+json")
-    public ResponseEntity<CountryModel> findCountryOfCity(@PathVariable("id") Long id) {
-        Country country = cityService.findCountryOfCity(id);
-
-        //  build a model
-        CountryModel countryModel = new CountryModelAssemblerSupport().toModel(country);
-//        CountryModel.builder()
-//                .countryId(country.getCountryId())           .lastUpdate(country.getLastUpdate())
-//                .country(country.getCountry())              .build();
-        //  add links
-        countryModel.add(linkTo(methodOn(CityController.class).findCountryOfCity(id)).withSelfRel());
-        countryModel.add(linkTo(methodOn(CityController.class).one(id)).withRel("city"));
-        return new ResponseEntity<>(countryModel, HttpStatus.OK);
-    }
-
-
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         this.cityService.delete(id);
@@ -111,6 +95,18 @@ public class CityController {
 //        return ResponseEntity
 //                .created(linkTo(methodOn(CityController.class).one(updateCity.getCityId()))
 //                        .toUri()).body(entityModel);
+    }
+
+    @GetMapping(value = "{id}/country", produces = "application/hal+json")
+    public ResponseEntity<CountryModel> findCountryOfCity(@PathVariable("id") Long id) {
+        Country country = cityService.findCountryOfCity(id);
+
+        //  build a model
+        CountryModel countryModel = new CountryModelAssemblerSupport().toModel(country);
+        //  add links
+        countryModel.add(linkTo(methodOn(CityController.class).findCountryOfCity(id)).withSelfRel());
+        countryModel.add(linkTo(methodOn(CityController.class).one(id)).withRel("city"));
+        return new ResponseEntity<>(countryModel, HttpStatus.OK);
     }
 }
 
