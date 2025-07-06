@@ -148,7 +148,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>asksef.RestAPIPsqlApplication</mainClass>
+                            <mainClass>com.asksef.RestAPIPsqlApplication</mainClass>
                             <classpathPrefix>dependency-jars/</classpathPrefix>
                         </manifest>
                     </archive>

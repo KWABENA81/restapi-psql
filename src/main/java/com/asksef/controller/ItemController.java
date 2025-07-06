@@ -1,0 +1,101 @@
+package com.asksef.controller;
+
+import com.asksef.assembler.ItemModelAssemblerSupport;
+import com.asksef.entity.core.Item;
+import com.asksef.entity.model.ItemModel;
+import com.asksef.entity.repository.ItemRepository;
+import com.asksef.entity.service_impl.ItemService;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Slf4j
+@RestController
+@RequestMapping(value = "/api/item")
+public class ItemController {
+    private final ItemService itemService;
+    private final ItemRepository itemRepository;
+    private final ItemModelAssemblerSupport itemModelAssemblerSupport;
+
+    public ItemController(ItemService itemService, ItemRepository itemRepository,
+                          ItemModelAssemblerSupport itemModelAssemblerSupport) {
+        this.itemService = itemService;
+        this.itemRepository = itemRepository;
+        this.itemModelAssemblerSupport = itemModelAssemblerSupport;
+    }
+
+    @GetMapping(value = "/all", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<ItemModel>> all() {
+        List<Item> entityList = this.itemService.findAll().stream().toList();
+        return new ResponseEntity<>(this.itemModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}", produces = "application/hal+json")
+    public ResponseEntity<ItemModel> one(@PathVariable("id") Long id) {
+        return this.itemRepository.findById(id)
+                .map(itemModelAssemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+        this.itemService.delete(id);
+        return new ResponseEntity<>("Item entity deleted successfully.", HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping(value = "/add", produces = "application/hal+json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<?> add(@RequestBody ItemModel itemModel) {
+        Item savedItem = this.itemService.save(itemModel);
+        @NonNull ItemModel entityModel = itemModelAssemblerSupport.toModel(savedItem);
+        log.info("Item saved: {}", entityModel);
+//
+        return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
+    }
+
+
+    @PutMapping(value = "/update/{id}", produces = "application/hal+json")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Item newItem) {
+        Item updateItem = this.itemService.update(newItem, id);
+
+        @NonNull ItemModel entityModel = itemModelAssemblerSupport.toModel(updateItem);
+        log.info("Updating item with id: {}", id);
+//        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
+        return ResponseEntity
+                .created(linkTo(methodOn(ItemController.class).one(id))
+                        .toUri()).body(entityModel);
+    }
+
+
+    @GetMapping(value = "/code", produces = "application/hal+json")
+    public ResponseEntity<ItemModel> itemByCode(@RequestParam(value = "code") String code) {
+        Item item = this.itemService.findByCode(code);
+        log.info("Item found with code {}", code);
+        return new ResponseEntity<>(itemModelAssemblerSupport.toModel(item), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/desc", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<ItemModel>> itemByDescLike(@RequestParam(value = "desc") String desc) {
+        List<Item> entityList = this.itemService.findByDescLike(desc)
+                .stream().toList();
+        return new ResponseEntity<>(this.itemModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/name", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<ItemModel>> itemByNameLike(@RequestParam(value = "name") String name) {
+        List<Item> entityList = this.itemService.findByNameLike(name).stream().toList();
+        return new ResponseEntity<>(this.itemModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
+    }
+}
