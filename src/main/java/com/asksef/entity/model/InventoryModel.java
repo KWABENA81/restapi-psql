@@ -21,12 +21,4 @@ public class InventoryModel extends RepresentationModel<InventoryModel> {
     private Integer stockQty;
     private Integer reorderQty;
     private LocalDateTime lastUpdate;
-
-//    public Inventory toEntity(){
-//        return InventoryModel.builder()
-//                .inventoryId(this.getInventoryId())
-//                .item(this.getItem())
-//                .store(this.getStore())
-//                .build().toEntity();
-//    }
 }

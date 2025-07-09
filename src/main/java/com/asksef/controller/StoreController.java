@@ -1,12 +1,15 @@
 package com.asksef.controller;
 
 import com.asksef.assembler.AddressModelAssemblerSupport;
+import com.asksef.assembler.InventoryModelAssemblerSupport;
 import com.asksef.assembler.StaffModelAssemblerSupport;
 import com.asksef.assembler.StoreModelAssemblerSupport;
 import com.asksef.entity.core.Address;
+import com.asksef.entity.core.Inventory;
 import com.asksef.entity.core.Staff;
 import com.asksef.entity.core.Store;
 import com.asksef.entity.model.AddressModel;
+import com.asksef.entity.model.InventoryModel;
 import com.asksef.entity.model.StaffModel;
 import com.asksef.entity.model.StoreModel;
 import com.asksef.entity.repository.StoreRepository;
@@ -102,5 +105,12 @@ public class StoreController {
         staffModel.add(linkTo(methodOn(StoreController.class).one(id)).withRel("staff"));
         staffModel.add(linkTo(methodOn(StoreController.class).findStaffOfStore(id)).withRel("staff"));
         return new ResponseEntity<>(staffModel, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/inventories", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<InventoryModel>> findStoreInventories(@PathVariable("id") Long id) {
+        List<Inventory> inventoryList = storeService.findStoreInventories(id);
+        CollectionModel<InventoryModel> inventoryModels = new InventoryModelAssemblerSupport().toCollectionModel(inventoryList);
+        return new ResponseEntity<>(inventoryModels, HttpStatus.OK);
     }
 }

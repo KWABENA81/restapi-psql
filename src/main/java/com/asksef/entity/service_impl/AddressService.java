@@ -1,8 +1,7 @@
 package com.asksef.entity.service_impl;
 
 
-import com.asksef.entity.core.Address;
-import com.asksef.entity.core.City;
+import com.asksef.entity.core.*;
 import com.asksef.entity.model.AddressModel;
 import com.asksef.entity.repository.AddressRepository;
 import com.asksef.entity.service_interface.AddressServiceInterface;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -125,5 +125,20 @@ public class AddressService implements AddressServiceInterface {
             throw new CustomResourceNotFoundException("address", "id", null, id);
         }
         return addressOptional.get().getCity();
+    }
+
+
+    public List<Store> findAddressStores(Long id) {
+        Address address = this.addressRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return address.getStoreList();
+    }
+
+    public List<Customer> findAddressCustomers(Long id) {
+        Address address = this.addressRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return address.getCustomerList();
     }
 }

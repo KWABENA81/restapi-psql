@@ -6,8 +6,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,13 +15,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
+@Slf4j
 @Setter
 @Entity
 @Table(name = "SALE", schema = "rest_app")
 public class Sale implements Serializable, Comparable<Sale> {
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger log = LoggerFactory.getLogger(Sale.class);
 
     public Sale() {
         this.lastUpdate = LocalDateTime.now();
@@ -35,9 +34,9 @@ public class Sale implements Serializable, Comparable<Sale> {
         this.saleId = id;
         this.saleNr = saleNr;
         this.saleDate = saleDate;
-        this.staff = staff;
-        this.lastUpdate = lastUpdate;
         this.invoice = invoice;
+        this.lastUpdate = lastUpdate;
+        this.staff = staff;
     }
 
     public Sale(Long l, String saleNr) {
@@ -52,7 +51,6 @@ public class Sale implements Serializable, Comparable<Sale> {
     @SequenceGenerator(name = "sale_id_seq", sequenceName = "rest_app.sale_sale_id_seq", allocationSize = 1)
     @Column(name = "SALE_ID", nullable = false)
     private Long saleId;
-
 
     @Setter
     @Getter

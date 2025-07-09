@@ -8,8 +8,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Setter
 @Entity
 @Table(name = "CITY", schema = "rest_app")
 public class City implements Serializable, Comparable<City> {
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger log = LoggerFactory.getLogger(City.class);
 
     public City() {
         this.lastUpdate = LocalDateTime.now();
@@ -57,7 +56,7 @@ public class City implements Serializable, Comparable<City> {
     private String city;
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "COUNTRY_ID")
     @JsonBackReference
     private Country country;
@@ -68,7 +67,7 @@ public class City implements Serializable, Comparable<City> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Address.class, mappedBy = "city", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Address.class, mappedBy = "city", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JsonIgnore
     private List<Address> addressList;

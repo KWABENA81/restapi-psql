@@ -1,4 +1,4 @@
-package com.asksef.entity.service_impl;
+package com.asksef.entity.service_interface;
 
 
 import com.asksef.entity.core.City;

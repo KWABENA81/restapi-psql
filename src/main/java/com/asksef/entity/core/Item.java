@@ -7,8 +7,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -17,14 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
+@Slf4j
 @Setter
 @Entity
 @Table(name = "ITEM", schema = "rest_app")
 public class Item implements Serializable, Comparable<Item> {
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger log = LoggerFactory.getLogger(Item.class);
 
     public Item() {
         this.lastUpdate = LocalDateTime.now();
@@ -42,13 +40,15 @@ public class Item implements Serializable, Comparable<Item> {
     }
 
     @Builder
-    public Item(Long id, String saleInfo, String itemName, String itemCode, String itemDesc, Float itemCost) {
+    public Item(Long id, String saleInfo, String itemName, String itemCode, String itemDesc,
+                Float itemCost, LocalDateTime lastUpdate) {
         this.itemId = id;
         this.itemName = itemName;
         this.itemCode = itemCode;
-        this.itemCost = itemCost;
-        this.saleInfo = saleInfo;
         this.itemDesc = itemDesc;
+        this.saleInfo = saleInfo;
+        this.itemCost = itemCost;
+        this.lastUpdate = lastUpdate;
     }
 
     @Getter

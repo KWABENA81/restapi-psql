@@ -22,5 +22,5 @@ public class ItemModel extends RepresentationModel<ItemModel> {
     private String saleInfo;
     private Float itemCost;
     private LocalDateTime lastUpdate;
-    private List<Inventory> inventoryList;
+    private List<InventoryModel> inventoryModelList;
 }

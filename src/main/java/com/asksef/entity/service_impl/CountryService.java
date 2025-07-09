@@ -1,26 +1,27 @@
 package com.asksef.entity.service_impl;
 
+import ch.qos.logback.core.util.StringUtil;
+import com.asksef.entity.core.City;
 import com.asksef.entity.core.Country;
 import com.asksef.entity.model.CountryModel;
 import com.asksef.entity.repository.CountryRepository;
 import com.asksef.entity.service_interface.CountryServiceInterface;
 import com.asksef.errors.CustomResourceNotFoundException;
-import ch.qos.logback.core.util.StringUtil;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class CountryService implements CountryServiceInterface {
 
-    private static final Logger log = LoggerFactory.getLogger(CountryService.class);
     private final CountryRepository countryRepository;
 
     public CountryService(CountryRepository countryRepository) {
@@ -98,9 +99,7 @@ public class CountryService implements CountryServiceInterface {
 //                .lastUpdate(countryModel.getLastUpdate())
 //                .build();
         return this.countryRepository.save(country);
-        //   }
     }
-
 
     @Transactional
     public void delete(@NonNull Long id) {
@@ -133,7 +132,16 @@ public class CountryService implements CountryServiceInterface {
         return this.countryRepository.findByName(countryName);
     }
 
+    public List<City> findCountryCities(Long id) {
+        Country country = this.countryRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return country.getCityList();
+    }
 }
+
+//        log.info("Find country by id: {}", id);
+//        return country;
 //    @Transactional
 //    @Override
 //    public Country save(@NonNull Country country) {

@@ -25,5 +25,5 @@ public class CustomerModel extends RepresentationModel<CustomerModel> {
     private LocalDateTime creationDate;
     private LocalDateTime lastUpdate;
 
-    private List<Invoice> invoices;
+    private List<InvoiceModel> invoiceModelList;
 }

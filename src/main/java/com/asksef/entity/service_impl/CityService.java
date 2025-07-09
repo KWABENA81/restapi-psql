@@ -3,8 +3,10 @@ package com.asksef.entity.service_impl;
 import com.asksef.entity.core.Address;
 import com.asksef.entity.core.City;
 import com.asksef.entity.core.Country;
+import com.asksef.entity.model.AddressModel;
 import com.asksef.entity.model.CityModel;
 import com.asksef.entity.repository.CityRepository;
+import com.asksef.entity.service_interface.CityServiceInterface;
 import com.asksef.errors.CustomResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -129,6 +131,10 @@ public class CityService implements CityServiceInterface {
 
     public List<Address> findAddressesOfCity(Long cityId) {
         return this.cityRepository.findAddressesOfCity(cityId).stream().toList();
+    }
+
+    public List<Address> findAddressesInCity(Long id) {
+        return findById(id).getAddressList();
     }
 }
 

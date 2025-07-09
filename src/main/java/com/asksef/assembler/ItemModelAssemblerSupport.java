@@ -1,12 +1,17 @@
 package com.asksef.assembler;
 
 import com.asksef.controller.ItemController;
+import com.asksef.entity.core.Inventory;
 import com.asksef.entity.core.Item;
+import com.asksef.entity.model.InventoryModel;
 import com.asksef.entity.model.ItemModel;
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -21,13 +26,38 @@ public class ItemModelAssemblerSupport extends RepresentationModelAssemblerSuppo
     @Override
     public ItemModel toModel(@NonNull Item item) {
         ItemModel itemModel = instantiateModel(item);
+        itemModel.setItemId(item.getItemId());
+        itemModel.setItemCode(item.getItemCode());
+        itemModel.setItemName(item.getItemName());
+        itemModel.setItemDesc(item.getItemDesc());
+        itemModel.setItemCost(item.getItemCost());
+        itemModel.setInventoryModelList(toInventoryCollectionModel(item.getInventoryList()));
+
         itemModel.add(linkTo(methodOn(ItemController.class).all()).withRel("all"));
         itemModel.add(linkTo(methodOn(ItemController.class).one(item.getItemId())).withRel("one"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByCode(item.getItemCode())).withRel("Item Code"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByNameLike(item.getItemName())).withRel("Item Name"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByDescLike(item.getItemDesc())).withRel("Item Desc"));
-//      itemModel.add(linkTo(methodOn(ItemController.class).all()).withRel("all"));
+        itemModel.add(linkTo(methodOn(ItemController.class).findItemInventories(item.getItemId())).withRel("Inventories"));
+
         return itemModel;
+    }
+
+    private List<InventoryModel> toInventoryCollectionModel(List<Inventory> inventoryList) {
+        if (inventoryList == null || inventoryList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return inventoryList.stream()
+                .map(inv -> InventoryModel.builder()
+                        .inventoryId(inv.getInventoryId())
+                        .reorderQty(inv.getReorderQty())
+                        .stockQty(inv.getStockQty())
+                        .lastUpdate(inv.getLastUpdate())
+                        .item(inv.getItem())
+                        .store(inv.getStore())
+                        .build()
+                        .add(linkTo(methodOn(ItemController.class)
+                                .one(inv.getInventoryId())).withRel("one"))).toList();
     }
 
     @NonNull

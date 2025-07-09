@@ -2,6 +2,7 @@ package com.asksef.entity.service_impl;
 
 
 import com.asksef.entity.core.Address;
+import com.asksef.entity.core.Inventory;
 import com.asksef.entity.core.Staff;
 import com.asksef.entity.core.Store;
 import com.asksef.entity.model.StoreModel;
@@ -10,19 +11,19 @@ import com.asksef.entity.service_interface.StoreServiceInterface;
 import com.asksef.errors.CustomResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class StoreService implements StoreServiceInterface {
 
-    private static final Logger log = LoggerFactory.getLogger(StoreService.class);
     private final StoreRepository storeRepository;
 
     public StoreService(StoreRepository storeRepository) {
@@ -127,5 +128,12 @@ public class StoreService implements StoreServiceInterface {
             throw new CustomResourceNotFoundException("Store", "id", null, id);
         }
         return staffOptional.get();
+    }
+
+    public List<Inventory> findStoreInventories(Long id) {
+        Store store = this.storeRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Store", "id", null, id)
+        );
+        return store.getInventoryList();
     }
 }

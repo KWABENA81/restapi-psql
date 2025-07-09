@@ -3,6 +3,7 @@ package com.asksef.entity.service_impl;
 
 import com.asksef.entity.core.Address;
 import com.asksef.entity.core.Customer;
+import com.asksef.entity.core.Invoice;
 import com.asksef.entity.model.CustomerModel;
 import com.asksef.entity.repository.CustomerRepository;
 import com.asksef.entity.service_interface.CustomerServiceInterface;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -58,11 +60,11 @@ public class CustomerService implements CustomerServiceInterface {
     @Transactional
     public Customer save(@Valid CustomerModel custModel) {
         Customer customer = Customer.builder()
-                .ctime(custModel.getCreationDate())
+                .creationtime(custModel.getCreationDate())
                 .address(custModel.getAddress())
                 .firstName(custModel.getFirstName())
                 .lastName(custModel.getLastName())
-                .localDateTime(custModel.getLastUpdate())
+                .lastUpdate(custModel.getLastUpdate())
                 .build();
         return save(customer);
     }
@@ -117,5 +119,12 @@ public class CustomerService implements CustomerServiceInterface {
             throw new CustomResourceNotFoundException("customer", "id", null, id);
         }
         return addressOptional.get();
+    }
+
+    public List<Invoice> findCustomerInvoices(Long id) {
+        Customer customer = this.customerRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return customer.getInvoiceList();
     }
 }

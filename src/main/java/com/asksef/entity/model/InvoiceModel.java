@@ -18,7 +18,8 @@ public class InvoiceModel extends RepresentationModel<InvoiceModel> {
     private Long invoiceId;
     private String invoiceNr;
     private Customer customer;
-    private List<SaleModel> saleModels;
     private LocalDateTime lastUpdate;
-    private List<PaymentModel> paymentModels;
+
+    private List<SaleModel> saleModelList;
+    private List<PaymentModel> paymentModelList;
 }

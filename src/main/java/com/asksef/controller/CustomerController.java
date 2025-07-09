@@ -2,10 +2,13 @@ package com.asksef.controller;
 
 import com.asksef.assembler.AddressModelAssemblerSupport;
 import com.asksef.assembler.CustomerModelAssemblerSupport;
+import com.asksef.assembler.InvoiceModelAssemblerSupport;
 import com.asksef.entity.core.Address;
 import com.asksef.entity.core.Customer;
+import com.asksef.entity.core.Invoice;
 import com.asksef.entity.model.AddressModel;
 import com.asksef.entity.model.CustomerModel;
+import com.asksef.entity.model.InvoiceModel;
 import com.asksef.entity.repository.CustomerRepository;
 import com.asksef.entity.service_impl.CustomerService;
 import lombok.NonNull;
@@ -77,7 +80,15 @@ public class CustomerController {
     public ResponseEntity<AddressModel> findAddressOfCustomer(@PathVariable("id") Long id) {
         Address address = this.customerService.findAddressOfCustomer(id);
         //  build address model
-        return new ResponseEntity<>(new AddressModelAssemblerSupport().toModel(address), HttpStatus.OK);
+        AddressModel model = new AddressModelAssemblerSupport().toModel(address);
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/invoices", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<InvoiceModel>> findCustomerInvoices(@PathVariable("id") Long id) {
+        List<Invoice> invoiceList = customerService.findCustomerInvoices(id);
+        CollectionModel<InvoiceModel> invoiceModels = new InvoiceModelAssemblerSupport().toCollectionModel(invoiceList);
+        return new ResponseEntity<>(invoiceModels, HttpStatus.OK);
     }
 
 }

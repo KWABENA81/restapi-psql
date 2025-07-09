@@ -1,5 +1,6 @@
 package com.asksef.controller;
 
+import com.asksef.assembler.CityModelAssemblerSupport;
 import com.asksef.assembler.CountryModelAssemblerSupport;
 import com.asksef.entity.core.City;
 import com.asksef.entity.core.Country;
@@ -14,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -40,21 +40,6 @@ public class CountryController {
         return new ResponseEntity<>(this.countryModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}/city", produces = "application/hal+json")
-    public ResponseEntity<Collection<CityModel>> countryCities(@PathVariable("id") Long id) {
-        List<City> cityList = countryService.findById(id).getCityList().stream().toList();
-        Collection<CityModel> cityModels = this.countryModelAssemblerSupport.toCityCollectionModel(cityList);
-        return new ResponseEntity<>(cityModels, HttpStatus.OK);
-    }
-
-    @GetMapping(produces = "application/hal+json")
-    public ResponseEntity<CountryModel> findByName(@RequestParam(value = "name") String name) {
-        return this.countryService.findByName(name)
-                .map(countryModelAssemblerSupport::toModel)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping(value = "/{id}", produces = "application/hal+json")
     public ResponseEntity<CountryModel> one(@PathVariable("id") Long id) {
         return this.countryRepository.findById(id)
@@ -62,7 +47,6 @@ public class CountryController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
 
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
@@ -94,6 +78,21 @@ public class CountryController {
 //        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
         return ResponseEntity.created(linkTo(methodOn(CountryController.class).one(id))
                 .toUri()).body(updatedCountry);
+    }
+
+    @GetMapping(produces = "application/hal+json")
+    public ResponseEntity<CountryModel> findByName(@RequestParam(value = "name") String name) {
+        return this.countryService.findByName(name)
+                .map(countryModelAssemblerSupport::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(value = "/{id}/cities", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<CityModel>> findCountryCities(@PathVariable("id") Long id) {
+        List<City> cityList = countryService.findCountryCities(id);
+        CollectionModel<CityModel> cityModels = new CityModelAssemblerSupport().toCollectionModel(cityList);
+        return new ResponseEntity<>(cityModels, HttpStatus.OK);
     }
 
 }

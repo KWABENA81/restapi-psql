@@ -1,6 +1,9 @@
 package com.asksef.entity.service_impl;
 
+import com.asksef.entity.core.Payment;
+import com.asksef.entity.core.Sale;
 import com.asksef.entity.core.Staff;
+import com.asksef.entity.core.Store;
 import com.asksef.entity.model.StaffModel;
 import com.asksef.entity.repository.StaffRepository;
 import com.asksef.entity.service_interface.StaffServiceInterface;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -114,6 +118,27 @@ public class StaffService implements StaffServiceInterface {
         return this.staffRepository.findByUsername(username).orElseThrow(
                 () -> new CustomResourceNotFoundException("staff", "username", null, username)
         );
+    }
+
+    public List<Payment> findStaffPayments(Long id) {
+        Staff staff = this.staffRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return staff.getPaymentList();
+    }
+
+    public List<Sale> findStaffSales(Long id) {
+        Staff staff = this.staffRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return staff.getSaleList();
+    }
+
+    public List<Store> findStaffStores(Long id) {
+        Staff staff = this.staffRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return staff.getStoreList();
     }
 
 //    public Address findAddressOfCustomer(Long id) {

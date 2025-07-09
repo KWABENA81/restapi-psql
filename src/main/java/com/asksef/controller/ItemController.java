@@ -1,7 +1,10 @@
 package com.asksef.controller;
 
+import com.asksef.assembler.InventoryModelAssemblerSupport;
 import com.asksef.assembler.ItemModelAssemblerSupport;
+import com.asksef.entity.core.Inventory;
 import com.asksef.entity.core.Item;
+import com.asksef.entity.model.InventoryModel;
 import com.asksef.entity.model.ItemModel;
 import com.asksef.entity.repository.ItemRepository;
 import com.asksef.entity.service_impl.ItemService;
@@ -97,5 +100,12 @@ public class ItemController {
     public ResponseEntity<CollectionModel<ItemModel>> itemByNameLike(@RequestParam(value = "name") String name) {
         List<Item> entityList = this.itemService.findByNameLike(name).stream().toList();
         return new ResponseEntity<>(this.itemModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/inventories", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<InventoryModel>> findItemInventories(@PathVariable("id") Long id) {
+        List<Inventory> inventoryList = itemService.findItemInventories(id);
+        CollectionModel<InventoryModel> inventoryModels = new InventoryModelAssemblerSupport().toCollectionModel(inventoryList);
+        return new ResponseEntity<>(inventoryModels, HttpStatus.OK);
     }
 }

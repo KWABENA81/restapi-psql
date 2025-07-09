@@ -1,5 +1,6 @@
 package com.asksef.entity.service_impl;
 
+import com.asksef.entity.core.Inventory;
 import com.asksef.entity.core.Item;
 import com.asksef.entity.model.ItemModel;
 import com.asksef.entity.repository.ItemRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -126,5 +128,12 @@ public class ItemService implements ItemServiceInterface {
 
     public Collection<Item> findByNameLike(String name) {
         return itemRepository.findByNameLike(name);
+    }
+
+    public List<Inventory> findItemInventories(Long id) {
+        Item item = this.itemRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return item.getInventoryList();
     }
 }

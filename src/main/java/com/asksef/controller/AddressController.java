@@ -2,13 +2,20 @@ package com.asksef.controller;
 
 import com.asksef.assembler.AddressModelAssemblerSupport;
 import com.asksef.assembler.CityModelAssemblerSupport;
+import com.asksef.assembler.CustomerModelAssemblerSupport;
+import com.asksef.assembler.StoreModelAssemblerSupport;
 import com.asksef.entity.core.Address;
 import com.asksef.entity.core.City;
+import com.asksef.entity.core.Customer;
+import com.asksef.entity.core.Store;
 import com.asksef.entity.model.AddressModel;
 import com.asksef.entity.model.CityModel;
+import com.asksef.entity.model.CustomerModel;
+import com.asksef.entity.model.StoreModel;
 import com.asksef.entity.repository.AddressRepository;
 import com.asksef.entity.service_impl.AddressService;
 import jakarta.validation.Valid;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -16,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,11 +49,11 @@ public class AddressController {
     @GetMapping(value = "/all", produces = "application/hal+json")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CollectionModel<AddressModel>> all() {
-        Collection<Address> addressCollection = addressService.findAll();
+        List<Address> addressCollection = addressService.findAll().stream().toList();
 
         CollectionModel<AddressModel> addressCollectionModels
                 = this.addressModelAssemblerSupport.toCollectionModel(addressCollection);
-        log.debug("All addresses addressCollectionModels: {}", addressCollectionModels);
+        log.info("All addresses addressCollectionModels: {}", addressCollectionModels);
         return new ResponseEntity<>(addressCollectionModels, HttpStatus.OK);
     }
 
@@ -118,6 +126,20 @@ public class AddressController {
 
 //modelList.add(linkTo(methodOn(AddressController.class).one(code)).withSelfRel());
         return new ResponseEntity<>(modelList, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/stores", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<StoreModel>> findAddressStores(@PathVariable("id") Long id) {
+        List<Store> storeList = addressService.findAddressStores(id);
+        CollectionModel<StoreModel> storeModels = new StoreModelAssemblerSupport().toCollectionModel(storeList);
+        return new ResponseEntity<>(storeModels, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/customers", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<CustomerModel>> findAddressCustomers(@PathVariable("id") Long id) {
+        List<Customer> customerList = addressService.findAddressCustomers(id);
+        @NonNull CollectionModel<CustomerModel> customerModels = new CustomerModelAssemblerSupport().toCollectionModel(customerList);
+        return new ResponseEntity<>(customerModels, HttpStatus.OK);
     }
 }
 

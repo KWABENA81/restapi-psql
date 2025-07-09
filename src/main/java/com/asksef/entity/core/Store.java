@@ -8,8 +8,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,13 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-
+@Slf4j
 @Setter
 @Entity
 @Table(name = "STORE", schema = "rest_app")
 public class Store implements Serializable, Comparable<Store> {
-
-    private static final Logger log = LoggerFactory.getLogger(Store.class);
 
     public Store() {
         this.lastUpdate = LocalDateTime.now();
@@ -34,18 +31,13 @@ public class Store implements Serializable, Comparable<Store> {
         this.storeName = storeName;
     }
 
-//    public Store(Long id, String storeName) {
-//        this();
-//        this.storeName = storeName;
-//        this.storeId = id;
-//    }
-@Builder
-    public Store(Long id, String storeName,Staff staff, Address address, LocalDateTime lastUpdate) {
-    this.lastUpdate = lastUpdate;
-        this.storeName = storeName;
+    @Builder
+    public Store(Long id, String storeName, Staff staff, Address address, LocalDateTime lastUpdate) {
         this.storeId = id;
+        this.storeName = storeName;
         this.address = address;
         this.staff = staff;
+        this.lastUpdate = lastUpdate;
     }
 
     @Getter
@@ -62,7 +54,7 @@ public class Store implements Serializable, Comparable<Store> {
 
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "STAFF_ID", referencedColumnName = "STAFF_ID")
     @JsonBackReference
     private Staff staff;

@@ -3,6 +3,8 @@ package com.asksef.entity.service_impl;
 
 import com.asksef.entity.core.Customer;
 import com.asksef.entity.core.Invoice;
+import com.asksef.entity.core.Payment;
+import com.asksef.entity.core.Sale;
 import com.asksef.entity.model.InvoiceModel;
 import com.asksef.entity.repository.InvoiceRepository;
 import com.asksef.entity.service_interface.InvoiceServiceInterface;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -128,5 +131,19 @@ public class InvoiceService implements InvoiceServiceInterface {
         return this.invoiceRepository.findCustomerOnInvoice(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Customer", "id", null, id)
         );
+    }
+
+    public List<Sale> findInvoiceSales(Long id) {
+        Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Invoice", "id", null, id)
+        );
+        return invoice.getSaleList();
+    }
+
+    public List<Payment> findInvoicePayments(Long id) {
+        Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Invoice", "id", null, id)
+        );
+        return invoice.getPaymentList();
     }
 }

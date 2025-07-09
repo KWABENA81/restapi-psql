@@ -6,8 +6,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,13 +14,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
+@Slf4j
 @Setter
 @Entity
 @Table(name = "PAYMENT", schema = "rest_app")
 public class Payment implements Serializable, Comparable<Payment> {
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger log = LoggerFactory.getLogger(Payment.class);
 
     public Payment() {
         this.paymentNr = String.valueOf(Math.abs(LocalDateTime.now().hashCode()));
@@ -33,7 +32,8 @@ public class Payment implements Serializable, Comparable<Payment> {
     }
 
     @Builder
-    public Payment(Long id, Staff staff, Invoice invoice, String paymentNr, Float amount, Date paymentDate, LocalDateTime lastUpdate) {
+    public Payment(Long id, Staff staff, Invoice invoice, String paymentNr, Float amount,
+                   Date paymentDate, LocalDateTime lastUpdate) {
         this.paymentId = id;
         this.staff = staff;
         this.invoice = invoice;
@@ -51,7 +51,7 @@ public class Payment implements Serializable, Comparable<Payment> {
     private Long paymentId;
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "STAFF_ID", referencedColumnName = "STAFF_ID")
     @JsonBackReference
     private Staff staff;
@@ -62,7 +62,7 @@ public class Payment implements Serializable, Comparable<Payment> {
     }
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "INVOICE_ID", referencedColumnName = "INVOICE_ID")
     @JsonBackReference
     private Invoice invoice;

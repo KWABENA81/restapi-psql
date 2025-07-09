@@ -8,8 +8,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,26 +18,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Setter
 @Entity
 @Table(name = "CUSTOMER", schema = "rest_app")
 public class Customer implements Serializable, Comparable<Customer> {
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger log = LoggerFactory.getLogger(Customer.class);
 
     public Customer() {
         this.lastUpdate = LocalDateTime.now();
     }
 
     @Builder
-    public Customer(Long id, String firstName, String lastName, Address address, LocalDateTime ctime, LocalDateTime localDateTime) {
+    public Customer(Long id, String firstName, String lastName, Address address, LocalDateTime creationtime, LocalDateTime lastUpdate) {
         this.customerId = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
-        this.lastUpdate = localDateTime;
-        this.createDate = ctime;
+        this.createDate = creationtime;
+        this.lastUpdate = lastUpdate;
     }
 
     @Setter
@@ -58,11 +58,12 @@ public class Customer implements Serializable, Comparable<Customer> {
     @Column(name = "LAST_NAME", length = 45, nullable = false)
     private String lastName;
 
-    //@CreationTimestamp
+    @Setter
+    @Getter
+    @CreationTimestamp
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
 
-    //    @Getter
     @Getter
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")

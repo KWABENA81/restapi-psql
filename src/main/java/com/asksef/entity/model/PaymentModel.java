@@ -20,13 +20,7 @@ public class PaymentModel extends RepresentationModel<PaymentModel> {
     private Staff staff;
     private Invoice invoice;
     private String paymentNr;
+    private Float amount;
     private Date paymentDate;
     private LocalDateTime lastUpdate;
-    private Float amount;
-
-//    public Payment toEntity() {
-//        return PaymentModel.builder()
-//                .paymentId(this.paymentId)
-//                .paymentNr(this.)
-//    }
 }

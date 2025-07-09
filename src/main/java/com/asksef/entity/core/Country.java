@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Setter
 @Entity
 @Table(name = "COUNTRY", schema = "rest_app")
@@ -46,7 +48,6 @@ public class Country implements Serializable, Comparable<Country> {
     @Column(name = "COUNTRY_ID", nullable = false)
     private Long countryId;
 
-
     @Getter
     @Column(name = "COUNTRY", length = 50, nullable = false, unique = true)
     @UniqueCountryName
@@ -57,7 +58,6 @@ public class Country implements Serializable, Comparable<Country> {
     @JsonManagedReference
     @JsonIgnore
     private List<City> cityList;
-
 
     public List<City> getCityList() {
         return (cityList != null) ? cityList : new ArrayList<>();

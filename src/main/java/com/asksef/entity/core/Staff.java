@@ -7,8 +7,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -17,27 +16,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Setter
 @Entity
 @Table(name = "STAFF", schema = "rest_app")
 public class Staff implements Serializable, Comparable<Staff> {
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger log = LoggerFactory.getLogger(Staff.class);
-
 
     public Staff() {
         this.lastUpdate = LocalDateTime.now();
     }
 
     @Builder
-    public Staff(long staffId, String firstName, String lastName, String username, LocalDateTime lastUpdate, Address address) {
+    public Staff(long staffId, String firstName, String lastName, String username,                 LocalDateTime lastUpdate) {
         this.staffId = staffId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.lastUpdate = lastUpdate;
-       // this.address = address;
     }
 
     public Staff(Long id, String firstName, String lastName, String username) {
@@ -90,7 +87,6 @@ public class Staff implements Serializable, Comparable<Staff> {
     public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
-
 
     @Setter
     @OneToMany(targetEntity = Payment.class, mappedBy = "staff", cascade = CascadeType.ALL)

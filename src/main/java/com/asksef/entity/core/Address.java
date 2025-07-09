@@ -50,14 +50,13 @@ public class Address implements Serializable, Comparable<Address> {
     @Column(name = "GPS_CODE", length = 10, nullable = false)
     private String gpsCode;
 
-
     @Setter
     @Getter
     @Column(name = "PHONE", length = 20, nullable = false)
     private String phone;
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "CITY_ID", referencedColumnName = "CITY_ID")
     @JsonBackReference
     private City city;
@@ -68,7 +67,7 @@ public class Address implements Serializable, Comparable<Address> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Store.class, mappedBy = "address", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Store.class, mappedBy = "address", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference
     @JsonIgnore
     private List<Store> storeList;
@@ -86,7 +85,7 @@ public class Address implements Serializable, Comparable<Address> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Customer.class, mappedBy = "address", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Customer.class, mappedBy = "address", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference
     @JsonIgnore
     private List<Customer> customerList;

@@ -1,8 +1,17 @@
 package com.asksef.controller;
 
+import com.asksef.assembler.PaymentModelAssemblerSupport;
+import com.asksef.assembler.SaleModelAssemblerSupport;
 import com.asksef.assembler.StaffModelAssemblerSupport;
+import com.asksef.assembler.StoreModelAssemblerSupport;
+import com.asksef.entity.core.Payment;
+import com.asksef.entity.core.Sale;
 import com.asksef.entity.core.Staff;
+import com.asksef.entity.core.Store;
+import com.asksef.entity.model.PaymentModel;
+import com.asksef.entity.model.SaleModel;
 import com.asksef.entity.model.StaffModel;
+import com.asksef.entity.model.StoreModel;
 import com.asksef.entity.repository.StaffRepository;
 import com.asksef.entity.service_impl.StaffService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Slf4j
 @RestController
@@ -75,7 +82,30 @@ public class StaffController {
         log.info("Deleted staff: {}", id);
         return new ResponseEntity<>("Staff entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping(value = "/{id}/payments", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<PaymentModel>> findStaffPayments(@PathVariable("id") Long id) {
+        List<Payment> paymentList = staffService.findStaffPayments(id);
+        CollectionModel<PaymentModel> paymentModels = new PaymentModelAssemblerSupport().toCollectionModel(paymentList);
+        return new ResponseEntity<>(paymentModels, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/sales", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<SaleModel>> findStaffSales(@PathVariable("id") Long id) {
+        List<Sale> salesList = staffService.findStaffSales(id);
+        CollectionModel<SaleModel> saleModels = new SaleModelAssemblerSupport().toCollectionModel(salesList);
+        return new ResponseEntity<>(saleModels, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/stores", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<StoreModel>> findStaffStores(@PathVariable("id") Long id) {
+        List<Store> storeList = staffService.findStaffStores(id);
+        CollectionModel<StoreModel> storeModels = new StoreModelAssemblerSupport().toCollectionModel(storeList);
+        return new ResponseEntity<>(storeModels, HttpStatus.OK);
+    }
 }
+
+
 //    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
 //    public ResponseEntity<AddressModel> findAddressOfStaff(@PathVariable("id") Long id) {
 //        Address address = this.staffService.findAddressOfCustomer(id);
@@ -89,8 +119,6 @@ public class StaffController {
 //        addressModel.add(linkTo(methodOn(CustomerController.class).one(id)).withRel("customer"));
 //        return new ResponseEntity<>(addressModel, HttpStatus.OK);
 //    }
-
-
 
 
 //    public CollectionModel<EntityModel<Staff>> findByNames(@PathVariable String names) {

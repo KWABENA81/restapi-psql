@@ -24,6 +24,7 @@ public class AddressModel extends RepresentationModel<AddressModel> {
     private String phone;
     private City city;
     private LocalDateTime lastUpdate;
-    private List<Store> storeList;
-    private List<Customer> customerList;
+
+    private List<StoreModel> storeModelList;
+    private List<CustomerModel> customerModelList;
 }

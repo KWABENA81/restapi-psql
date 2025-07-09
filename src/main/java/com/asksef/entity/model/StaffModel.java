@@ -1,6 +1,9 @@
 package com.asksef.entity.model;
 
 import com.asksef.entity.core.Address;
+import com.asksef.entity.core.Payment;
+import com.asksef.entity.core.Sale;
+import com.asksef.entity.core.Store;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -20,9 +23,8 @@ public class StaffModel extends RepresentationModel<StaffModel> {
     private String lastName;
     private String username;
     private LocalDateTime lastUpdate;
-    private Address address;
 
-    private List<PaymentModel> paymentModels;
-    private List<SaleModel> saleModels;
-    private List<StoreModel> storeModels;
+    private List<PaymentModel> paymentModelList;
+    private List<SaleModel> saleModelList;
+    private List<StoreModel> storeModelList;
 }

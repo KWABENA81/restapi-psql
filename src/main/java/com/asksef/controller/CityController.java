@@ -3,6 +3,7 @@ package com.asksef.controller;
 import com.asksef.assembler.AddressModelAssemblerSupport;
 import com.asksef.assembler.CityModelAssemblerSupport;
 import com.asksef.assembler.CountryModelAssemblerSupport;
+import com.asksef.entity.core.Address;
 import com.asksef.entity.core.City;
 import com.asksef.entity.core.Country;
 import com.asksef.entity.model.AddressModel;
@@ -18,9 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -45,21 +44,6 @@ public class CityController {
     public ResponseEntity<CollectionModel<CityModel>> all() {
         List<City> entityList = this.cityService.findAll().stream().toList();
         return new ResponseEntity<>(this.assemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-    public ResponseEntity<CollectionModel<AddressModel>> findCityAddresses(@PathVariable("id") Long id) {
-        final AddressModelAssemblerSupport addressModelAssemblerSupport = new AddressModelAssemblerSupport();
-        Collection<AddressModel> cityAddresses = this.cityService.findAddressesOfCity(id)
-                .stream().map(addressModelAssemblerSupport::toModel)
-                .collect(Collectors.toList());
-        CollectionModel<AddressModel> addressModelCollection = CollectionModel.of(cityAddresses, linkTo((methodOn(CityController.class)
-                .findCityAddresses(id))).withSelfRel());
-
-        log.info(" 65 Address modelss {}", addressModelCollection);
-        return ResponseEntity.ok(addressModelCollection);
-        // } else
-        // return ResponseEntity.notFound().build();//<>( HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = "application/hal+json")
@@ -100,7 +84,6 @@ public class CityController {
     @GetMapping(value = "{id}/country", produces = "application/hal+json")
     public ResponseEntity<CountryModel> findCountryOfCity(@PathVariable("id") Long id) {
         Country country = cityService.findCountryOfCity(id);
-
         //  build a model
         CountryModel countryModel = new CountryModelAssemblerSupport().toModel(country);
         //  add links
@@ -108,8 +91,28 @@ public class CityController {
         countryModel.add(linkTo(methodOn(CityController.class).one(id)).withRel("city"));
         return new ResponseEntity<>(countryModel, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<AddressModel>> findAddressesInCity(@PathVariable("id") Long id) {
+        List<Address> addressList = this.cityService.findAddressesInCity(id);
+        CollectionModel<AddressModel> addressModels = new AddressModelAssemblerSupport().toCollectionModel(addressList);
+
+        return new ResponseEntity<>(addressModels, HttpStatus.OK);
+    }
 }
 
+
+//    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
+//    public ResponseEntity<CollectionModel<AddressModel>> findCityAddresses(@PathVariable("id") Long id) {
+//        final AddressModelAssemblerSupport addressModelAssemblerSupport = new AddressModelAssemblerSupport();
+//        Collection<AddressModel> cityAddresses = this.cityService.findAddressesOfCity(id)
+//                .stream().map(addressModelAssemblerSupport::toModel)
+//                .collect(Collectors.toList());
+//        CollectionModel<AddressModel> addressModelCollection = CollectionModel.of(cityAddresses, linkTo((methodOn(CityController.class)
+//                .findCityAddresses(id))).withSelfRel());
+//
+//        return ResponseEntity.ok(addressModelCollection);
+//    }
 
 //    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
 //    public ResponseEntity<CollectionModel<AddressModel>> findCityAddresses(@PathVariable("id") Long id) {

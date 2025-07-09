@@ -17,9 +17,9 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SaleModel extends RepresentationModel<SaleModel> {
     private Long saleId;
+    private String saleNr;
     private Date saleDate;
     private Invoice invoice;
-    private String saleNr;
     private LocalDateTime lastUpdate;
     private Staff staff;
 }

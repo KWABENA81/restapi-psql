@@ -22,5 +22,6 @@ public class StoreModel extends RepresentationModel<StoreModel> {
     private Staff staff;
     private Address address;
     private LocalDateTime lastUpdate;
-    private List<Inventory> inventory;
+
+    private List<InventoryModel> inventoryModelList;
 }

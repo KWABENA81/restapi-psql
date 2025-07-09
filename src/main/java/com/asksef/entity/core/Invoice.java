@@ -8,8 +8,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Setter
 @Entity
 @Table(name = "INVOICE", schema = "rest_app")
 public class Invoice implements Serializable, Comparable<Invoice> {
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger log = LoggerFactory.getLogger(Invoice.class);
 
     public Invoice() {
         this.lastUpdate = LocalDateTime.now();
@@ -52,7 +51,7 @@ public class Invoice implements Serializable, Comparable<Invoice> {
     private String invoiceNr;
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")
     @JsonBackReference
     private Customer customer;

@@ -18,5 +18,6 @@ public class CountryModel extends RepresentationModel<CountryModel> {
     private Long countryId;
     private String country;
     private LocalDateTime lastUpdate;
-    private List<City> cityList;
+
+    private List<CityModel> cityModelList;
 }
