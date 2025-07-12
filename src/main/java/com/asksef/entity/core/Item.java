@@ -26,11 +26,6 @@ public class Item implements Serializable, Comparable<Item> {
 
     public Item() {
         this.lastUpdate = LocalDateTime.now();
-        this.saleInfo = String.valueOf(Math.abs(LocalDateTime.now().hashCode()));
-    }
-
-    public Item(String saleInfo) {
-        this.saleInfo = saleInfo;
     }
 
     //  for testing
@@ -40,13 +35,11 @@ public class Item implements Serializable, Comparable<Item> {
     }
 
     @Builder
-    public Item(Long id, String saleInfo, String itemName, String itemCode, String itemDesc,
-                Float itemCost, LocalDateTime lastUpdate) {
-        this.itemId = id;
+    public Item(Long itemId, String itemName, String itemCode, String itemDesc, Float itemCost, LocalDateTime lastUpdate) {
+        this.itemId = itemId;
         this.itemName = itemName;
         this.itemCode = itemCode;
         this.itemDesc = itemDesc;
-        this.saleInfo = saleInfo;
         this.itemCost = itemCost;
         this.lastUpdate = lastUpdate;
     }
@@ -78,11 +71,6 @@ public class Item implements Serializable, Comparable<Item> {
     @Column(name = "ITEM_COST", nullable = false)
     private Float itemCost;
 
-    @Getter
-    @Setter
-    @Column(name = "SALE_INFO", nullable = false)
-    private String saleInfo;
-
     @Convert(converter = DateConverter.class)
     private LocalDateTime lastUpdate;
 
@@ -91,6 +79,23 @@ public class Item implements Serializable, Comparable<Item> {
     @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime getLastUpdate() {
         return lastUpdate;
+    }
+
+    @Setter
+    @OneToMany(targetEntity = Order.class, mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JsonIgnore
+    private List<Order> orderList;
+
+    public List<Order> getOrderList() {
+        return (orderList != null) ? orderList : new ArrayList<>();
+    }
+
+    public void addOrder(Order order) {
+        List<Order> orders = getOrderList();
+        if (!orders.contains(order))
+            orders.add(order);
+        order.setItem(this);
     }
 
     @Setter
@@ -131,7 +136,6 @@ public class Item implements Serializable, Comparable<Item> {
                 ", itemCode='" + itemCode + '\'' +
                 ", itemDesc='" + itemDesc + '\'' +
                 ", itemCost=" + itemCost +
-                ", saleInfo='" + saleInfo + '\'' +
                 ", lastUpdate=" + lastUpdate +
                 //     ", inventoryList=" + inventoryList +
                 '}';
@@ -139,9 +143,9 @@ public class Item implements Serializable, Comparable<Item> {
 
     @Override
     public int compareTo(Item item) {
-        int value = this.itemName.compareTo(item.getItemName());
+        int value = this.itemCode.compareTo(item.getItemCode());
         if (value == 0) {
-            value = this.saleInfo.compareTo(item.getSaleInfo());
+            value = this.itemName.compareTo(item.getItemName());
         }
         return value;
     }

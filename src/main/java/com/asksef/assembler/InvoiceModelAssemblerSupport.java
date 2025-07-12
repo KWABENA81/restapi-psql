@@ -3,10 +3,10 @@ package com.asksef.assembler;
 import com.asksef.controller.InvoiceController;
 import com.asksef.entity.core.Invoice;
 import com.asksef.entity.core.Payment;
-import com.asksef.entity.core.Sale;
+import com.asksef.entity.core.Order;
 import com.asksef.entity.model.InvoiceModel;
 import com.asksef.entity.model.PaymentModel;
-import com.asksef.entity.model.SaleModel;
+import com.asksef.entity.model.OrderModel;
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -37,14 +37,14 @@ public class InvoiceModelAssemblerSupport extends RepresentationModelAssemblerSu
                 .findCustomerOnInvoice(entity.getInvoiceId())).withRel("Customer On Invoice"));
         invoiceModel.add(linkTo(methodOn(InvoiceController.class)
                 .findInvoicePayments(entity.getInvoiceId())).withRel("Invoice Payments"));
-        invoiceModel.add(linkTo(methodOn(InvoiceController.class)
-                .findInvoiceSales(entity.getInvoiceId())).withRel("Invoice Sales"));
+//        invoiceModel.add(linkTo(methodOn(InvoiceController.class)
+//                .findInvoiceSales(entity.getInvoiceId())).withRel("Invoice Sales"));
 
         invoiceModel.setInvoiceId(entity.getInvoiceId());
         invoiceModel.setInvoiceNr(entity.getInvoiceNr());
         invoiceModel.setCustomer(entity.getCustomer());
         invoiceModel.setLastUpdate(entity.getLastUpdate());
-        invoiceModel.setSaleModelList(toSalesCollectionModel(entity.getSaleList()));
+        //invoiceModel.setOrderModelList(toSalesCollectionModel(entity.getOrderList()));
         invoiceModel.setPaymentModelList(toPaymentCollectionModel(entity.getPaymentList()));
         return invoiceModel;
     }
@@ -66,21 +66,20 @@ public class InvoiceModelAssemblerSupport extends RepresentationModelAssemblerSu
                                 .one(pay.getPaymentId())).withRel("one"))).toList();
     }
 
-    private List<SaleModel> toSalesCollectionModel(List<Sale> saleList) {
-        if (saleList == null || saleList.isEmpty()) {
+    private List<OrderModel> toSalesCollectionModel(List<Order> orderList) {
+        if (orderList == null || orderList.isEmpty()) {
             return Collections.emptyList();
         }
-        return saleList.stream()
-                .map(sl -> SaleModel.builder()
-                        .saleId(sl.getSaleId())
-                        .saleDate(sl.getSaleDate())
-                        .saleNr(sl.getSaleNr())
-                        .staff(sl.getStaff())
-                        .invoice(sl.getInvoice())
-                        .lastUpdate(sl.getLastUpdate())
+        return orderList.stream()
+                .map(od -> OrderModel.builder()
+                        .orderId(od.getOrderId())
+                        .orderDate(od.getOrderDate())
+                        .orderNr(od.getOrderNr())
+                        .staff(od.getStaff())
+                        .lastUpdate(od.getLastUpdate())
                         .build()
                         .add(linkTo(methodOn(InvoiceController.class)
-                                .one(sl.getSaleId())).withRel("one"))).toList();
+                                .one(od.getOrderId())).withRel("one"))).toList();
     }
 
     @NonNull

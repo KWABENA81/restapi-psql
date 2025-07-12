@@ -2,10 +2,13 @@ package com.asksef.controller;
 
 import com.asksef.assembler.InventoryModelAssemblerSupport;
 import com.asksef.assembler.ItemModelAssemblerSupport;
+import com.asksef.assembler.OrderModelAssemblerSupport;
 import com.asksef.entity.core.Inventory;
 import com.asksef.entity.core.Item;
+import com.asksef.entity.core.Order;
 import com.asksef.entity.model.InventoryModel;
 import com.asksef.entity.model.ItemModel;
+import com.asksef.entity.model.OrderModel;
 import com.asksef.entity.repository.ItemRepository;
 import com.asksef.entity.service_impl.ItemService;
 import lombok.NonNull;
@@ -107,5 +110,12 @@ public class ItemController {
         List<Inventory> inventoryList = itemService.findItemInventories(id);
         CollectionModel<InventoryModel> inventoryModels = new InventoryModelAssemblerSupport().toCollectionModel(inventoryList);
         return new ResponseEntity<>(inventoryModels, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/sales", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<OrderModel>> findItemSales(@PathVariable("id") Long id) {
+        List<Order> salesList = itemService.findItemSales(id);
+        CollectionModel<OrderModel> saleModels = new OrderModelAssemblerSupport().toCollectionModel(salesList);
+        return new ResponseEntity<>(saleModels, HttpStatus.OK);
     }
 }

@@ -1,8 +1,17 @@
 package com.asksef.controller;
 
-import com.asksef.assembler.*;
-import com.asksef.entity.core.*;
-import com.asksef.entity.model.*;
+import com.asksef.assembler.CustomerModelAssemblerSupport;
+import com.asksef.assembler.InvoiceModelAssemblerSupport;
+import com.asksef.assembler.OrderModelAssemblerSupport;
+import com.asksef.assembler.PaymentModelAssemblerSupport;
+import com.asksef.entity.core.Customer;
+import com.asksef.entity.core.Invoice;
+import com.asksef.entity.core.Order;
+import com.asksef.entity.core.Payment;
+import com.asksef.entity.model.CustomerModel;
+import com.asksef.entity.model.InvoiceModel;
+import com.asksef.entity.model.OrderModel;
+import com.asksef.entity.model.PaymentModel;
 import com.asksef.entity.repository.InvoiceRepository;
 import com.asksef.entity.service_impl.InvoiceService;
 import jakarta.servlet.ServletResponse;
@@ -84,12 +93,14 @@ public class InvoiceController {
         customerModel.add(linkTo(methodOn(InvoiceController.class).findCustomerOnInvoice(id)).withRel("Customer On Invoice"));
         return new ResponseEntity<>(customerModel, HttpStatus.OK);
     }
-    @GetMapping(value = "/{id}/sales", produces = "application/hal+json")
-    public ResponseEntity<CollectionModel<SaleModel>> findInvoiceSales(@PathVariable("id") Long id) {
-        List<Sale> salesList = invoiceService.findInvoiceSales(id);
-        CollectionModel<SaleModel> saleModels = new SaleModelAssemblerSupport().toCollectionModel(salesList);
-        return new ResponseEntity<>(saleModels, HttpStatus.OK);
-    }
+
+//    @GetMapping(value = "/{id}/sales", produces = "application/hal+json")
+//    public ResponseEntity<CollectionModel<OrderModel>> findInvoiceSales(@PathVariable("id") Long id) {
+//        List<Order> salesList = invoiceService.findInvoiceSales(id);
+//        CollectionModel<OrderModel> saleModels = new OrderModelAssemblerSupport().toCollectionModel(salesList);
+//        return new ResponseEntity<>(saleModels, HttpStatus.OK);
+//    }
+
     @GetMapping(value = "/{id}/payments", produces = "application/hal+json")
     public ResponseEntity<CollectionModel<PaymentModel>> findInvoicePayments(@PathVariable("id") Long id) {
         List<Payment> paymentList = invoiceService.findInvoicePayments(id);

@@ -51,7 +51,7 @@ public class CountryService implements CountryServiceInterface {
     @Transactional
     public Country save(@Valid CountryModel countryModel) {
         Country country = Country.builder()
-                .id(countryModel.getCountryId())
+                .countryId(countryModel.getCountryId())
                 .country(countryModel.getCountry())
                 .lastUpdate(countryModel.getLastUpdate())
                 .build();
@@ -70,7 +70,7 @@ public class CountryService implements CountryServiceInterface {
                 () -> new CustomResourceNotFoundException("Country", "id", null, id)
         );
         Country updateCountry = Country.builder()
-                .id(countryModel.getCountryId())
+                .countryId(countryModel.getCountryId())
                 .country(countryModel.getCountry())
                 .lastUpdate(countryModel.getLastUpdate())
                 .build();

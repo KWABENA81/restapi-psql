@@ -58,7 +58,7 @@ public class PaymentService implements PaymentServiceInterface {
     @Transactional
     public Payment save(@Valid PaymentModel paymentModel) {
         Payment payment = Payment.builder()
-                .id(paymentModel.getPaymentId())
+                .paymentId(paymentModel.getPaymentId())
                 .paymentNr(paymentModel.getPaymentNr())
                 .paymentDate(paymentModel.getPaymentDate())
                 .amount(paymentModel.getAmount())

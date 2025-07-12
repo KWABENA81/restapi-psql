@@ -2,6 +2,7 @@ package com.asksef.entity.service_impl;
 
 import com.asksef.entity.core.Inventory;
 import com.asksef.entity.core.Item;
+import com.asksef.entity.core.Order;
 import com.asksef.entity.model.ItemModel;
 import com.asksef.entity.repository.ItemRepository;
 import com.asksef.entity.service_interface.ItemServiceInterface;
@@ -53,12 +54,11 @@ public class ItemService implements ItemServiceInterface {
     @Transactional
     public Item save(@Valid ItemModel itemModel) {
         Item item = Item.builder()
-                .id(itemModel.getItemId())
+                .itemId(itemModel.getItemId())
                 .itemCode(itemModel.getItemCode())
                 .itemCost(itemModel.getItemCost())
                 .itemDesc(itemModel.getItemDesc())
                 .itemName(itemModel.getItemName())
-                .saleInfo(itemModel.getSaleInfo())
                 .build();
         return save(item);
     }
@@ -84,9 +84,9 @@ public class ItemService implements ItemServiceInterface {
             updateItem.setItemCode(item.getItemCode());
             updateItem.setItemDesc(item.getItemDesc());
             updateItem.setItemCost(item.getItemCost());
-            updateItem.setSaleInfo(item.getSaleInfo());
 
             updateItem.setInventoryList(item.getInventoryList());
+            updateItem.setOrderList(item.getOrderList());
             log.info("Item updated");
             return this.itemRepository.save(updateItem);
         } else {
@@ -135,5 +135,12 @@ public class ItemService implements ItemServiceInterface {
                 () -> new CustomResourceNotFoundException("Country", "id", null, id)
         );
         return item.getInventoryList();
+    }
+
+    public List<Order> findItemSales(Long id) {
+        Item item = this.itemRepository.findById(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Country", "id", null, id)
+        );
+        return item.getOrderList();
     }
 }

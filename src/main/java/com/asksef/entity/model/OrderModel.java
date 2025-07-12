@@ -1,6 +1,6 @@
 package com.asksef.entity.model;
 
-import com.asksef.entity.core.Invoice;
+import com.asksef.entity.core.Item;
 import com.asksef.entity.core.Staff;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -15,11 +15,12 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SaleModel extends RepresentationModel<SaleModel> {
-    private Long saleId;
-    private String saleNr;
-    private Date saleDate;
-    private Invoice invoice;
-    private LocalDateTime lastUpdate;
+public class OrderModel extends RepresentationModel<OrderModel> {
+    private Long orderId;
+    private String orderNr;
+    private Date orderDate;
+    //private Invoice invoice;
     private Staff staff;
+    private Item item;
+    private LocalDateTime lastUpdate;
 }

@@ -31,10 +31,10 @@ public class Invoice implements Serializable, Comparable<Invoice> {
     }
 
     @Builder
-    public Invoice(Long invoiceId, String invoiceNr, Customer customer, LocalDateTime lastUpdate) {
+    public Invoice(Long invoiceId, String invoiceNr, Customer customer, Order order,LocalDateTime lastUpdate) {
         this.invoiceId = invoiceId;
         this.invoiceNr = invoiceNr;
-        this.customer = customer;
+        this.customer = customer;this.order = order;
         this.lastUpdate = lastUpdate;
     }
 
@@ -47,7 +47,7 @@ public class Invoice implements Serializable, Comparable<Invoice> {
 
     @Setter
     @Getter
-    @Column(name = "INVOICE_NR")
+    @Column(name = "INVOICE_NR", unique = true)
     private String invoiceNr;
 
     @Getter
@@ -61,23 +61,35 @@ public class Invoice implements Serializable, Comparable<Invoice> {
         customer.addInvoice(this);
     }
 
-    @Setter
-    @OneToMany(targetEntity = Sale.class, mappedBy = "invoice", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    @JsonIgnore
-    private List<Sale> saleList;
+    @Getter
+    @ManyToOne//(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORDER_ID", referencedColumnName = "ORDER_ID")
+    @JsonBackReference
+    private Order order;
 
-    public List<Sale> getSaleList() {
-        return (saleList != null) ? saleList : new ArrayList<>();
+    public void setOrder(Order order) {
+        this.order = order;
+        order.addInvoice(this);
     }
 
-    public void addSale(Sale sale) {
-        List<Sale> sales = getSaleList();
-        if (!sales.contains(sale)) {
-            sales.add(sale);
-        }
-        sale.setInvoice(this);
-    }
+//
+//    @Setter
+//    @OneToMany(targetEntity = Order.class, mappedBy = "invoice", cascade = CascadeType.ALL)
+//    @JsonManagedReference
+//    @JsonIgnore
+//    private List<Order> orderList;
+//
+//    public List<Order> getOrderList() {
+//        return (orderList != null) ? orderList : new ArrayList<>();
+//    }
+//
+//    public void addOrder(Order order) {
+//        List<Order> orders = getOrderList();
+//        if (!orders.contains(order)) {
+//            orders.add(order);
+//        }
+//        order.setInvoice(this);
+//    }
 
     @Setter
     @OneToMany(targetEntity = Payment.class, mappedBy = "invoice", cascade = CascadeType.ALL)
@@ -125,7 +137,7 @@ public class Invoice implements Serializable, Comparable<Invoice> {
                 "invoiceId=" + invoiceId +
                 ", invoiceNr=" + invoiceNr +
                 ", customer=" + customer +
-                //       ", saleList=" + saleList +
+                //       ", orderList=" + orderList +
                 //     ", paymentList=" + paymentList +
                 ", lastUpdate=" + lastUpdate +
                 '}';

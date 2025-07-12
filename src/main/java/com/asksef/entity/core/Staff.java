@@ -29,7 +29,7 @@ public class Staff implements Serializable, Comparable<Staff> {
     }
 
     @Builder
-    public Staff(long staffId, String firstName, String lastName, String username,                 LocalDateTime lastUpdate) {
+    public Staff(long staffId, String firstName, String lastName, String username, LocalDateTime lastUpdate) {
         this.staffId = staffId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -37,9 +37,9 @@ public class Staff implements Serializable, Comparable<Staff> {
         this.lastUpdate = lastUpdate;
     }
 
-    public Staff(Long id, String firstName, String lastName, String username) {
+    public Staff(Long staffId, String firstName, String lastName, String username) {
         this();
-        this.staffId = id;
+        this.staffId = staffId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -107,20 +107,20 @@ public class Staff implements Serializable, Comparable<Staff> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Sale.class, mappedBy = "staff", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Order.class, mappedBy = "staff", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
-    private List<Sale> saleList;
+    private List<Order> orderList;
 
-    public List<Sale> getSaleList() {
-        return (saleList != null) ? saleList : new ArrayList<>();
+    public List<Order> getOrderList() {
+        return (orderList != null) ? orderList : new ArrayList<>();
     }
 
-    public void addSale(Sale sale) {
-        List<Sale> sales = getSaleList();
-        if (!sales.contains(sale))
-            sales.add(sale);
-        sale.setStaff(this);
+    public void addOrder(Order order) {
+        List<Order> orders = getOrderList();
+        if (!orders.contains(order))
+            orders.add(order);
+        order.setStaff(this);
     }
 //
 //    @Getter
@@ -175,7 +175,7 @@ public class Staff implements Serializable, Comparable<Staff> {
                 ", username='" + username + '\'' +
                 ", lastUpdate=" + lastUpdate +
                 //    ", paymentList=" + paymentList +
-                //   ", saleList=" + saleList +
+                //   ", orderList=" + orderList +
                 // ", storeList=" + storeList +
                 '}';
     }

@@ -30,8 +30,8 @@ public class Address implements Serializable, Comparable<Address> {
     }
 
     @Builder
-    public Address(Long id, String gpsCode, String phone, City city, LocalDateTime lastUpdate) {
-        this.addressId = id;
+    public Address(Long addressId, String gpsCode, String phone, City city, LocalDateTime lastUpdate) {
+        this.addressId = addressId;
         this.gpsCode = gpsCode;
         this.phone = phone;
         this.city = city;

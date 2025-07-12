@@ -59,7 +59,7 @@ public class StoreService implements StoreServiceInterface {
     @Transactional
     public Store save(@Valid StoreModel storemodel) {
         Store store = Store.builder()
-                .id(storemodel.getStoreId())
+                .storeId(storemodel.getStoreId())
                 .storeName(storemodel.getStoreName())
                 .staff(storemodel.getStaff())
                 .address(storemodel.getAddress())

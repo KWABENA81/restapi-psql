@@ -1,7 +1,6 @@
 package com.asksef.entity.model;
 
 import com.asksef.entity.core.Address;
-import com.asksef.entity.core.Invoice;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -22,7 +21,7 @@ public class CustomerModel extends RepresentationModel<CustomerModel> {
     private String firstName;
     private String lastName;
     private Address address;
-    private LocalDateTime creationDate;
+    private LocalDateTime createDate;
     private LocalDateTime lastUpdate;
 
     private List<InvoiceModel> invoiceModelList;

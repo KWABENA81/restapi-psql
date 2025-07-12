@@ -3,8 +3,8 @@ package com.asksef.entity.service_impl;
 
 import com.asksef.entity.core.Customer;
 import com.asksef.entity.core.Invoice;
+import com.asksef.entity.core.Order;
 import com.asksef.entity.core.Payment;
-import com.asksef.entity.core.Sale;
 import com.asksef.entity.model.InvoiceModel;
 import com.asksef.entity.repository.InvoiceRepository;
 import com.asksef.entity.service_interface.InvoiceServiceInterface;
@@ -83,9 +83,9 @@ public class InvoiceService implements InvoiceServiceInterface {
             Invoice invoice1 = optional.get();
             invoice1.setInvoiceNr(invoice.getInvoiceNr());
             invoice1.setCustomer(invoice.getCustomer());
+            invoice1.setOrder(invoice.getOrder());
 
             invoice1.setPaymentList(invoice.getPaymentList());
-            invoice1.setSaleList(invoice.getSaleList());
             log.info("Invoice Service:  update");
             return invoiceRepository.save(invoice1);
         } else {
@@ -105,7 +105,7 @@ public class InvoiceService implements InvoiceServiceInterface {
 //            invoice1.setCustomer(invoice.getCustomer());
 //
 //            invoice1.setPaymentList(invoice.getPaymentList());
-//            invoice1.setSaleList(invoice.getSaleList());
+//            invoice1.setOrderList(invoice.getOrderList());
 //            log.info("Invoice Service:  update");
 //            return invoiceRepository.save(invoice1);
 //        }
@@ -133,12 +133,12 @@ public class InvoiceService implements InvoiceServiceInterface {
         );
     }
 
-    public List<Sale> findInvoiceSales(Long id) {
-        Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(
-                () -> new CustomResourceNotFoundException("Invoice", "id", null, id)
-        );
-        return invoice.getSaleList();
-    }
+//    public List<Order> findInvoiceSales(Long id) {
+//        Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(
+//                () -> new CustomResourceNotFoundException("Invoice", "id", null, id)
+//        );
+//        return invoice.getOrderList();
+//    }
 
     public List<Payment> findInvoicePayments(Long id) {
         Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(

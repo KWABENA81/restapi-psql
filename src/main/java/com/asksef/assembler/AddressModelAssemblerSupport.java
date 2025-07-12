@@ -83,7 +83,7 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
                         .lastName(cust.getLastName())
                         .firstName(cust.getFirstName())
                         .lastUpdate(cust.getLastUpdate())
-                        .creationDate(cust.getCreateDate())
+                        .createDate(cust.getCreateDate())
                         .build()
                         .add(linkTo(methodOn(AddressController.class)
                                 .one(cust.getCustomerId()))

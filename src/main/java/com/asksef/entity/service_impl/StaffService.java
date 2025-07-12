@@ -1,7 +1,7 @@
 package com.asksef.entity.service_impl;
 
+import com.asksef.entity.core.Order;
 import com.asksef.entity.core.Payment;
-import com.asksef.entity.core.Sale;
 import com.asksef.entity.core.Staff;
 import com.asksef.entity.core.Store;
 import com.asksef.entity.model.StaffModel;
@@ -127,11 +127,11 @@ public class StaffService implements StaffServiceInterface {
         return staff.getPaymentList();
     }
 
-    public List<Sale> findStaffSales(Long id) {
+    public List<Order> findStaffSales(Long id) {
         Staff staff = this.staffRepository.findById(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Country", "id", null, id)
         );
-        return staff.getSaleList();
+        return staff.getOrderList();
     }
 
     public List<Store> findStaffStores(Long id) {

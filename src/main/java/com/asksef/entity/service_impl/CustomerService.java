@@ -60,7 +60,7 @@ public class CustomerService implements CustomerServiceInterface {
     @Transactional
     public Customer save(@Valid CustomerModel custModel) {
         Customer customer = Customer.builder()
-                .creationtime(custModel.getCreationDate())
+                .createDate(custModel.getCreateDate())
                 .address(custModel.getAddress())
                 .firstName(custModel.getFirstName())
                 .lastName(custModel.getLastName())

@@ -32,9 +32,9 @@ public class Payment implements Serializable, Comparable<Payment> {
     }
 
     @Builder
-    public Payment(Long id, Staff staff, Invoice invoice, String paymentNr, Float amount,
+    public Payment(Long paymentId, Staff staff, Invoice invoice, String paymentNr, Float amount,
                    Date paymentDate, LocalDateTime lastUpdate) {
-        this.paymentId = id;
+        this.paymentId = paymentId;
         this.staff = staff;
         this.invoice = invoice;
         this.paymentNr = paymentNr;

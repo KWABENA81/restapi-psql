@@ -1,22 +1,22 @@
 package com.asksef.entity.service_interface;
 
 
-import com.asksef.entity.core.Sale;
+import com.asksef.entity.core.Order;
 
 import java.util.Collection;
 
 public interface SaleServiceInterface {
-    Collection<Sale> findAll();
+    Collection<Order> findAll();
 
-    Collection<Sale> findAll(int pageNumber, int pageSize);
+    Collection<Order> findAll(int pageNumber, int pageSize);
 
-    Sale findById(Long id);
+    Order findById(Long id);
 
-    Sale save(Sale sale);
+    Order save(Order order);
 
-    Sale update(Sale sale);
+    Order update(Order order);
 
-    void delete(Sale sale);
+    void delete(Order order);
 
     Long count();
 }

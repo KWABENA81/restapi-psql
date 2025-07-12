@@ -57,9 +57,9 @@ public class CityService implements CityServiceInterface {
     @Transactional
     public City save(@Valid CityModel cityModel) {
         City city = City.builder()
-                .id(cityModel.getCityId())
+                .cityId(cityModel.getCityId())
                 .city(cityModel.getCity())
-                //  .country(cityModel.getCountryModel())
+                 .country(cityModel.getCountry())
                 .lastUpdate(cityModel.getLastUpdate())
                 .build();
         return save(city);

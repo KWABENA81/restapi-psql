@@ -1,6 +1,5 @@
 package com.asksef.entity.model;
 
-import com.asksef.entity.core.Inventory;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
@@ -19,8 +18,8 @@ public class ItemModel extends RepresentationModel<ItemModel> {
     private String itemName;
     private String itemCode;
     private String itemDesc;
-    private String saleInfo;
     private Float itemCost;
     private LocalDateTime lastUpdate;
+    private List<OrderModel> orderModelList;
     private List<InventoryModel> inventoryModelList;
 }

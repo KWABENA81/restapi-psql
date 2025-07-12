@@ -31,12 +31,13 @@ public class Customer implements Serializable, Comparable<Customer> {
     }
 
     @Builder
-    public Customer(Long id, String firstName, String lastName, Address address, LocalDateTime creationtime, LocalDateTime lastUpdate) {
-        this.customerId = id;
+    public Customer(Long customerId, String firstName, String lastName, Address address,
+                    LocalDateTime createDate, LocalDateTime lastUpdate) {
+        this.customerId = customerId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
-        this.createDate = creationtime;
+        this.createDate = createDate;
         this.lastUpdate = lastUpdate;
     }
 
@@ -120,8 +121,7 @@ public class Customer implements Serializable, Comparable<Customer> {
         return "Customer{" + "customerId=" + customerId +
                 ", firstName='" + firstName + '\'' + ", lastName='" +
                 lastName + '\'' + ", createDate='" + createDate + '\'' +
-                ", address=" + address + ", lastUpdate=" + lastUpdate +
-                //   ", invoiceList=" + invoiceList +
+                ", address=" + address + ", lastUpdate=" + lastUpdate + //", invoiceList=" + invoiceList +
                 '}';
     }
 

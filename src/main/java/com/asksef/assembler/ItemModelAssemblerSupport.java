@@ -3,8 +3,10 @@ package com.asksef.assembler;
 import com.asksef.controller.ItemController;
 import com.asksef.entity.core.Inventory;
 import com.asksef.entity.core.Item;
+import com.asksef.entity.core.Order;
 import com.asksef.entity.model.InventoryModel;
 import com.asksef.entity.model.ItemModel;
+import com.asksef.entity.model.OrderModel;
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -31,6 +33,7 @@ public class ItemModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         itemModel.setItemName(item.getItemName());
         itemModel.setItemDesc(item.getItemDesc());
         itemModel.setItemCost(item.getItemCost());
+        itemModel.setOrderModelList(toSaleCollectionModel(item.getOrderList()));
         itemModel.setInventoryModelList(toInventoryCollectionModel(item.getInventoryList()));
 
         itemModel.add(linkTo(methodOn(ItemController.class).all()).withRel("all"));
@@ -38,10 +41,28 @@ public class ItemModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         itemModel.add(linkTo(methodOn(ItemController.class).itemByCode(item.getItemCode())).withRel("Item Code"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByNameLike(item.getItemName())).withRel("Item Name"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByDescLike(item.getItemDesc())).withRel("Item Desc"));
+        itemModel.add(linkTo(methodOn(ItemController.class).findItemSales(item.getItemId())).withRel("Sales"));
         itemModel.add(linkTo(methodOn(ItemController.class).findItemInventories(item.getItemId())).withRel("Inventories"));
 
         return itemModel;
     }
+
+    private List<OrderModel> toSaleCollectionModel(List<Order> orderList) {
+        if (orderList == null || orderList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return orderList.stream()
+                .map(ord -> OrderModel.builder()
+                        .orderId(ord.getOrderId())
+                        .orderNr(ord.getOrderNr())
+                        .staff(ord.getStaff())
+                        .item(ord.getItem())
+                        .orderDate(ord.getOrderDate())
+                        .lastUpdate(ord.getLastUpdate())
+                        .build()
+                        .add(linkTo(methodOn(ItemController.class).one(ord.getOrderId())).withRel("one"))).toList();
+    }
+
 
     private List<InventoryModel> toInventoryCollectionModel(List<Inventory> inventoryList) {
         if (inventoryList == null || inventoryList.isEmpty()) {

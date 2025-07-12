@@ -1,12 +1,12 @@
 package com.asksef.assembler;
 
 import com.asksef.controller.StaffController;
+import com.asksef.entity.core.Order;
 import com.asksef.entity.core.Payment;
-import com.asksef.entity.core.Sale;
 import com.asksef.entity.core.Staff;
 import com.asksef.entity.core.Store;
 import com.asksef.entity.model.PaymentModel;
-import com.asksef.entity.model.SaleModel;
+import com.asksef.entity.model.OrderModel;
 import com.asksef.entity.model.StaffModel;
 import com.asksef.entity.model.StoreModel;
 import org.springframework.hateoas.CollectionModel;
@@ -49,7 +49,7 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
         staffModel.setUsername(entity.getUsername());
         staffModel.setLastUpdate(entity.getLastUpdate());
         //staffModel.setAddress(entity.getA);
-        staffModel.setSaleModelList(toSaleCollectionModel(entity.getSaleList()));
+        staffModel.setOrderModelList(toSaleCollectionModel(entity.getOrderList()));
         staffModel.setPaymentModelList(toPaymentCollectionModel(entity.getPaymentList()));
         staffModel.setStoreModelList(toStoreCollectionModel(entity.getStoreList()));
         return staffModel;
@@ -89,21 +89,20 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
                                 .withRel("one"))).toList();
     }
 
-    private List<SaleModel> toSaleCollectionModel(List<Sale> saleList) {
-        if (saleList == null || saleList.isEmpty()) {
+    private List<OrderModel> toSaleCollectionModel(List<Order> orderList) {
+        if (orderList == null || orderList.isEmpty()) {
             return Collections.emptyList();
         }
-        return saleList.stream()
-                .map(sl -> SaleModel.builder()
-                        .saleId(sl.getSaleId())
-                        .saleDate(sl.getSaleDate())
-                        .saleNr(sl.getSaleNr())
-                        .staff(sl.getStaff())
-                        .invoice(sl.getInvoice())
-                        .lastUpdate(sl.getLastUpdate())
+        return orderList.stream()
+                .map(od -> OrderModel.builder()
+                        .orderId(od.getOrderId())
+                        .orderDate(od.getOrderDate())
+                        .orderNr(od.getOrderNr())
+                        .staff(od.getStaff())
+                        .lastUpdate(od.getLastUpdate())
                         .build()
                         .add(linkTo(methodOn(StaffController.class)
-                                .one(sl.getSaleId())).withRel("one"))).toList();
+                                .one(od.getOrderId())).withRel("one"))).toList();
     }
 
 

@@ -22,9 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class CountryServiceUnitTest {
 
     private final Country countryCanada = Country.builder()
-            .id(16L).lastUpdate(LocalDateTime.now()).country("Canada").build();
-    private final Country countryNaija = Country.builder().id(23L)
-            .lastUpdate(LocalDateTime.now()).country("Nigeria").build();
+            .countryId(16L).
+            lastUpdate(LocalDateTime.now())
+            .country("Canada")
+            .build();
+    private final Country countryNaija = Country.builder()
+            .countryId(23L)
+            .lastUpdate(LocalDateTime.now())
+            .country("Nigeria")
+            .build();
     private final List<Country> testCountryList = Arrays.asList(countryCanada, countryNaija);
 
     @MockitoBean

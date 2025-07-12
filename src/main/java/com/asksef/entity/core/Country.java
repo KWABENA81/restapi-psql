@@ -29,13 +29,12 @@ public class Country implements Serializable, Comparable<Country> {
 
     public Country(String country) {
         this();
-
         this.country = country;
     }
 
     @Builder
-    public Country(Long id, String country, LocalDateTime lastUpdate) {
-        this.countryId = id;
+    public Country(Long countryId, String country, LocalDateTime lastUpdate) {
+        this.countryId = countryId;
         this.country = country;
         this.lastUpdate = lastUpdate;
     }

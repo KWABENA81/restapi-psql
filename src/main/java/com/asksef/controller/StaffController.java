@@ -1,15 +1,15 @@
 package com.asksef.controller;
 
 import com.asksef.assembler.PaymentModelAssemblerSupport;
-import com.asksef.assembler.SaleModelAssemblerSupport;
+import com.asksef.assembler.OrderModelAssemblerSupport;
 import com.asksef.assembler.StaffModelAssemblerSupport;
 import com.asksef.assembler.StoreModelAssemblerSupport;
+import com.asksef.entity.core.Order;
 import com.asksef.entity.core.Payment;
-import com.asksef.entity.core.Sale;
 import com.asksef.entity.core.Staff;
 import com.asksef.entity.core.Store;
 import com.asksef.entity.model.PaymentModel;
-import com.asksef.entity.model.SaleModel;
+import com.asksef.entity.model.OrderModel;
 import com.asksef.entity.model.StaffModel;
 import com.asksef.entity.model.StoreModel;
 import com.asksef.entity.repository.StaffRepository;
@@ -91,9 +91,9 @@ public class StaffController {
     }
 
     @GetMapping(value = "/{id}/sales", produces = "application/hal+json")
-    public ResponseEntity<CollectionModel<SaleModel>> findStaffSales(@PathVariable("id") Long id) {
-        List<Sale> salesList = staffService.findStaffSales(id);
-        CollectionModel<SaleModel> saleModels = new SaleModelAssemblerSupport().toCollectionModel(salesList);
+    public ResponseEntity<CollectionModel<OrderModel>> findStaffSales(@PathVariable("id") Long id) {
+        List<Order> salesList = staffService.findStaffSales(id);
+        CollectionModel<OrderModel> saleModels = new OrderModelAssemblerSupport().toCollectionModel(salesList);
         return new ResponseEntity<>(saleModels, HttpStatus.OK);
     }
 

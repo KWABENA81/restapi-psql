@@ -2,7 +2,8 @@ package com.asksef.entity.repository;
 
 
 import com.asksef.entity.core.Invoice;
-import com.asksef.entity.core.Sale;
+import com.asksef.entity.core.Item;
+import com.asksef.entity.core.Order;
 import com.asksef.entity.core.Staff;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,10 +15,10 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface SaleRepository extends JpaRepository<Sale, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    @Query("SELECT s from Sale s WHERE s.saleNr=(:nr)")
-    Sale findBySaleNr(@Param("nr") String nr);
+    @Query("SELECT s from Order s WHERE s.orderNr=(:nr)")
+    Order findBySaleNr(@Param("nr") String nr);
 
     @Query(
             nativeQuery = true,
@@ -35,7 +36,17 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
                     "INNER JOIN rest_app.Sale sl " +
                     "ON sf.staff_id = sl.staff_id " +
                     "WHERE sl.sale_id=:saleId")
-    Optional<Staff> findStaffOfSale(@Param("saleIdId") Long saleId);
+    Optional<Staff> findStaffOfSale(@Param("saleId") Long saleId);
+
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT itm.item_id, itm.item_name, itm.item_code, itm.item_desc, itm.item_cost, itm.sale_, sl.sale_id  " +
+                    "FROM rest_app.Item itm " +
+                    "INNER JOIN rest_app.Sale sl " +
+                    "ON sf.staff_id = sl.staff_id " +
+                    "WHERE sl.sale_id=:saleId")
+    Optional<Item> findItemOfSale(@Param("saleId") Long saleId);
 }
 
 

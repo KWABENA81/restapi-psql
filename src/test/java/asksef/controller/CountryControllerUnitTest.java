@@ -37,8 +37,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @AutoConfigureWebClient
 public class CountryControllerUnitTest {
 
-    private final Country countryCanada = Country.builder().id(66L).country("Canada").lastUpdate(LocalDateTime.now()).build();
-    private final Country countryNaija = Country.builder().id(86L).country("Nigeria").lastUpdate(LocalDateTime.now()).build();
+    private final Country countryCanada = Country.builder()
+            .countryId(66L)
+            .country("Canada")
+            .lastUpdate(LocalDateTime.now())
+            .build();
+    private final Country countryNaija = Country.builder()
+            .countryId(86L)
+            .country("Nigeria")
+            .lastUpdate(LocalDateTime.now())
+            .build();
     private final List<Country> testCountryList = Arrays.asList(countryCanada, countryNaija);
 
     //  bind port

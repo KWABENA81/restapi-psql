@@ -36,8 +36,8 @@ public class City implements Serializable, Comparable<City> {
     }
 
     @Builder
-    public City(Long id, String city, Country country, LocalDateTime lastUpdate) {
-        this.cityId = id;
+    public City(Long cityId, String city, Country country, LocalDateTime lastUpdate) {
+        this.cityId = cityId;
         this.city = city;
         this.country = country;
         this.lastUpdate = lastUpdate;

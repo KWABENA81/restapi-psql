@@ -1,7 +1,10 @@
 package com.asksef.entity.service_impl;
 
 
-import com.asksef.entity.core.*;
+import com.asksef.entity.core.Address;
+import com.asksef.entity.core.City;
+import com.asksef.entity.core.Customer;
+import com.asksef.entity.core.Store;
 import com.asksef.entity.model.AddressModel;
 import com.asksef.entity.repository.AddressRepository;
 import com.asksef.entity.service_interface.AddressServiceInterface;
@@ -56,7 +59,7 @@ public class AddressService implements AddressServiceInterface {
     @Transactional
     public Address save(@Valid AddressModel addressModel) {
         Address address = Address.builder()
-                .id(addressModel.getAddressId())
+                .addressId(addressModel.getAddressId())
                 .city(addressModel.getCity())
                 .gpsCode(addressModel.getGpsCode())
                 .phone(addressModel.getPhone())
