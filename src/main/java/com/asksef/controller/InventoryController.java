@@ -87,22 +87,22 @@ public class InventoryController {
     }
 
     @GetMapping(value = "{id}/item", produces = "application/hal+json")
-    public ResponseEntity<ItemModel> findItemOfInventory(@PathVariable("id") Long id) {
-        Item item =this.inventoryService.findItemOfInventory(id);
+    public ResponseEntity<ItemModel> findInventoryItem(@PathVariable("id") Long id) {
+        Item item =this.inventoryService.findInventoryItem(id);
         //  build model
         ItemModel itemModel = new ItemModelAssemblerSupport().toModel(item);
 
-        itemModel.add(linkTo(methodOn(InventoryController.class).findItemOfInventory(id)).withSelfRel());
+        itemModel.add(linkTo(methodOn(InventoryController.class).findInventoryItem(id)).withSelfRel());
                return new ResponseEntity<>(itemModel, HttpStatus.OK);
     }
 
     @GetMapping(value = "{id}/store", produces = "application/hal+json")
-    public ResponseEntity<StoreModel> findStoreOfInventory(@PathVariable("id") Long id) {
-        Store store = this.inventoryService.findStoreOfInventory(id);
+    public ResponseEntity<StoreModel> findInventoryStore(@PathVariable("id") Long id) {
+        Store store = this.inventoryService.findInventoryStore(id);
         //  build model
         StoreModel storemodel = new StoreModelAssemblerSupport().toModel(store);
 
-        storemodel.add(linkTo(methodOn(InventoryController.class).findStoreOfInventory(id)).withRel("store of Inventory"));
+        storemodel.add(linkTo(methodOn(InventoryController.class).findInventoryStore(id)).withRel("store of Inventory"));
         storemodel.add(linkTo(methodOn(InventoryController.class).one(id)).withRel("inventory"));
         storemodel.add(linkTo(methodOn(StoreController.class).one(id)).withRel("store"));
         return new ResponseEntity<>(storemodel, HttpStatus.OK);

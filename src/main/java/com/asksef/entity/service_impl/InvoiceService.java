@@ -133,12 +133,12 @@ public class InvoiceService implements InvoiceServiceInterface {
         );
     }
 
-//    public List<Order> findInvoiceSales(Long id) {
-//        Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(
-//                () -> new CustomResourceNotFoundException("Invoice", "id", null, id)
-//        );
-//        return invoice.getOrderList();
-//    }
+    public Order findInvoiceOrder(Long id) {
+        return this.invoiceRepository.findOrderInvoice(id).orElseThrow(
+                () -> new CustomResourceNotFoundException("Order", "id", null, id)
+        );
+    }
+
 
     public List<Payment> findInvoicePayments(Long id) {
         Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(

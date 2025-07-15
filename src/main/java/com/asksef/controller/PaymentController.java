@@ -99,10 +99,10 @@ public class PaymentController {
     }
 
     @GetMapping(value = "{id}/invoice", produces = "application/hal+json")
-    public ResponseEntity<InvoiceModel> findInvoiceOnPayment(@PathVariable("id") Long id) {
-        Invoice invoice = this.paymentService.findInvoiceOnPayment(id);
+    public ResponseEntity<InvoiceModel> findPaymentInvoice(@PathVariable("id") Long id) {
+        Invoice invoice = this.paymentService.findPaymentInvoice(id);
         @NonNull InvoiceModel invoiceModel = new InvoiceModelAssemblerSupport().toModel(invoice);
-        invoiceModel.add(linkTo(methodOn(PaymentController.class).findInvoiceOnPayment(id)).withRel("Payment Invoice"));
+        invoiceModel.add(linkTo(methodOn(PaymentController.class).findPaymentInvoice(id)).withRel("Payment Invoice"));
         return new ResponseEntity<>(invoiceModel, HttpStatus.OK);
     }
 }

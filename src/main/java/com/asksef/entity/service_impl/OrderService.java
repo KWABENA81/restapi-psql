@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -127,19 +128,20 @@ public class OrderService implements SaleServiceInterface {
         return this.orderRepository.findBySaleNr(nr);
     }
 
-    public Staff findStaffOfSale(Long id) {
+    public Staff findOrderStaff(Long id) {
         return orderRepository.findStaffOfSale(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Order", "id", null, id)
         );
     }
 
-    public @NonNull Invoice findInvoiceOfSale(Long id) {
-        return orderRepository.findInvoiceOfSale(id).orElseThrow(
+    public @NonNull List<Invoice> findOrderInvoices(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Order", "id", null, id)
         );
+        return order.getInvoiceList();
     }
 
-    public @NonNull Item findItemOfSale(Long id) {
+    public @NonNull Item findOrderItem(Long id) {
         return orderRepository.findItemOfSale(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Order", "id", null, id)
         );

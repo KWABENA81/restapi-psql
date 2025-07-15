@@ -31,8 +31,8 @@ public class StoreModelAssemblerSupport extends RepresentationModelAssemblerSupp
 
         model.add(linkTo(methodOn(StoreController.class).all()).withSelfRel());
         model.add(linkTo(methodOn(StoreController.class).all()).withRel("store"));
-        model.add(linkTo(methodOn(StoreController.class).findStaffOfStore(entity.getStoreId())).withRel("staff"));
-        model.add(linkTo(methodOn(StoreController.class).findAddressOfStore(entity.getStoreId())).withRel("Address"));
+        model.add(linkTo(methodOn(StoreController.class).findStoreStaff(entity.getStoreId())).withRel("staff"));
+        model.add(linkTo(methodOn(StoreController.class).findStoreAddress(entity.getStoreId())).withRel("Address"));
         model.add(linkTo(methodOn(StoreController.class).findStoreInventories(entity.getStoreId())).withRel("Inventories"));
         model.add(linkTo(methodOn(StoreController.class).one(entity.getStoreId())).withSelfRel());
         model.add(linkTo(methodOn(StoreController.class).getStoreByName(entity.getStoreName())).withRel("store"));

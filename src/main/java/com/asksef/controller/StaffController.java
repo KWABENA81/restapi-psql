@@ -90,9 +90,9 @@ public class StaffController {
         return new ResponseEntity<>(paymentModels, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}/sales", produces = "application/hal+json")
-    public ResponseEntity<CollectionModel<OrderModel>> findStaffSales(@PathVariable("id") Long id) {
-        List<Order> salesList = staffService.findStaffSales(id);
+    @GetMapping(value = "/{id}/orders", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<OrderModel>> findStaffOrders(@PathVariable("id") Long id) {
+        List<Order> salesList = staffService.findStaffOrders(id);
         CollectionModel<OrderModel> saleModels = new OrderModelAssemblerSupport().toCollectionModel(salesList);
         return new ResponseEntity<>(saleModels, HttpStatus.OK);
     }

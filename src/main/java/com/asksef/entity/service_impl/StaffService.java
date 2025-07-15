@@ -127,7 +127,7 @@ public class StaffService implements StaffServiceInterface {
         return staff.getPaymentList();
     }
 
-    public List<Order> findStaffSales(Long id) {
+    public List<Order> findStaffOrders(Long id) {
         Staff staff = this.staffRepository.findById(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Country", "id", null, id)
         );

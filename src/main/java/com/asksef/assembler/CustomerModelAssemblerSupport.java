@@ -35,7 +35,7 @@ public class CustomerModelAssemblerSupport extends RepresentationModelAssemblerS
         model.add(linkTo(methodOn(CustomerController.class)
                 .update(entity.getCustomerId(), Customer.builder().build())).withRel("update Customer"));
         model.add(linkTo(methodOn(CustomerController.class)
-                .findAddressOfCustomer(entity.getCustomerId())).withRel("customer address"));
+                .findCustomerAddress(entity.getCustomerId())).withRel("customer address"));
         model.add(linkTo(methodOn(CustomerController.class)
                 .findCustomerInvoices(entity.getCustomerId())).withRel("customer invoices"));
 

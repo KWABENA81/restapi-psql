@@ -85,7 +85,7 @@ public class City implements Serializable, Comparable<City> {
     }
 
     @Getter
-    @Basic(optional = true)    //@CreationTimestamp
+    @Basic//(optional = true)    //@CreationTimestamp
     @Column(name = "LAST_UPDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime lastUpdate;

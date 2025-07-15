@@ -88,31 +88,32 @@ public class OrderController {
         return new ResponseEntity<>("Order entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(value = "/{id}/invoice", produces = "application/hal+json")
-    public ResponseEntity<InvoiceModel> findInvoiceOfSale(@PathVariable("id") Long id) {
-        @NonNull Invoice invoice = this.saleService.findInvoiceOfSale(id);
+    @GetMapping(value = "/{id}/invoices", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<InvoiceModel>> findOrderInvoices(@PathVariable("id") Long id) {
+        @NonNull List<Invoice> invoices = this.saleService.findOrderInvoices(id);
         //  build  model
-        @NonNull InvoiceModel invoiceModel = new InvoiceModelAssemblerSupport().toModel(invoice);
-        invoiceModel.add(linkTo(methodOn(OrderController.class).findInvoiceOfSale(id)).withRel("Order Invoice"));
-        invoiceModel.add(linkTo(methodOn(OrderController.class).one(id)).withRel("Order"));
-        return new ResponseEntity<>(invoiceModel, HttpStatus.OK);
+        CollectionModel<InvoiceModel> invoiceModels = new InvoiceModelAssemblerSupport().toCollectionModel(invoices);
+        //        invoiceModels.add(linkTo(methodOn(OrderController.class).findOrderInvoices(id)).withRel("Order Invoice"));
+//        invoiceModel.add(linkTo(methodOn(OrderController.class).one(id)).withRel("Order"));
+        return new ResponseEntity<>(invoiceModels, HttpStatus.OK);
     }
+
     @GetMapping(value = "/{id}/item", produces = "application/hal+json")
-    public ResponseEntity<ItemModel> findItemOfSale(@PathVariable("id") Long id) {
-        @NonNull Item item = this.saleService.findItemOfSale(id);
+    public ResponseEntity<ItemModel> findOrderItem(@PathVariable("id") Long id) {
+        @NonNull Item item = this.saleService.findOrderItem(id);
         //  build  model
         @NonNull ItemModel itemModel = new ItemModelAssemblerSupport().toModel(item);
-        itemModel.add(linkTo(methodOn(OrderController.class).findItemOfSale(id)).withRel("Order Invoice"));
+        itemModel.add(linkTo(methodOn(OrderController.class).findOrderItem(id)).withRel("Order Invoice"));
         itemModel.add(linkTo(methodOn(OrderController.class).one(id)).withRel("Order"));
         return new ResponseEntity<>(itemModel, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/staff", produces = "application/hal+json")
-    public ResponseEntity<StaffModel> findStaffOfSale(@PathVariable("id") Long id) {
-        Staff staff = this.saleService.findStaffOfSale(id);
+    public ResponseEntity<StaffModel> findOrderStaff(@PathVariable("id") Long id) {
+        Staff staff = this.saleService.findOrderStaff(id);
         //  build  model
         @NonNull StaffModel staffModel = new StaffModelAssemblerSupport().toModel(staff);
-        staffModel.add(linkTo(methodOn(OrderController.class).findStaffOfSale(id)).withRel("Order Staff"));
+        staffModel.add(linkTo(methodOn(OrderController.class).findOrderStaff(id)).withRel("Order Staff"));
         staffModel.add(linkTo(methodOn(OrderController.class).one(id)).withRel("Order"));
         return new ResponseEntity<>(staffModel, HttpStatus.OK);
     }

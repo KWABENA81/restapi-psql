@@ -77,8 +77,8 @@ public class CustomerController {
     }
 
     @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-    public ResponseEntity<AddressModel> findAddressOfCustomer(@PathVariable("id") Long id) {
-        Address address = this.customerService.findAddressOfCustomer(id);
+    public ResponseEntity<AddressModel> findCustomerAddress(@PathVariable("id") Long id) {
+        Address address = this.customerService.findCustomerAddress(id);
         //  build address model
         AddressModel model = new AddressModelAssemblerSupport().toModel(address);
         return new ResponseEntity<>(model, HttpStatus.OK);

@@ -41,7 +41,7 @@ public class ItemModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         itemModel.add(linkTo(methodOn(ItemController.class).itemByCode(item.getItemCode())).withRel("Item Code"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByNameLike(item.getItemName())).withRel("Item Name"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByDescLike(item.getItemDesc())).withRel("Item Desc"));
-        itemModel.add(linkTo(methodOn(ItemController.class).findItemSales(item.getItemId())).withRel("Sales"));
+        itemModel.add(linkTo(methodOn(ItemController.class).findItemOrders(item.getItemId())).withRel("Sales"));
         itemModel.add(linkTo(methodOn(ItemController.class).findItemInventories(item.getItemId())).withRel("Inventories"));
 
         return itemModel;

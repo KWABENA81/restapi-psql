@@ -114,7 +114,7 @@ public class StoreService implements StoreServiceInterface {
         return this.storeRepository.findByStoreName(name);
     }
 
-    public Address findAddressOfStore(Long id) {
+    public Address findStoreAddress(Long id) {
         Optional<Address> addressOptional = this.storeRepository.findAddressOfStore(id);
         if (addressOptional.isEmpty()) {
             throw new CustomResourceNotFoundException("Store", "id", null, id);
@@ -122,7 +122,7 @@ public class StoreService implements StoreServiceInterface {
         return addressOptional.get();
     }
 
-    public Staff findStaffOfStore(Long id) {
+    public Staff findStoreStaff(Long id) {
         Optional<Staff> staffOptional = this.storeRepository.findStaffOfStore(id);
         if (staffOptional.isEmpty()) {
             throw new CustomResourceNotFoundException("Store", "id", null, id);

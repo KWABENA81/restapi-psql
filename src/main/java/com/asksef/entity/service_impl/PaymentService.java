@@ -119,7 +119,7 @@ public class PaymentService implements PaymentServiceInterface {
         return this.paymentRepository.findByPaymentNr(pn);
     }
 
-    public Invoice findInvoiceOnPayment(Long id) {
+    public Invoice findPaymentInvoice(Long id) {
         return this.paymentRepository.findInvoiceOnPayment(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Invoice", "id", null, id)
         );

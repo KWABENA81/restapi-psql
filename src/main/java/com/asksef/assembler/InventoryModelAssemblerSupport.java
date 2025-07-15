@@ -24,8 +24,8 @@ public class InventoryModelAssemblerSupport extends RepresentationModelAssembler
         //
         inventoryModel.add(linkTo(methodOn(InventoryController.class).one(entity.getInventoryId())).withRel("inventory"));
         inventoryModel.add(linkTo(methodOn(InventoryController.class).all()).withRel("all"));
-        inventoryModel.add(linkTo(methodOn(InventoryController.class).findItemOfInventory(entity.getInventoryId())).withRel("Inventory Item"));
-        inventoryModel.add(linkTo(methodOn(InventoryController.class).findStoreOfInventory(entity.getInventoryId())).withRel("Store with Inventory"));
+        inventoryModel.add(linkTo(methodOn(InventoryController.class).findInventoryItem(entity.getInventoryId())).withRel("Inventory Item"));
+        inventoryModel.add(linkTo(methodOn(InventoryController.class).findInventoryStore(entity.getInventoryId())).withRel("Store with Inventory"));
 
         inventoryModel.setInventoryId(entity.getInventoryId());
         inventoryModel.setItem(entity.getItem());

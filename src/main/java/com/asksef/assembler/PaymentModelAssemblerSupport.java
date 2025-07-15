@@ -26,7 +26,7 @@ public class PaymentModelAssemblerSupport extends RepresentationModelAssemblerSu
         model.add(linkTo(methodOn(PaymentController.class).paymentByNr(payment.getPaymentNr())).withSelfRel());
         model.add(linkTo(methodOn(PaymentController.class).one(payment.getPaymentId())).withSelfRel());
         //model.add(linkTo(methodOn(PaymentController.class).all()).withRel("payments"));
-        model.add(linkTo(methodOn(PaymentController.class).findInvoiceOnPayment(payment.getPaymentId())).withRel("Payment Invoice"));
+        model.add(linkTo(methodOn(PaymentController.class).findPaymentInvoice(payment.getPaymentId())).withRel("Payment Invoice"));
         model.add(linkTo(methodOn(PaymentController.class).findStaffOnPayment(payment.getPaymentId())).withRel("Staff on Payment"));
 
         model.setPaymentId(payment.getPaymentId());

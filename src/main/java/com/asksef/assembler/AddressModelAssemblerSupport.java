@@ -42,7 +42,7 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
         addressModel.add(linkTo(methodOn(AddressController.class)
                 .one(entity.getAddressId())).withSelfRel());
         addressModel.add(linkTo(methodOn(AddressController.class)
-                .findCityOfAddress(entity.getAddressId())).withRel("cityOfAddress"));
+                .findAddressCity(entity.getAddressId())).withRel("cityOfAddress"));
         addressModel.add(linkTo(methodOn(AddressController.class)
                 .all()).withRel("all"));
         addressModel.add(linkTo(methodOn(AddressController.class)

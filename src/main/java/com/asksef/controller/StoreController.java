@@ -89,21 +89,21 @@ public class StoreController {
     }
 
     @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-    public ResponseEntity<AddressModel> findAddressOfStore(@PathVariable("id") Long id) {
-        Address address = this.storeService.findAddressOfStore(id);
+    public ResponseEntity<AddressModel> findStoreAddress(@PathVariable("id") Long id) {
+        Address address = this.storeService.findStoreAddress(id);
         AddressModel model = new AddressModelAssemblerSupport().toModel(address);
         model.add(linkTo(methodOn(StoreController.class).one(id)).withSelfRel());
-        model.add(linkTo(methodOn(StoreController.class).findAddressOfStore(id)).withRel("Store Address"));
+        model.add(linkTo(methodOn(StoreController.class).findStoreAddress(id)).withRel("Store Address"));
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}/staff", produces = "application/hal+json")
-    public ResponseEntity<StaffModel> findStaffOfStore(@PathVariable("id") Long id) {
-        Staff staff = this.storeService.findStaffOfStore(id);
+    public ResponseEntity<StaffModel> findStoreStaff(@PathVariable("id") Long id) {
+        Staff staff = this.storeService.findStoreStaff(id);
         //  build staff model
         StaffModel staffModel = new StaffModelAssemblerSupport().toModel(staff);
         staffModel.add(linkTo(methodOn(StoreController.class).one(id)).withRel("staff"));
-        staffModel.add(linkTo(methodOn(StoreController.class).findStaffOfStore(id)).withRel("staff"));
+        staffModel.add(linkTo(methodOn(StoreController.class).findStoreStaff(id)).withRel("staff"));
         return new ResponseEntity<>(staffModel, HttpStatus.OK);
     }
 

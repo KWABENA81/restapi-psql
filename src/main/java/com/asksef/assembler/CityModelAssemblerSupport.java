@@ -31,9 +31,9 @@ public class CityModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         cityModel.add(
                 linkTo(methodOn(CityController.class).one(entity.getCityId())).withSelfRel());
         cityModel.add(
-                linkTo(methodOn(CityController.class).findCountryOfCity(entity.getCityId())).withRel("countryOfCity"));
+                linkTo(methodOn(CityController.class).findCityCountry(entity.getCityId())).withRel("countryOfCity"));
         cityModel.add(linkTo(methodOn(CityController.class)
-                .findAddressesInCity(entity.getCityId())).withRel("addresses In City"));
+                .findCityAddresses(entity.getCityId())).withRel("addresses In City"));
 
         cityModel.add(linkTo(methodOn(CityController.class).all()).withRel("all"));
         cityModel.add(linkTo(methodOn(CityController.class).add(cityModel)).withSelfRel());

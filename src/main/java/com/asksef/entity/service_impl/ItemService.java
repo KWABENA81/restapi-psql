@@ -137,7 +137,7 @@ public class ItemService implements ItemServiceInterface {
         return item.getInventoryList();
     }
 
-    public List<Order> findItemSales(Long id) {
+    public List<Order> findItemOrders(Long id) {
         Item item = this.itemRepository.findById(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Country", "id", null, id)
         );

@@ -76,76 +76,24 @@ public class CityController {
         log.info("Updating city with id: {}", id);
         return ResponseEntity.created(entityModel
                 .getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
-//        return ResponseEntity
-//                .created(linkTo(methodOn(CityController.class).one(updateCity.getCityId()))
-//                        .toUri()).body(entityModel);
     }
 
     @GetMapping(value = "{id}/country", produces = "application/hal+json")
-    public ResponseEntity<CountryModel> findCountryOfCity(@PathVariable("id") Long id) {
-        Country country = cityService.findCountryOfCity(id);
+    public ResponseEntity<CountryModel> findCityCountry(@PathVariable("id") Long id) {
+        Country country = cityService.findCityCountry(id);
         //  build a model
         CountryModel countryModel = new CountryModelAssemblerSupport().toModel(country);
         //  add links
-        countryModel.add(linkTo(methodOn(CityController.class).findCountryOfCity(id)).withSelfRel());
+        countryModel.add(linkTo(methodOn(CityController.class).findCityCountry(id)).withSelfRel());
         countryModel.add(linkTo(methodOn(CityController.class).one(id)).withRel("city"));
         return new ResponseEntity<>(countryModel, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-    public ResponseEntity<CollectionModel<AddressModel>> findAddressesInCity(@PathVariable("id") Long id) {
-        List<Address> addressList = this.cityService.findAddressesInCity(id);
+    @GetMapping(value = "/{id}/addresses", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<AddressModel>> findCityAddresses(@PathVariable("id") Long id) {
+        List<Address> addressList = this.cityService.findCityAddresses(id);
         CollectionModel<AddressModel> addressModels = new AddressModelAssemblerSupport().toCollectionModel(addressList);
 
         return new ResponseEntity<>(addressModels, HttpStatus.OK);
     }
 }
-
-
-//    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-//    public ResponseEntity<CollectionModel<AddressModel>> findCityAddresses(@PathVariable("id") Long id) {
-//        final AddressModelAssemblerSupport addressModelAssemblerSupport = new AddressModelAssemblerSupport();
-//        Collection<AddressModel> cityAddresses = this.cityService.findAddressesOfCity(id)
-//                .stream().map(addressModelAssemblerSupport::toModel)
-//                .collect(Collectors.toList());
-//        CollectionModel<AddressModel> addressModelCollection = CollectionModel.of(cityAddresses, linkTo((methodOn(CityController.class)
-//                .findCityAddresses(id))).withSelfRel());
-//
-//        return ResponseEntity.ok(addressModelCollection);
-//    }
-
-//    @GetMapping(value = "/{id}/address", produces = "application/hal+json")
-//    public ResponseEntity<CollectionModel<AddressModel>> findCityAddresses(@PathVariable("id") Long id) {
-//           List<Address> cityAddresses = this.cityService.findCityAddresses(id);
-//
-//            final AddressModelAssemblerSupport addressModelAssemblerSupport = new AddressModelAssemblerSupport();
-//            CollectionModel<AddressModel> addressModelCollection = addressModelAssemblerSupport.toCollectionModel(cityAddresses);
-//
-//            addressModelCollection.forEach(
-//                    amc -> amc.add(linkTo(methodOn(CityController.class)
-//                            .findCityAddresses(id)).withSelfRel()));
-//            log.info(" 65 Address modelss {}", addressModelCollection);
-//            return new ResponseEntity<>(addressModelCollection, HttpStatus.OK);
-//       // } else
-//           // return ResponseEntity.notFound().build();//<>( HttpStatus.OK);
-//    }
-
-
-//    @PostMapping(path = "/add",
-//            produces = "application/ld+json"
-
-/// /            produces = "application/json;charset=utf-8"
-//    )
-//    //@Produces({MediaType.APPLICATION_JSON_VALUE,"application/json;charset=utf-8"})
-//    //@Produces("application/json;charset=utf-8")application/ld+json
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ResponseEntity<EntityModel<City>> add(@RequestBody City city) throws Exception {
-//        City savedCity = cityService.save(city);
-//
-//        log.info("Inside add to save city {}",savedCity);
-//        //City newCity = this.cityService.findById(savedCityDTO.getCityId());
-//                EntityModel<City> entityModel = this.cityModelAssembler.toModel(savedCity);
-//        log.info("Saved new city: {}", entityModel);
-//        return ResponseEntity
-//                .created(linkTo(methodOn(CityController.class).add(savedCity)).toUri()).body(entityModel);
-//    }

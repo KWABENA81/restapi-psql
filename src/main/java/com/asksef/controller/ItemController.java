@@ -112,10 +112,10 @@ public class ItemController {
         return new ResponseEntity<>(inventoryModels, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}/sales", produces = "application/hal+json")
-    public ResponseEntity<CollectionModel<OrderModel>> findItemSales(@PathVariable("id") Long id) {
-        List<Order> salesList = itemService.findItemSales(id);
-        CollectionModel<OrderModel> saleModels = new OrderModelAssemblerSupport().toCollectionModel(salesList);
-        return new ResponseEntity<>(saleModels, HttpStatus.OK);
+    @GetMapping(value = "/{id}/orders", produces = "application/hal+json")
+    public ResponseEntity<CollectionModel<OrderModel>> findItemOrders(@PathVariable("id") Long id) {
+        List<Order> orderList = itemService.findItemOrders(id);
+        CollectionModel<OrderModel> orderModels = new OrderModelAssemblerSupport().toCollectionModel(orderList);
+        return new ResponseEntity<>(orderModels, HttpStatus.OK);
     }
 }

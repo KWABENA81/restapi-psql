@@ -122,7 +122,7 @@ public class AddressService implements AddressServiceInterface {
         return addressRepository.findByPhone(phone);
     }
 
-    public City findCityOfAddress(Long id) {
+    public City findAddressCity(Long id) {
         Optional<Address> addressOptional = this.addressRepository.findCityOfAddress(id);
         if (addressOptional.isEmpty()) {
             throw new CustomResourceNotFoundException("address", "id", null, id);

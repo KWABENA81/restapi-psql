@@ -65,7 +65,7 @@ public class Store implements Serializable, Comparable<Store> {
     }
 
     @Getter
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne//(fetch = FetchType.EAGER)
     @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")
     @JsonBackReference
     private Address address;

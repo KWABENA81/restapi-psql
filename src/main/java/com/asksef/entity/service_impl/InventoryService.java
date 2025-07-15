@@ -108,13 +108,13 @@ public class InventoryService implements InventoryServiceInterface {
         return inventoryRepository.count();
     }
 
-    public Store findStoreOfInventory(Long id) {
+    public Store findInventoryStore(Long id) {
         return this.inventoryRepository.findStoreOfInventory(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Store", "id", null, id)
         );
     }
 
-    public Item findItemOfInventory(Long id) {
+    public Item findInventoryItem(Long id) {
         return this.inventoryRepository.findItemOfInventory(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("item", "id", null, id)
         );

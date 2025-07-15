@@ -3,7 +3,6 @@ package com.asksef.entity.service_impl;
 import com.asksef.entity.core.Address;
 import com.asksef.entity.core.City;
 import com.asksef.entity.core.Country;
-import com.asksef.entity.model.AddressModel;
 import com.asksef.entity.model.CityModel;
 import com.asksef.entity.repository.CityRepository;
 import com.asksef.entity.service_interface.CityServiceInterface;
@@ -121,7 +120,7 @@ public class CityService implements CityServiceInterface {
         return cityRepository.findCityByName(city);
     }
 
-    public Country findCountryOfCity(Long id) {
+    public Country findCityCountry(Long id) {
         Optional<City> cityOptional = this.cityRepository.findCountryOfCity(id);
         if (cityOptional.isEmpty()) {
             throw new CustomResourceNotFoundException("city", "id", null, id);
@@ -133,7 +132,7 @@ public class CityService implements CityServiceInterface {
         return this.cityRepository.findAddressesOfCity(cityId).stream().toList();
     }
 
-    public List<Address> findAddressesInCity(Long id) {
+    public List<Address> findCityAddresses(Long id) {
         return findById(id).getAddressList();
     }
 }

@@ -88,21 +88,18 @@ public class AddressController {
         Address updatedAddress = addressService.update(id, newAddress);
         AddressModel entityModel = addressModelAssemblerSupport.toModel(updatedAddress);
         log.info("Updated address: {}", entityModel);
-//        return ResponseEntity.
-//                created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel);
         return ResponseEntity.
                 created(linkTo(methodOn(AddressController.class).update(id, updatedAddress))
                         .toUri()).body(entityModel);
     }
 
     @GetMapping(value = "{id}/city", produces = "application/hal+json")
-    public ResponseEntity<CityModel> findCityOfAddress(@PathVariable("id") Long id) {
-        City city = addressService.findCityOfAddress(id);
+    public ResponseEntity<CityModel> findAddressCity(@PathVariable("id") Long id) {
+        City city = addressService.findAddressCity(id);
         //  build a model
         CityModel cityModel = new CityModelAssemblerSupport().toModel(city);
-
         //  add links
-        cityModel.add(linkTo(methodOn(AddressController.class).findCityOfAddress(id)).withSelfRel());
+        cityModel.add(linkTo(methodOn(AddressController.class).findAddressCity(id)).withSelfRel());
         cityModel.add(linkTo(methodOn(CityController.class).one(id)).withRel("address"));
         return new ResponseEntity<>(cityModel, HttpStatus.OK);
     }
@@ -123,8 +120,6 @@ public class AddressController {
         Collection<AddressModel> modelList = this.addressService.findByCode(code)
                 .stream().map(addressModelAssemblerSupport::toModel)
                 .collect(Collectors.toList());
-
-//modelList.add(linkTo(methodOn(AddressController.class).one(code)).withSelfRel());
         return new ResponseEntity<>(modelList, HttpStatus.OK);
     }
 

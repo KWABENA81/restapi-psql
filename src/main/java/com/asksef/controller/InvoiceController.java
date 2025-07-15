@@ -94,12 +94,14 @@ public class InvoiceController {
         return new ResponseEntity<>(customerModel, HttpStatus.OK);
     }
 
-//    @GetMapping(value = "/{id}/sales", produces = "application/hal+json")
-//    public ResponseEntity<CollectionModel<OrderModel>> findInvoiceSales(@PathVariable("id") Long id) {
-//        List<Order> salesList = invoiceService.findInvoiceSales(id);
-//        CollectionModel<OrderModel> saleModels = new OrderModelAssemblerSupport().toCollectionModel(salesList);
-//        return new ResponseEntity<>(saleModels, HttpStatus.OK);
-//    }
+    @GetMapping(value = "/{id}/order", produces = "application/hal+json")
+    public ResponseEntity<OrderModel> findInvoiceOrder(@PathVariable("id") Long id) {
+        Order order = invoiceService.findInvoiceOrder(id);
+        @NonNull OrderModel orderModel = new OrderModelAssemblerSupport().toModel(order);
+
+        orderModel.add(linkTo(methodOn(InvoiceController.class).findInvoiceOrder(id)).withRel("Order Invoice"));
+        return new ResponseEntity<>(orderModel, HttpStatus.OK);
+    }
 
     @GetMapping(value = "/{id}/payments", produces = "application/hal+json")
     public ResponseEntity<CollectionModel<PaymentModel>> findInvoicePayments(@PathVariable("id") Long id) {

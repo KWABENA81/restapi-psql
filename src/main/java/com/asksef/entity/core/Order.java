@@ -38,16 +38,10 @@ public class Order implements Serializable, Comparable<Order> {
         this.orderId = orderId;
         this.orderNr = orderNr;
         this.orderDate = orderDate;
-        //  this.invoice = invoice;
         this.staff = staff;
         this.item = item;
         this.lastUpdate = lastUpdate;
     }
-
-//    public Order(Long l, String orderNr) {
-//        this();
-//        this.orderId = l;
-//    }
 
     @Getter
     @Setter
@@ -86,7 +80,7 @@ public class Order implements Serializable, Comparable<Order> {
     private String orderNr;
 
     @Getter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "STAFF_ID", referencedColumnName = "STAFF_ID")
     @JsonBackReference
     private Staff staff = null;

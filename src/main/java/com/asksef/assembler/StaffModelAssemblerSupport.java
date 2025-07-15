@@ -39,7 +39,7 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
         staffModel.add(linkTo(methodOn(StaffController.class).delete(entity.getStaffId())).withRel("delete"));
 //        staffModel.add(linkTo(methodOn(StaffController.class).findAddressOfStaff(entity.getStaffId())).withRel("Address"));
         staffModel.add(linkTo(methodOn(StaffController.class).findByUsername(entity.getUsername())).withRel("Username"));
-        staffModel.add(linkTo(methodOn(StaffController.class).findStaffSales(entity.getStaffId())).withRel("Sales"));
+        staffModel.add(linkTo(methodOn(StaffController.class).findStaffOrders(entity.getStaffId())).withRel("Sales"));
         staffModel.add(linkTo(methodOn(StaffController.class).findStaffPayments(entity.getStaffId())).withRel("Payments"));
         staffModel.add(linkTo(methodOn(StaffController.class).findStaffStores(entity.getStaffId())).withRel("Stores"));
 
