@@ -27,21 +27,21 @@ public class CountryModelAssemblerSupport extends RepresentationModelAssemblerSu
     public CountryModel toModel(@NonNull Country entity) {
         CountryModel countryModel = instantiateModel(entity);
         //
-        countryModel.add(linkTo(methodOn(CountryController.class)
-                .one(entity.getCountryId())).withSelfRel());
-        countryModel.add(linkTo(methodOn(CountryController.class)
+        countryModel.setCountry(entity.getCountry());
+        countryModel.setLastUpdate(entity.getLastUpdate());
+        countryModel.setCityModelList(toCityCollectionModel(entity.getCityList()));
+
+              countryModel.add(linkTo(methodOn(CountryController.class)
                 .all()).withRel("all"));
         countryModel.add(linkTo(methodOn(CountryController.class)
                 .add(countryModel)).withRel("add"));
         countryModel.add(linkTo(methodOn(CountryController.class)
                 .findByName(entity.getCountry())).withRel("findByName"));
         countryModel.add(linkTo(methodOn(CountryController.class)
-                .findCountryCities(entity.getCountryId())).withRel("Country Cities"));
+                .findCountryCities(entity.getCountryId())).withRel("Cities in Country"));
+        countryModel.add(linkTo(methodOn(CountryController.class)
+                .one(entity.getCountryId())).withSelfRel());
         //
-        countryModel.setCountryId(entity.getCountryId());
-        countryModel.setCountry(entity.getCountry());
-        countryModel.setLastUpdate(entity.getLastUpdate());
-        countryModel.setCityModelList(toCityCollectionModel(entity.getCityList()));
         return countryModel;
     }
 
@@ -50,7 +50,7 @@ public class CountryModelAssemblerSupport extends RepresentationModelAssemblerSu
     public CollectionModel<CountryModel> toCollectionModel(@NonNull Iterable<? extends Country> entities) {
         CollectionModel<CountryModel> countryModels = super.toCollectionModel(entities);
         countryModels.add(linkTo(methodOn(CountryController.class).all()).withRel("all"));
-        //  , linkTo(methodOn(CountryController.class).findLikeName()
+        //
         return countryModels;
     }
 
@@ -60,7 +60,6 @@ public class CountryModelAssemblerSupport extends RepresentationModelAssemblerSu
         }
         return cities.stream()
                 .map(cty -> CityModel.builder()
-                        .cityId(cty.getCityId())
                         .city(cty.getCity())
                         .country(cty.getCountry())
                         .lastUpdate(cty.getLastUpdate())

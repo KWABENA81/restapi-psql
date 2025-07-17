@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
@@ -17,10 +15,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "ORDER", schema = "rest_app")
 public class Order implements Serializable, Comparable<Order> {
@@ -34,8 +34,8 @@ public class Order implements Serializable, Comparable<Order> {
     }
 
     @Builder
-    public Order(Long orderId, Date orderDate, LocalDateTime lastUpdate, Item item, Staff staff, String orderNr) {
-        this.orderId = orderId;
+    public Order(Date orderDate, LocalDateTime lastUpdate, Item item, Staff staff, String orderNr, Long id) {
+        this.orderId = id;
         this.orderNr = orderNr;
         this.orderDate = orderDate;
         this.staff = staff;
@@ -57,6 +57,7 @@ public class Order implements Serializable, Comparable<Order> {
     private Date orderDate;
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Invoice.class, mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JsonIgnore
@@ -76,6 +77,7 @@ public class Order implements Serializable, Comparable<Order> {
 
     @Setter
     @Getter
+    @EqualsAndHashCode.Include
     @Column(name = "ORDER_NR", nullable = false)
     private String orderNr;
 
@@ -110,29 +112,29 @@ public class Order implements Serializable, Comparable<Order> {
     public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return Objects.equals(orderDate, order.orderDate) && Objects.equals(orderNr, order.orderNr);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderDate, orderNr);
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "orderId=" + orderId +
-                ", orderDate=" + orderDate +
-                ", orderNr='" + orderNr + '\'' +
-                ", staff=" + staff +
-                ", lastUpdate=" + lastUpdate +
-                '}';
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Order order = (Order) o;
+//        return Objects.equals(orderDate, order.orderDate) && Objects.equals(orderNr, order.orderNr);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(orderDate, orderNr);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Order{" +
+//                "orderId=" + orderId +
+//                ", orderDate=" + orderDate +
+//                ", orderNr='" + orderNr + '\'' +
+//                ", staff=" + staff +
+//                ", lastUpdate=" + lastUpdate +
+//                '}';
+//    }
 
     @Override
     public int compareTo(Order order) {

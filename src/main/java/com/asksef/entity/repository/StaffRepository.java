@@ -5,6 +5,7 @@ import com.asksef.entity.core.Staff;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface StaffRepository extends JpaRepository<Staff, Long> {
+public interface StaffRepository extends JpaRepository<Staff, Long>, PagingAndSortingRepository<Staff, Long> {
 
     @Query("SELECT s from Staff s WHERE s.firstName=(:names) OR s.lastName=(:names)")
     Collection<Staff> findByNames(@Param("names") String names);

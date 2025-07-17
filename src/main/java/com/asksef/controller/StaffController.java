@@ -1,21 +1,25 @@
 package com.asksef.controller;
 
-import com.asksef.assembler.PaymentModelAssemblerSupport;
 import com.asksef.assembler.OrderModelAssemblerSupport;
+import com.asksef.assembler.PaymentModelAssemblerSupport;
 import com.asksef.assembler.StaffModelAssemblerSupport;
 import com.asksef.assembler.StoreModelAssemblerSupport;
 import com.asksef.entity.core.Order;
 import com.asksef.entity.core.Payment;
 import com.asksef.entity.core.Staff;
 import com.asksef.entity.core.Store;
-import com.asksef.entity.model.PaymentModel;
 import com.asksef.entity.model.OrderModel;
+import com.asksef.entity.model.PaymentModel;
 import com.asksef.entity.model.StaffModel;
 import com.asksef.entity.model.StoreModel;
 import com.asksef.entity.repository.StaffRepository;
 import com.asksef.entity.service_impl.StaffService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +32,15 @@ import java.util.List;
 public class StaffController {
     private final StaffRepository staffRepository;
     private final StaffService staffService;
+    private final PagedResourcesAssembler<Staff> pagedResourcesAssembler;
     private final StaffModelAssemblerSupport staffModelAssemblerSupport;
 
     public StaffController(StaffRepository staffRepository, StaffService staffService,
+                           PagedResourcesAssembler<Staff> pagedResourcesAssembler,
                            StaffModelAssemblerSupport staffModelAssemblerSupport) {
         this.staffRepository = staffRepository;
         this.staffService = staffService;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.staffModelAssemblerSupport = staffModelAssemblerSupport;
     }
 
@@ -102,6 +109,14 @@ public class StaffController {
         List<Store> storeList = staffService.findStaffStores(id);
         CollectionModel<StoreModel> storeModels = new StoreModelAssemblerSupport().toCollectionModel(storeList);
         return new ResponseEntity<>(storeModels, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<PagedModel<StaffModel>> pageable(Pageable pageable) {
+        Page<Staff> entityPage = staffService.findAll(pageable);
+
+        PagedModel<StaffModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, staffModelAssemblerSupport);
+        return new ResponseEntity<>(pagedModel, HttpStatus.OK);
     }
 }
 

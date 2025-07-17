@@ -11,7 +11,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -40,6 +42,10 @@ public class PaymentService implements PaymentServiceInterface {
         return this.paymentRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Payment> findAll(Pageable pageable) {
+        return this.paymentRepository.findAll(pageable);
+    }
+
     @Override
     public Payment findById(Long id) {
         Payment payment = this.paymentRepository.findById(id).orElseThrow(
@@ -58,7 +64,6 @@ public class PaymentService implements PaymentServiceInterface {
     @Transactional
     public Payment save(@Valid PaymentModel paymentModel) {
         Payment payment = Payment.builder()
-                .paymentId(paymentModel.getPaymentId())
                 .paymentNr(paymentModel.getPaymentNr())
                 .paymentDate(paymentModel.getPaymentDate())
                 .amount(paymentModel.getAmount())
@@ -116,7 +121,9 @@ public class PaymentService implements PaymentServiceInterface {
     }
 
     public Payment findByPayNr(String pn) {
-        return this.paymentRepository.findByPaymentNr(pn);
+        return this.paymentRepository.findByPaymentNr(pn).orElseThrow(
+                () -> new CustomResourceNotFoundException("Payment", "pn", null, pn)
+        );
     }
 
     public Invoice findPaymentInvoice(Long id) {

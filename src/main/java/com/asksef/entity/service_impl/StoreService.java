@@ -12,7 +12,9 @@ import com.asksef.errors.CustomResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -41,6 +43,10 @@ public class StoreService implements StoreServiceInterface {
         return this.storeRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Store> findAll(Pageable pageable) {
+        return this.storeRepository.findAll(pageable);
+    }
+
     @Override
     public Store findById(Long id) {
         Store store = this.storeRepository.findById(id).orElseThrow(
@@ -59,7 +65,6 @@ public class StoreService implements StoreServiceInterface {
     @Transactional
     public Store save(@Valid StoreModel storemodel) {
         Store store = Store.builder()
-                .storeId(storemodel.getStoreId())
                 .storeName(storemodel.getStoreName())
                 .staff(storemodel.getStaff())
                 .address(storemodel.getAddress())

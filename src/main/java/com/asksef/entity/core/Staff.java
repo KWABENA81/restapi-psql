@@ -4,9 +4,7 @@ import com.asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
@@ -14,10 +12,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "STAFF", schema = "rest_app")
 public class Staff implements Serializable, Comparable<Staff> {
@@ -29,8 +29,8 @@ public class Staff implements Serializable, Comparable<Staff> {
     }
 
     @Builder
-    public Staff(long staffId, String firstName, String lastName, String username, LocalDateTime lastUpdate) {
-        this.staffId = staffId;
+    public Staff(String firstName, String lastName, String username, LocalDateTime lastUpdate, Long id) {
+        this.staffId = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -62,16 +62,6 @@ public class Staff implements Serializable, Comparable<Staff> {
     @Column(name = "LAST_NAME", length = 45, nullable = false)
     private String lastName;
 
-//    @Getter
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")
-//    @JsonBackReference
-//    private Address address;
-//
-//    public void setAddress(Address address) {
-//        this.address = address;
-//        address.addStaff(this);
-//    }
 
     @Setter
     @Getter
@@ -89,6 +79,7 @@ public class Staff implements Serializable, Comparable<Staff> {
     }
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Payment.class, mappedBy = "staff", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
@@ -107,6 +98,7 @@ public class Staff implements Serializable, Comparable<Staff> {
     }
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Order.class, mappedBy = "staff", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
@@ -135,6 +127,7 @@ public class Staff implements Serializable, Comparable<Staff> {
 //    }
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Store.class, mappedBy = "staff", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
@@ -151,34 +144,34 @@ public class Staff implements Serializable, Comparable<Staff> {
         }
         store.setStaff(this);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Staff staff = (Staff) o;
-        return Objects.equals(firstName, staff.firstName)
-                && Objects.equals(lastName, staff.lastName)
-                && Objects.equals(username, staff.username);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName, username);
-    }
-
-    @Override
-    public String toString() {
-        return "Staff{" +
-                "staffId=" + staffId +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", lastUpdate=" + lastUpdate +
-                //    ", paymentList=" + paymentList +
-                //   ", orderList=" + orderList +
-                // ", storeList=" + storeList +
-                '}';
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Staff staff = (Staff) o;
+//        return Objects.equals(firstName, staff.firstName)
+//                && Objects.equals(lastName, staff.lastName)
+//                && Objects.equals(username, staff.username);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(firstName, lastName, username);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Staff{" +
+//                "staffId=" + staffId +
+//                ", firstName='" + firstName + '\'' +
+//                ", lastName='" + lastName + '\'' +
+//                ", username='" + username + '\'' +
+//                ", lastUpdate=" + lastUpdate +
+//                //    ", paymentList=" + paymentList +
+//                //   ", orderList=" + orderList +
+//                // ", storeList=" + storeList +
+//                '}';
+//    }
 
     @Override
     public int compareTo(Staff staff) {

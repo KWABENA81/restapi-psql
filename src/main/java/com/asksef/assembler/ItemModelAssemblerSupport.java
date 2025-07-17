@@ -28,32 +28,30 @@ public class ItemModelAssemblerSupport extends RepresentationModelAssemblerSuppo
     @Override
     public ItemModel toModel(@NonNull Item item) {
         ItemModel itemModel = instantiateModel(item);
-        itemModel.setItemId(item.getItemId());
         itemModel.setItemCode(item.getItemCode());
         itemModel.setItemName(item.getItemName());
         itemModel.setItemDesc(item.getItemDesc());
         itemModel.setItemCost(item.getItemCost());
-        itemModel.setOrderModelList(toSaleCollectionModel(item.getOrderList()));
+        itemModel.setOrderModelList(toOrderCollectionModel(item.getOrderList()));
         itemModel.setInventoryModelList(toInventoryCollectionModel(item.getInventoryList()));
 
         itemModel.add(linkTo(methodOn(ItemController.class).all()).withRel("all"));
-        itemModel.add(linkTo(methodOn(ItemController.class).one(item.getItemId())).withRel("one"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByCode(item.getItemCode())).withRel("Item Code"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByNameLike(item.getItemName())).withRel("Item Name"));
         itemModel.add(linkTo(methodOn(ItemController.class).itemByDescLike(item.getItemDesc())).withRel("Item Desc"));
         itemModel.add(linkTo(methodOn(ItemController.class).findItemOrders(item.getItemId())).withRel("Sales"));
         itemModel.add(linkTo(methodOn(ItemController.class).findItemInventories(item.getItemId())).withRel("Inventories"));
+        itemModel.add(linkTo(methodOn(ItemController.class).one(item.getItemId())).withSelfRel());
 
         return itemModel;
     }
 
-    private List<OrderModel> toSaleCollectionModel(List<Order> orderList) {
+    private List<OrderModel> toOrderCollectionModel(List<Order> orderList) {
         if (orderList == null || orderList.isEmpty()) {
             return Collections.emptyList();
         }
         return orderList.stream()
                 .map(ord -> OrderModel.builder()
-                        .orderId(ord.getOrderId())
                         .orderNr(ord.getOrderNr())
                         .staff(ord.getStaff())
                         .item(ord.getItem())
@@ -70,7 +68,6 @@ public class ItemModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         }
         return inventoryList.stream()
                 .map(inv -> InventoryModel.builder()
-                        .inventoryId(inv.getInventoryId())
                         .reorderQty(inv.getReorderQty())
                         .stockQty(inv.getStockQty())
                         .lastUpdate(inv.getLastUpdate())

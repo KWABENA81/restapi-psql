@@ -11,7 +11,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -39,6 +41,10 @@ public class CountryService implements CountryServiceInterface {
         return this.countryRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Country> findAll(Pageable pageable) {
+        return this.countryRepository.findAll(pageable);
+    }
+
     @Override
     public Country findById(@NonNull Long id) {
         Country country = this.countryRepository.findById(id).orElseThrow(
@@ -51,7 +57,6 @@ public class CountryService implements CountryServiceInterface {
     @Transactional
     public Country save(@Valid CountryModel countryModel) {
         Country country = Country.builder()
-                .countryId(countryModel.getCountryId())
                 .country(countryModel.getCountry())
                 .lastUpdate(countryModel.getLastUpdate())
                 .build();
@@ -70,7 +75,6 @@ public class CountryService implements CountryServiceInterface {
                 () -> new CustomResourceNotFoundException("Country", "id", null, id)
         );
         Country updateCountry = Country.builder()
-                .countryId(countryModel.getCountryId())
                 .country(countryModel.getCountry())
                 .lastUpdate(countryModel.getLastUpdate())
                 .build();
@@ -138,6 +142,7 @@ public class CountryService implements CountryServiceInterface {
         );
         return country.getCityList();
     }
+
 }
 
 //        log.info("Find country by id: {}", id);

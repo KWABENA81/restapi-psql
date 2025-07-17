@@ -7,6 +7,7 @@ import com.asksef.entity.core.Store;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +15,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface InventoryRepository extends JpaRepository<Inventory, Long> {
-
+public interface InventoryRepository extends JpaRepository<Inventory, Long>, PagingAndSortingRepository<Inventory, Long> {
 
     @Query(
             nativeQuery = true,

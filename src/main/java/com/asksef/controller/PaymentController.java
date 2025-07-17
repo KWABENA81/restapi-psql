@@ -13,7 +13,11 @@ import com.asksef.entity.repository.PaymentRepository;
 import com.asksef.entity.service_impl.PaymentService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +34,16 @@ public class PaymentController {
 
     private final PaymentModelAssemblerSupport paymentModelAssemblerSupport;
     private final PaymentService paymentService;
+    private final PagedResourcesAssembler<Payment> pagedResourcesAssembler;
     private final PaymentRepository paymentRepository;
 
     public PaymentController(PaymentModelAssemblerSupport paymentModelAssemblerSupport,
                              PaymentService paymentService,
+                             PagedResourcesAssembler<Payment> pagedResourcesAssembler,
                              PaymentRepository paymentRepository) {
         this.paymentModelAssemblerSupport = paymentModelAssemblerSupport;
         this.paymentService = paymentService;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.paymentRepository = paymentRepository;
     }
 
@@ -104,5 +111,13 @@ public class PaymentController {
         @NonNull InvoiceModel invoiceModel = new InvoiceModelAssemblerSupport().toModel(invoice);
         invoiceModel.add(linkTo(methodOn(PaymentController.class).findPaymentInvoice(id)).withRel("Payment Invoice"));
         return new ResponseEntity<>(invoiceModel, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<PagedModel<PaymentModel>> pageable(Pageable pageable) {
+        Page<Payment> entityPage = paymentService.findAll(pageable);
+
+        PagedModel<PaymentModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, paymentModelAssemblerSupport);
+        return new ResponseEntity<>(pagedModel, HttpStatus.OK);
     }
 }

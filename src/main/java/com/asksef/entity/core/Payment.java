@@ -3,19 +3,19 @@ package com.asksef.entity.core;
 import com.asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "PAYMENT", schema = "rest_app")
 public class Payment implements Serializable, Comparable<Payment> {
@@ -32,9 +32,9 @@ public class Payment implements Serializable, Comparable<Payment> {
     }
 
     @Builder
-    public Payment(Long paymentId, Staff staff, Invoice invoice, String paymentNr, Float amount,
-                   Date paymentDate, LocalDateTime lastUpdate) {
-        this.paymentId = paymentId;
+    public Payment(Staff staff, Invoice invoice, String paymentNr, Float amount,
+                   Date paymentDate, LocalDateTime lastUpdate, Long id) {
+        this.paymentId = id;
         this.staff = staff;
         this.invoice = invoice;
         this.paymentNr = paymentNr;
@@ -51,6 +51,7 @@ public class Payment implements Serializable, Comparable<Payment> {
     private Long paymentId;
 
     @Getter
+    @EqualsAndHashCode.Include
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "STAFF_ID", referencedColumnName = "STAFF_ID")
     @JsonBackReference
@@ -62,6 +63,7 @@ public class Payment implements Serializable, Comparable<Payment> {
     }
 
     @Getter
+    @EqualsAndHashCode.Include
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "INVOICE_ID", referencedColumnName = "INVOICE_ID")
     @JsonBackReference
@@ -74,6 +76,7 @@ public class Payment implements Serializable, Comparable<Payment> {
 
     @Getter
     @Setter
+    @EqualsAndHashCode.Include
     @Column(name = "PAYMENT_NR", nullable = false, length = 128)
     private String paymentNr;
 
@@ -96,32 +99,32 @@ public class Payment implements Serializable, Comparable<Payment> {
     public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Payment payment = (Payment) o;
-        return Objects.equals(invoice, payment.invoice) && Objects.equals(amount, payment.amount)
-                && Objects.equals(paymentNr, payment.paymentNr) && Objects.equals(paymentDate, payment.paymentDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(invoice, amount, paymentNr, paymentDate);
-    }
-
-    @Override
-    public String toString() {
-        return "Payment{" +
-                "paymentId=" + paymentId +
-                ", staff=" + staff +
-                ", invoice=" + invoice +
-                ", amount=" + amount +
-                ", confirmationNr='" + paymentNr + '\'' +
-                ", paymentDate=" + paymentDate +
-                ", lastUpdate=" + lastUpdate +
-                '}';
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Payment payment = (Payment) o;
+//        return Objects.equals(invoice, payment.invoice) && Objects.equals(amount, payment.amount)
+//                && Objects.equals(paymentNr, payment.paymentNr) && Objects.equals(paymentDate, payment.paymentDate);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(invoice, amount, paymentNr, paymentDate);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Payment{" +
+//                "paymentId=" + paymentId +
+//                ", staff=" + staff +
+//                ", invoice=" + invoice +
+//                ", amount=" + amount +
+//                ", confirmationNr='" + paymentNr + '\'' +
+//                ", paymentDate=" + paymentDate +
+//                ", lastUpdate=" + lastUpdate +
+//                '}';
+//    }
 
     @Override
     public int compareTo(Payment payment) {

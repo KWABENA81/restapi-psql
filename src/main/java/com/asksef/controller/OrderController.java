@@ -17,7 +17,11 @@ import com.asksef.entity.service_impl.OrderService;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,19 +36,23 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class OrderController {
 
     private static final Logger log = LoggerFactory.getLogger(OrderController.class);
-    private final OrderService saleService;
+    private final OrderService orderService;
     private final OrderRepository orderRepository;
+    private final PagedResourcesAssembler<Order> pagedResourcesAssembler;
     private final OrderModelAssemblerSupport orderModelAssemblerSupport;
 
-    public OrderController(OrderService saleService, OrderRepository orderRepository, OrderModelAssemblerSupport orderModelAssemblerSupport) {
-        this.saleService = saleService;
+    public OrderController(OrderService orderService, OrderRepository orderRepository,
+                           PagedResourcesAssembler<Order> pagedResourcesAssembler,
+                           OrderModelAssemblerSupport orderModelAssemblerSupport) {
+        this.orderService = orderService;
         this.orderRepository = orderRepository;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.orderModelAssemblerSupport = orderModelAssemblerSupport;
     }
 
     @GetMapping(value = "/all", produces = "application/hal+json")
     public ResponseEntity<CollectionModel<OrderModel>> all() {
-        List<Order> entityList = this.saleService.findAll().stream().toList();
+        List<Order> entityList = this.orderService.findAll().stream().toList();
         return new ResponseEntity<>(this.orderModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
 
@@ -58,14 +66,14 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<OrderModel> findBySaleNr(@RequestParam(name = "nr") String nr) {
-        Order order = this.saleService.findBySaleNr(nr);
+        Order order = this.orderService.findBySaleNr(nr);
         log.info("Found order with nr: {}", nr);
         return new ResponseEntity<>(orderModelAssemblerSupport.toModel(order), HttpStatus.OK);
     }
 
     @PostMapping(value = "/add", produces = "application/hal+json")
     public ResponseEntity<OrderModel> add(@RequestBody OrderModel orderModel) {
-        Order savedOrder = this.saleService.save(orderModel);
+        Order savedOrder = this.orderService.save(orderModel);
         OrderModel entityModel = this.orderModelAssemblerSupport.toModel(savedOrder);
 //
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
@@ -73,7 +81,7 @@ public class OrderController {
 
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Order newOrder) {
-        Order updateOrder = this.saleService.update(id, newOrder);
+        Order updateOrder = this.orderService.update(id, newOrder);
         OrderModel entityModel = this.orderModelAssemblerSupport.toModel(updateOrder);
         //
         return ResponseEntity
@@ -83,14 +91,14 @@ public class OrderController {
 
     @DeleteMapping(value = "/delete/{id}", produces = "application/hal+json")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        this.saleService.delete(id);
+        this.orderService.delete(id);
         log.info("Deleted Order with id {}", id);
         return new ResponseEntity<>("Order entity deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/{id}/invoices", produces = "application/hal+json")
     public ResponseEntity<CollectionModel<InvoiceModel>> findOrderInvoices(@PathVariable("id") Long id) {
-        @NonNull List<Invoice> invoices = this.saleService.findOrderInvoices(id);
+        @NonNull List<Invoice> invoices = this.orderService.findOrderInvoices(id);
         //  build  model
         CollectionModel<InvoiceModel> invoiceModels = new InvoiceModelAssemblerSupport().toCollectionModel(invoices);
         //        invoiceModels.add(linkTo(methodOn(OrderController.class).findOrderInvoices(id)).withRel("Order Invoice"));
@@ -100,7 +108,7 @@ public class OrderController {
 
     @GetMapping(value = "/{id}/item", produces = "application/hal+json")
     public ResponseEntity<ItemModel> findOrderItem(@PathVariable("id") Long id) {
-        @NonNull Item item = this.saleService.findOrderItem(id);
+        @NonNull Item item = this.orderService.findOrderItem(id);
         //  build  model
         @NonNull ItemModel itemModel = new ItemModelAssemblerSupport().toModel(item);
         itemModel.add(linkTo(methodOn(OrderController.class).findOrderItem(id)).withRel("Order Invoice"));
@@ -110,11 +118,19 @@ public class OrderController {
 
     @GetMapping(value = "/{id}/staff", produces = "application/hal+json")
     public ResponseEntity<StaffModel> findOrderStaff(@PathVariable("id") Long id) {
-        Staff staff = this.saleService.findOrderStaff(id);
+        Staff staff = this.orderService.findOrderStaff(id);
         //  build  model
         @NonNull StaffModel staffModel = new StaffModelAssemblerSupport().toModel(staff);
         staffModel.add(linkTo(methodOn(OrderController.class).findOrderStaff(id)).withRel("Order Staff"));
         staffModel.add(linkTo(methodOn(OrderController.class).one(id)).withRel("Order"));
         return new ResponseEntity<>(staffModel, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<PagedModel<OrderModel>> pageable(Pageable pageable) {
+        Page<Order> entityPage = orderService.findAll(pageable);
+
+        PagedModel<OrderModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, orderModelAssemblerSupport);
+        return new ResponseEntity<>(pagedModel, HttpStatus.OK);
     }
 }

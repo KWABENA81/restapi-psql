@@ -1,21 +1,23 @@
 package com.asksef.entity.model;
 
-import com.asksef.entity.core.City;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL) //@Relation(collectionRelation="country")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode(callSuper = true)
+@Relation(collectionRelation = "countries")
 public class CountryModel extends RepresentationModel<CountryModel> {
-    private Long countryId;
+    private String id;
     private String country;
     private LocalDateTime lastUpdate;
 

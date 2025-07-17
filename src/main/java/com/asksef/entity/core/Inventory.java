@@ -4,18 +4,18 @@ import com.asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "INVENTORY", schema = "rest_app")
 public class Inventory implements Serializable, Comparable<Inventory> {
@@ -27,8 +27,8 @@ public class Inventory implements Serializable, Comparable<Inventory> {
     }
 
     @Builder
-    public Inventory(Long inventoryId, Item item, Store store, Integer stockQty, Integer reorderQty, LocalDateTime lastUpdate) {
-        this.inventoryId = inventoryId;
+    public Inventory(Item item, Store store, Integer stockQty, Integer reorderQty, LocalDateTime lastUpdate, Long id) {
+        this.inventoryId = id;
         this.item = item;
         this.store = store;
         this.stockQty = stockQty;
@@ -92,30 +92,30 @@ public class Inventory implements Serializable, Comparable<Inventory> {
     public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Inventory inventory = (Inventory) o;
-        return Objects.equals(item, inventory.item) && Objects.equals(store, inventory.store);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(item, store);
-    }
-
-    @Override
-    public String toString() {
-        return "Inventory{" +
-                "inventoryId=" + inventoryId +
-                ", item=" + item +
-                ", store=" + store +
-                ", stockQty=" + stockQty +
-                ", reorderQty=" + reorderQty +
-                ", lastUpdate=" + lastUpdate +
-                '}';
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Inventory inventory = (Inventory) o;
+//        return Objects.equals(item, inventory.item) && Objects.equals(store, inventory.store);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(item, store);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Inventory{" +
+//                "inventoryId=" + inventoryId +
+//                ", item=" + item +
+//                ", store=" + store +
+//                ", stockQty=" + stockQty +
+//                ", reorderQty=" + reorderQty +
+//                ", lastUpdate=" + lastUpdate +
+//                '}';
+//    }
 
     @Override
     public int compareTo(Inventory inventory) {

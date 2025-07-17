@@ -38,12 +38,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class CountryControllerUnitTest {
 
     private final Country countryCanada = Country.builder()
-            .countryId(66L)
+            //.countryId(66L)
             .country("Canada")
             .lastUpdate(LocalDateTime.now())
             .build();
     private final Country countryNaija = Country.builder()
-            .countryId(86L)
+            //.countryId(86L)
             .country("Nigeria")
             .lastUpdate(LocalDateTime.now())
             .build();

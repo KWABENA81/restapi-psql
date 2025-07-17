@@ -1,16 +1,15 @@
 package com.asksef.entity.model;
 
 import com.asksef.entity.core.City;
-import com.asksef.entity.core.Customer;
-import com.asksef.entity.core.Store;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
+
 @Data
 @Getter
 @Setter
@@ -18,8 +17,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode(callSuper = true)
+@Relation(collectionRelation = "addresses")
 public class AddressModel extends RepresentationModel<AddressModel> {
-    private Long addressId;
+    private String id;
     private String gpsCode;
     private String phone;
     private City city;

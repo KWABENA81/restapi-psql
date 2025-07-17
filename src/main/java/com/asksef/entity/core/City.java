@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
@@ -15,10 +13,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "CITY", schema = "rest_app")
 public class City implements Serializable, Comparable<City> {
@@ -36,8 +36,8 @@ public class City implements Serializable, Comparable<City> {
     }
 
     @Builder
-    public City(Long cityId, String city, Country country, LocalDateTime lastUpdate) {
-        this.cityId = cityId;
+    public City(String city, Country country, LocalDateTime lastUpdate, Long id) {
+        this.cityId = id;
         this.city = city;
         this.country = country;
         this.lastUpdate = lastUpdate;
@@ -52,10 +52,12 @@ public class City implements Serializable, Comparable<City> {
 
     @Getter
     @Setter
+    @EqualsAndHashCode.Include
     @Column(name = "CITY", length = 50, nullable = false, unique = true)
     private String city;
 
     @Getter
+    @EqualsAndHashCode.Include
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "COUNTRY_ID")
     @JsonBackReference
@@ -67,6 +69,7 @@ public class City implements Serializable, Comparable<City> {
     }
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Address.class, mappedBy = "city", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JsonIgnore
@@ -89,28 +92,28 @@ public class City implements Serializable, Comparable<City> {
     @Column(name = "LAST_UPDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime lastUpdate;
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        City city1 = (City) o;
-        return Objects.equals(city, city1.city) && Objects.equals(country, city1.country);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(city, country);
-    }
-
-    @Override
-    public String toString() {
-        return "City{" +
-                "cityId=" + cityId +
-                ", city='" + city + '\'' +
-                ", country=" + country +
-                ", lastUpdate=" + lastUpdate +
-                '}';
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        City city1 = (City) o;
+//        return Objects.equals(city, city1.city) && Objects.equals(country, city1.country);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(city, country);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "City{" +
+//                "cityId=" + cityId +
+//                ", city='" + city + '\'' +
+//                ", country=" + country +
+//                ", lastUpdate=" + lastUpdate +
+//                '}';
+//    }
 
     @Override
     public int compareTo(City city) {

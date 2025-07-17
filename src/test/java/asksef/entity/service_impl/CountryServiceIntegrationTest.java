@@ -33,12 +33,12 @@ import static org.mockito.Mockito.times;
 public class CountryServiceIntegrationTest {
 
     private final Country countryCanada = Country.builder()
-            .countryId(16L)
+            //.countryId(16L)
             .lastUpdate(LocalDateTime.now())
             .country("Canada")
             .build();
     private final Country countryNaija = Country.builder()
-            .countryId(23L)
+           // .countryId(23L)
             .lastUpdate(LocalDateTime.now())
             .country("Nigeria")
             .build();

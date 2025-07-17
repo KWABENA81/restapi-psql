@@ -28,21 +28,21 @@ public class CityModelAssemblerSupport extends RepresentationModelAssemblerSuppo
     @Override
     public CityModel toModel(@NonNull City entity) {
         CityModel cityModel = instantiateModel(entity);
-        cityModel.add(
-                linkTo(methodOn(CityController.class).one(entity.getCityId())).withSelfRel());
-        cityModel.add(
-                linkTo(methodOn(CityController.class).findCityCountry(entity.getCityId())).withRel("countryOfCity"));
-        cityModel.add(linkTo(methodOn(CityController.class)
-                .findCityAddresses(entity.getCityId())).withRel("addresses In City"));
 
-        cityModel.add(linkTo(methodOn(CityController.class).all()).withRel("all"));
-        cityModel.add(linkTo(methodOn(CityController.class).add(cityModel)).withSelfRel());
-
-        cityModel.setCityId(entity.getCityId());
         cityModel.setCity(entity.getCity());
         cityModel.setCountry(entity.getCountry());
         cityModel.setLastUpdate(entity.getLastUpdate());
         cityModel.setAddressModelList(toAddressCollectionModel(entity.getAddressList()));
+
+        cityModel.add(
+                linkTo(methodOn(CityController.class).findCityCountry(entity.getCityId())).withRel("countryOfCity"));
+        cityModel.add(linkTo(methodOn(CityController.class)
+                .findCityAddresses(entity.getCityId())).withRel("Addresses In City"));
+
+        cityModel.add(linkTo(methodOn(CityController.class).all()).withRel("all"));
+        cityModel.add(linkTo(methodOn(CityController.class).add(cityModel)).withSelfRel());
+        cityModel.add(
+                linkTo(methodOn(CityController.class).one(entity.getCityId())).withSelfRel());
         return cityModel;
     }
 
@@ -52,7 +52,6 @@ public class CityModelAssemblerSupport extends RepresentationModelAssemblerSuppo
         }
         return addressList.stream()
                 .map(addr -> AddressModel.builder()
-                        .addressId(addr.getAddressId())
                         .city(addr.getCity())
                         .phone(addr.getPhone())
                         .gpsCode(addr.getGpsCode())

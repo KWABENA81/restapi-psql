@@ -4,6 +4,7 @@ import com.asksef.assembler.AddressModelAssemblerSupport;
 import com.asksef.assembler.CustomerModelAssemblerSupport;
 import com.asksef.assembler.InvoiceModelAssemblerSupport;
 import com.asksef.entity.core.Address;
+import com.asksef.entity.core.Country;
 import com.asksef.entity.core.Customer;
 import com.asksef.entity.core.Invoice;
 import com.asksef.entity.model.AddressModel;
@@ -13,7 +14,11 @@ import com.asksef.entity.repository.CustomerRepository;
 import com.asksef.entity.service_impl.CustomerService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,25 +34,28 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CustomerController {
     private final CustomerService customerService;
     private final CustomerRepository customerRepository;
-    private final CustomerModelAssemblerSupport assemblerSupport;
+    private final PagedResourcesAssembler<Customer> pagedResourcesAssembler;
+    private final CustomerModelAssemblerSupport customerModelAssemblerSupport;
 
     public CustomerController(CustomerService customerService, CustomerRepository customerRepository,
+                              PagedResourcesAssembler<Customer> pagedResourcesAssembler,
                               CustomerModelAssemblerSupport assemblerSupport) {
         this.customerService = customerService;
         this.customerRepository = customerRepository;
-        this.assemblerSupport = assemblerSupport;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.customerModelAssemblerSupport = assemblerSupport;
     }
 
     @GetMapping(value = "/all", produces = "application/hal+json")
     public ResponseEntity<CollectionModel<CustomerModel>> all() {
         List<Customer> entityList = customerService.findAll().stream().toList();
-        return new ResponseEntity<>(this.assemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
+        return new ResponseEntity<>(this.customerModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = "application/hal+json")
     public ResponseEntity<CustomerModel> one(@PathVariable("id") Long id) {
         return this.customerRepository.findById(id)
-                .map(assemblerSupport::toModel)
+                .map(customerModelAssemblerSupport::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -61,7 +69,7 @@ public class CustomerController {
     @PostMapping(value = "/add", produces = "application/hal+json")
     public ResponseEntity<CustomerModel> add(@RequestBody CustomerModel customerModel) {
         Customer savedCust = customerService.save(customerModel);
-        @NonNull CustomerModel entityModel = assemblerSupport.toModel(savedCust);
+        @NonNull CustomerModel entityModel = customerModelAssemblerSupport.toModel(savedCust);
         log.info("CustomerController: addCustomer");
         return new ResponseEntity<>(entityModel, HttpStatus.CREATED);
     }
@@ -69,7 +77,7 @@ public class CustomerController {
     @PutMapping(value = "/update/{id}", produces = "application/hal+json")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Customer newCustomer) {
         Customer updatedCcustomer = customerService.update(id, newCustomer);
-        @NonNull CustomerModel entityModel = this.assemblerSupport.toModel(updatedCcustomer);
+        @NonNull CustomerModel entityModel = this.customerModelAssemblerSupport.toModel(updatedCcustomer);
         log.info("CustomerController: updateCustomer");
         return ResponseEntity
                 .created(linkTo(methodOn(CustomerController.class).one(updatedCcustomer.getCustomerId()))
@@ -91,4 +99,11 @@ public class CustomerController {
         return new ResponseEntity<>(invoiceModels, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<PagedModel<CustomerModel>> pageable(Pageable pageable) {
+        Page<Customer> entityPage = customerService.findAll(pageable);
+
+        PagedModel<CustomerModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, customerModelAssemblerSupport);
+        return new ResponseEntity<>(pagedModel, HttpStatus.OK);
+    }
 }

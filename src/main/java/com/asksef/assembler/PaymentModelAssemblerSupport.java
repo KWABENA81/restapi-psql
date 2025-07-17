@@ -21,20 +21,20 @@ public class PaymentModelAssemblerSupport extends RepresentationModelAssemblerSu
     @Override
     public PaymentModel toModel(@NonNull Payment payment) {
         PaymentModel model = instantiateModel(payment);
-        //
-        model.add(linkTo(methodOn(PaymentController.class).all()).withSelfRel());
-        model.add(linkTo(methodOn(PaymentController.class).paymentByNr(payment.getPaymentNr())).withSelfRel());
-        model.add(linkTo(methodOn(PaymentController.class).one(payment.getPaymentId())).withSelfRel());
-        //model.add(linkTo(methodOn(PaymentController.class).all()).withRel("payments"));
-        model.add(linkTo(methodOn(PaymentController.class).findPaymentInvoice(payment.getPaymentId())).withRel("Payment Invoice"));
-        model.add(linkTo(methodOn(PaymentController.class).findStaffOnPayment(payment.getPaymentId())).withRel("Staff on Payment"));
-
-        model.setPaymentId(payment.getPaymentId());
         model.setPaymentNr(payment.getPaymentNr());
         model.setPaymentDate(payment.getPaymentDate());
         model.setAmount(payment.getAmount());
         model.setInvoice(payment.getInvoice());
         model.setStaff(payment.getStaff());
+        //
+        model.add(linkTo(methodOn(PaymentController.class).all()).withSelfRel());
+        model.add(linkTo(methodOn(PaymentController.class).paymentByNr(payment.getPaymentNr())).withSelfRel());
+
+        //model.add(linkTo(methodOn(PaymentController.class).all()).withRel("payments"));
+        model.add(linkTo(methodOn(PaymentController.class).findPaymentInvoice(payment.getPaymentId())).withRel("Payment Invoice"));
+        model.add(linkTo(methodOn(PaymentController.class).findStaffOnPayment(payment.getPaymentId())).withRel("Staff on Payment"));
+        model.add(linkTo(methodOn(PaymentController.class).one(payment.getPaymentId())).withSelfRel());
+
         return model;
     }
 

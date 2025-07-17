@@ -8,6 +8,7 @@ import com.asksef.entity.core.Staff;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -15,10 +16,10 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, PagingAndSortingRepository<Order, Long> {
 
     @Query("SELECT s from Order s WHERE s.orderNr=(:nr)")
-    Order findBySaleNr(@Param("nr") String nr);
+    Optional<Order> findByOrderNumber(@Param("nr") String nr);
 
     @Query(
             nativeQuery = true,
@@ -27,7 +28,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                     "INNER JOIN rest_app.Sale s " +
                     "ON v.invoice_id = s.invoice_id " +
                     "WHERE s.sale_id=:saleId")
-    Optional<Invoice> findInvoiceOfSale(@Param("saleId") Long saleId);
+    Optional<Invoice> findInvoiceOfOrder(@Param("saleId") Long saleId);
 
     @Query(
             nativeQuery = true,
@@ -36,7 +37,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                     "INNER JOIN rest_app.Sale sl " +
                     "ON sf.staff_id = sl.staff_id " +
                     "WHERE sl.sale_id=:saleId")
-    Optional<Staff> findStaffOfSale(@Param("saleId") Long saleId);
+    Optional<Staff> findStaffOfOrder(@Param("saleId") Long saleId);
 
 
     @Query(
@@ -46,7 +47,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                     "INNER JOIN rest_app.Sale sl " +
                     "ON sf.staff_id = sl.staff_id " +
                     "WHERE sl.sale_id=:saleId")
-    Optional<Item> findItemOfSale(@Param("saleId") Long saleId);
+    Optional<Item> findItemInOrder(@Param("saleId") Long saleId);
 }
 
 

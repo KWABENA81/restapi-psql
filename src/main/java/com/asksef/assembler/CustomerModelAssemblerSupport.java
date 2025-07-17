@@ -27,19 +27,18 @@ public class CustomerModelAssemblerSupport extends RepresentationModelAssemblerS
     public CustomerModel toModel(@NonNull Customer entity) {
         CustomerModel model = instantiateModel(entity);
 
-        model.add(linkTo(methodOn(CustomerController.class).one(entity.getCustomerId())).withRel("Id Link"));
         model.add(linkTo(methodOn(CustomerController.class).all()).withRel("all"));
-        model.add(linkTo(methodOn(CustomerController.class).add(CustomerModel.builder().build())).withRel("create"));
+        model.add(linkTo(methodOn(CustomerController.class).add(CustomerModel.builder().build())).withRel("Create"));
         model.add(linkTo(methodOn(CustomerController.class)
-                .delete(entity.getCustomerId())).withRel("delete Customer"));
+                .delete(entity.getCustomerId())).withRel("Delete Customer"));
         model.add(linkTo(methodOn(CustomerController.class)
-                .update(entity.getCustomerId(), Customer.builder().build())).withRel("update Customer"));
+                .update(entity.getCustomerId(), Customer.builder().build())).withRel("Update Customer"));
         model.add(linkTo(methodOn(CustomerController.class)
-                .findCustomerAddress(entity.getCustomerId())).withRel("customer address"));
+                .findCustomerAddress(entity.getCustomerId())).withRel("Customer Address"));
         model.add(linkTo(methodOn(CustomerController.class)
-                .findCustomerInvoices(entity.getCustomerId())).withRel("customer invoices"));
+                .findCustomerInvoices(entity.getCustomerId())).withRel("Customer Invoices"));
+        model.add(linkTo(methodOn(CustomerController.class).one(entity.getCustomerId())).withSelfRel());
 
-        model.setCustomerId(entity.getCustomerId());
         model.setFirstName(entity.getFirstName());
         model.setLastName(entity.getLastName());
         model.setAddress(entity.getAddress());
@@ -54,7 +53,6 @@ public class CustomerModelAssemblerSupport extends RepresentationModelAssemblerS
         }
         return invoiceList.stream()
                 .map(inv -> InvoiceModel.builder()
-                        .invoiceId(inv.getInvoiceId())
                         .invoiceNr(inv.getInvoiceNr())
                         .customer(inv.getCustomer())
                         .lastUpdate(inv.getLastUpdate())

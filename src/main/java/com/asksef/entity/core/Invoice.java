@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
@@ -15,10 +13,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "INVOICE", schema = "rest_app")
 public class Invoice implements Serializable, Comparable<Invoice> {
@@ -31,10 +31,11 @@ public class Invoice implements Serializable, Comparable<Invoice> {
     }
 
     @Builder
-    public Invoice(Long invoiceId, String invoiceNr, Customer customer, Order order,LocalDateTime lastUpdate) {
-        this.invoiceId = invoiceId;
+    public Invoice(String invoiceNr, Customer customer, Order order, LocalDateTime lastUpdate, Long id) {
+        this.invoiceId = id;
         this.invoiceNr = invoiceNr;
-        this.customer = customer;this.order = order;
+        this.customer = customer;
+        this.order = order;
         this.lastUpdate = lastUpdate;
     }
 
@@ -47,6 +48,7 @@ public class Invoice implements Serializable, Comparable<Invoice> {
 
     @Setter
     @Getter
+    @EqualsAndHashCode.Include
     @Column(name = "INVOICE_NR", unique = true)
     private String invoiceNr;
 
@@ -92,6 +94,7 @@ public class Invoice implements Serializable, Comparable<Invoice> {
 //    }
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Payment.class, mappedBy = "invoice", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
@@ -118,30 +121,30 @@ public class Invoice implements Serializable, Comparable<Invoice> {
     public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Invoice invoice = (Invoice) o;
-        return Objects.equals(invoiceNr, invoice.invoiceNr) && Objects.equals(customer, invoice.customer);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(invoiceNr, customer);
-    }
-
-    @Override
-    public String toString() {
-        return "Invoice{" +
-                "invoiceId=" + invoiceId +
-                ", invoiceNr=" + invoiceNr +
-                ", customer=" + customer +
-                //       ", orderList=" + orderList +
-                //     ", paymentList=" + paymentList +
-                ", lastUpdate=" + lastUpdate +
-                '}';
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Invoice invoice = (Invoice) o;
+//        return Objects.equals(invoiceNr, invoice.invoiceNr) && Objects.equals(customer, invoice.customer);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(invoiceNr, customer);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Invoice{" +
+//                "invoiceId=" + invoiceId +
+//                ", invoiceNr=" + invoiceNr +
+//                ", customer=" + customer +
+//                //       ", orderList=" + orderList +
+//                //     ", paymentList=" + paymentList +
+//                ", lastUpdate=" + lastUpdate +
+//                '}';
+//    }
 
 
     @Override

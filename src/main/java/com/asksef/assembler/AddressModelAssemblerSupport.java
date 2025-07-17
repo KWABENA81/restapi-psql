@@ -31,7 +31,6 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
     @Override
     public AddressModel toModel(@NonNull Address entity) {
         AddressModel addressModel = instantiateModel(entity);
-        addressModel.setAddressId(entity.getAddressId());
         addressModel.setGpsCode(entity.getGpsCode());
         addressModel.setPhone(entity.getPhone());
         addressModel.setCity(entity.getCity());
@@ -40,17 +39,18 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
         addressModel.setStoreModelList(toStoreCollectionModel(entity.getStoreList()));
 
         addressModel.add(linkTo(methodOn(AddressController.class)
-                .one(entity.getAddressId())).withSelfRel());
-        addressModel.add(linkTo(methodOn(AddressController.class)
-                .findAddressCity(entity.getAddressId())).withRel("cityOfAddress"));
+                .findAddressCity(entity.getAddressId())).withRel("City Of Address"));
         addressModel.add(linkTo(methodOn(AddressController.class)
                 .all()).withRel("all"));
         addressModel.add(linkTo(methodOn(AddressController.class)
-                .findByPhone(entity.getPhone())).withRel("phone"));
+                .findByPhone(entity.getPhone())).withRel("Phone"));
         addressModel.add(linkTo(methodOn(AddressController.class)
                 .findAddressCustomers(entity.getAddressId())).withRel("Customers At Address"));
         addressModel.add(linkTo(methodOn(AddressController.class)
                 .findAddressStores(entity.getAddressId())).withRel("Stores At Address"));
+        addressModel.add(linkTo(methodOn(AddressController.class)
+                .one(entity.getAddressId())).withSelfRel());
+        //
         return addressModel;
     }
 
@@ -60,7 +60,6 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
         }
         return stores.stream()
                 .map(str -> StoreModel.builder()
-                        .storeId(str.getStoreId())
                         .storeName(str.getStoreName())
 
                         .staff(str.getStaff())
@@ -78,7 +77,6 @@ public class AddressModelAssemblerSupport extends RepresentationModelAssemblerSu
         }
         return customers.stream()
                 .map(cust -> CustomerModel.builder()
-                        .customerId(cust.getCustomerId())
                         .address(cust.getAddress())
                         .lastName(cust.getLastName())
                         .firstName(cust.getFirstName())

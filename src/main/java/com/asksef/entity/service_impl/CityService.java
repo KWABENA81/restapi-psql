@@ -10,7 +10,9 @@ import com.asksef.errors.CustomResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -38,6 +40,10 @@ public class CityService implements CityServiceInterface {
         return cityRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<City> findAll(Pageable pageable) {
+        return this.cityRepository.findAll(pageable);
+    }
+
     @Override
     public City findById(Long id) {
         City city = cityRepository.findById(id).orElseThrow(
@@ -56,9 +62,8 @@ public class CityService implements CityServiceInterface {
     @Transactional
     public City save(@Valid CityModel cityModel) {
         City city = City.builder()
-                .cityId(cityModel.getCityId())
                 .city(cityModel.getCity())
-                 .country(cityModel.getCountry())
+                .country(cityModel.getCountry())
                 .lastUpdate(cityModel.getLastUpdate())
                 .build();
         return save(city);
@@ -116,8 +121,11 @@ public class CityService implements CityServiceInterface {
     }
 
     public City findCityByName(String city) {
-        log.info("Find city by name: {}", city);
-        return cityRepository.findCityByName(city);
+        Optional<City> optionCity = this.cityRepository.findCityByName(Objects.requireNonNull(city));
+        if (optionCity.isEmpty()) {
+            throw new CustomResourceNotFoundException("city", "cityName", null, city);
+        }
+        return optionCity.get();
     }
 
     public Country findCityCountry(Long id) {

@@ -12,7 +12,9 @@ import com.asksef.errors.CustomResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -41,6 +43,10 @@ public class AddressService implements AddressServiceInterface {
         return addressRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Address> findAll(Pageable pageable) {
+        return this.addressRepository.findAll(pageable);
+    }
+
     @Override
     public Address findById(Long id) {
         Address address = addressRepository.findById(id).orElseThrow(
@@ -59,7 +65,6 @@ public class AddressService implements AddressServiceInterface {
     @Transactional
     public Address save(@Valid AddressModel addressModel) {
         Address address = Address.builder()
-                .addressId(addressModel.getAddressId())
                 .city(addressModel.getCity())
                 .gpsCode(addressModel.getGpsCode())
                 .phone(addressModel.getPhone())
@@ -144,4 +149,5 @@ public class AddressService implements AddressServiceInterface {
         );
         return address.getCustomerList();
     }
+
 }

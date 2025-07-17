@@ -5,19 +5,19 @@ import com.asksef.errors.UniqueCountryName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "COUNTRY", schema = "rest_app")
 public class Country implements Serializable, Comparable<Country> {
@@ -33,8 +33,8 @@ public class Country implements Serializable, Comparable<Country> {
     }
 
     @Builder
-    public Country(Long countryId, String country, LocalDateTime lastUpdate) {
-        this.countryId = countryId;
+    public Country(String country, LocalDateTime lastUpdate, Long id) {
+        this.countryId = id;
         this.country = country;
         this.lastUpdate = lastUpdate;
     }
@@ -48,11 +48,13 @@ public class Country implements Serializable, Comparable<Country> {
     private Long countryId;
 
     @Getter
+    @EqualsAndHashCode.Include
     @Column(name = "COUNTRY", length = 50, nullable = false, unique = true)
     @UniqueCountryName
     private String country;
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = City.class, mappedBy = "country", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
@@ -79,24 +81,24 @@ public class Country implements Serializable, Comparable<Country> {
     public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Country country1 = (Country) o;
-        return Objects.equals(country, country1.country);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(country);
-    }
-
-    @Override
-    public String toString() {
-        return "Country{" + "countryId=" + countryId + ", country= "
-                + country + "}";
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Country country1 = (Country) o;
+//        return Objects.equals(country, country1.country);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hashCode(country);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Country{" + "countryId=" + countryId + ", country= "
+//                + country + "}";
+//    }
 
     @Override
     public int compareTo(Country country) {

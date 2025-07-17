@@ -12,7 +12,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -42,6 +44,10 @@ public class ItemService implements ItemServiceInterface {
         return this.itemRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Item> findAll(Pageable pageable) {
+        return this.itemRepository.findAll(pageable);
+    }
+
     @Override
     public Item findById(Long id) {
         Item item = this.itemRepository.findById(id).orElseThrow(
@@ -54,7 +60,6 @@ public class ItemService implements ItemServiceInterface {
     @Transactional
     public Item save(@Valid ItemModel itemModel) {
         Item item = Item.builder()
-                .itemId(itemModel.getItemId())
                 .itemCode(itemModel.getItemCode())
                 .itemCost(itemModel.getItemCost())
                 .itemDesc(itemModel.getItemDesc())
@@ -119,7 +124,9 @@ public class ItemService implements ItemServiceInterface {
     }
 
     public Item findByCode(String code) {
-        return itemRepository.findByCode(code);
+        return this.itemRepository.findByCode(code).orElseThrow(
+                () -> new CustomResourceNotFoundException("Item", "id", null, code)
+        );
     }
 
     public Collection<Item> findByDescLike(String desc) {

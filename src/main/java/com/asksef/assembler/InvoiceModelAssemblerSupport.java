@@ -2,11 +2,11 @@ package com.asksef.assembler;
 
 import com.asksef.controller.InvoiceController;
 import com.asksef.entity.core.Invoice;
-import com.asksef.entity.core.Payment;
 import com.asksef.entity.core.Order;
+import com.asksef.entity.core.Payment;
 import com.asksef.entity.model.InvoiceModel;
-import com.asksef.entity.model.PaymentModel;
 import com.asksef.entity.model.OrderModel;
+import com.asksef.entity.model.PaymentModel;
 import lombok.NonNull;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -31,20 +31,19 @@ public class InvoiceModelAssemblerSupport extends RepresentationModelAssemblerSu
     public InvoiceModel toModel(@NonNull Invoice entity) {
         InvoiceModel invoiceModel = instantiateModel(entity);
         invoiceModel.add(linkTo(methodOn(InvoiceController.class).all()).withRel("all"));
-        invoiceModel.add(linkTo(methodOn(InvoiceController.class).one(entity.getInvoiceId())).withRel("one"));
         //  invoiceModel.add(linkTo(methodOn(InvoiceController.class).add(entity)).withRel("add"));
         invoiceModel.add(linkTo(methodOn(InvoiceController.class)
                 .findCustomerOnInvoice(entity.getInvoiceId())).withRel("Customer On Invoice"));
         invoiceModel.add(linkTo(methodOn(InvoiceController.class)
                 .findInvoicePayments(entity.getInvoiceId())).withRel("Invoice Payments"));
-//        invoiceModel.add(linkTo(methodOn(InvoiceController.class)
-//                .findInvoiceSales(entity.getInvoiceId())).withRel("Invoice Sales"));
+        invoiceModel.add(linkTo(methodOn(InvoiceController.class)
+                .findInvoiceOrder(entity.getInvoiceId())).withRel("Invoice Order"));
+        invoiceModel.add(linkTo(methodOn(InvoiceController.class).one(entity.getInvoiceId())).withSelfRel());
 
-        invoiceModel.setInvoiceId(entity.getInvoiceId());
         invoiceModel.setInvoiceNr(entity.getInvoiceNr());
         invoiceModel.setCustomer(entity.getCustomer());
         invoiceModel.setLastUpdate(entity.getLastUpdate());
-        //invoiceModel.setOrderModelList(toSalesCollectionModel(entity.getOrderList()));
+        invoiceModel.setOrder(entity.getOrder());
         invoiceModel.setPaymentModelList(toPaymentCollectionModel(entity.getPaymentList()));
         return invoiceModel;
     }
@@ -55,7 +54,6 @@ public class InvoiceModelAssemblerSupport extends RepresentationModelAssemblerSu
         }
         return paymentList.stream()
                 .map(pay -> PaymentModel.builder()
-                        .paymentId(pay.getPaymentId())
                         .paymentNr(pay.getPaymentNr())
                         .amount(pay.getAmount())
                         .invoice(pay.getInvoice())
@@ -72,7 +70,6 @@ public class InvoiceModelAssemblerSupport extends RepresentationModelAssemblerSu
         }
         return orderList.stream()
                 .map(od -> OrderModel.builder()
-                        .orderId(od.getOrderId())
                         .orderDate(od.getOrderDate())
                         .orderNr(od.getOrderNr())
                         .staff(od.getStaff())

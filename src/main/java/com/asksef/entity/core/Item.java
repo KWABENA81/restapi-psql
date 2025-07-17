@@ -4,9 +4,7 @@ import com.asksef.config.DateConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
@@ -14,10 +12,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "ITEM", schema = "rest_app")
 public class Item implements Serializable, Comparable<Item> {
@@ -35,8 +35,8 @@ public class Item implements Serializable, Comparable<Item> {
     }
 
     @Builder
-    public Item(Long itemId, String itemName, String itemCode, String itemDesc, Float itemCost, LocalDateTime lastUpdate) {
-        this.itemId = itemId;
+    public Item(String itemName, String itemCode, String itemDesc, Float itemCost, LocalDateTime lastUpdate, Long id) {
+        this.itemId = id;
         this.itemName = itemName;
         this.itemCode = itemCode;
         this.itemDesc = itemDesc;
@@ -53,11 +53,13 @@ public class Item implements Serializable, Comparable<Item> {
 
     @Getter
     @Setter
+    @EqualsAndHashCode.Include
     @Column(name = "ITEM_NAME", nullable = false, length = 128)
     private String itemName;
 
     @Getter
     @Setter
+    @EqualsAndHashCode.Include
     @Column(name = "ITEM_CODE", nullable = false, length = 128)
     private String itemCode;
 
@@ -82,6 +84,7 @@ public class Item implements Serializable, Comparable<Item> {
     }
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Order.class, mappedBy = "item", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
@@ -99,6 +102,7 @@ public class Item implements Serializable, Comparable<Item> {
     }
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Inventory.class, mappedBy = "item", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
@@ -115,31 +119,31 @@ public class Item implements Serializable, Comparable<Item> {
         }
         inventory.setItem(this);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return Objects.equals(itemName, item.itemName) && Objects.equals(itemDesc, item.itemDesc);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(itemName, itemDesc);
-    }
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "itemId=" + itemId +
-                ", itemName='" + itemName + '\'' +
-                ", itemCode='" + itemCode + '\'' +
-                ", itemDesc='" + itemDesc + '\'' +
-                ", itemCost=" + itemCost +
-                ", lastUpdate=" + lastUpdate +
-                //     ", inventoryList=" + inventoryList +
-                '}';
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Item item = (Item) o;
+//        return Objects.equals(itemName, item.itemName) && Objects.equals(itemDesc, item.itemDesc);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(itemName, itemDesc);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Item{" +
+//                "itemId=" + itemId +
+//                ", itemName='" + itemName + '\'' +
+//                ", itemCode='" + itemCode + '\'' +
+//                ", itemDesc='" + itemDesc + '\'' +
+//                ", itemCost=" + itemCost +
+//                ", lastUpdate=" + lastUpdate +
+//                //     ", inventoryList=" + inventoryList +
+//                '}';
+//    }
 
     @Override
     public int compareTo(Item item) {

@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -16,10 +14,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "CUSTOMER", schema = "rest_app")
 public class Customer implements Serializable, Comparable<Customer> {
@@ -31,9 +31,9 @@ public class Customer implements Serializable, Comparable<Customer> {
     }
 
     @Builder
-    public Customer(Long customerId, String firstName, String lastName, Address address,
-                    LocalDateTime createDate, LocalDateTime lastUpdate) {
-        this.customerId = customerId;
+    public Customer(String firstName, String lastName, Address address,
+                    LocalDateTime createDate, LocalDateTime lastUpdate, Long id) {
+        this.customerId = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -51,16 +51,19 @@ public class Customer implements Serializable, Comparable<Customer> {
 
     @Setter
     @Getter
+    @EqualsAndHashCode.Include
     @Column(name = "FIRST_NAME", length = 45, nullable = false)
     private String firstName;
 
     @Setter
     @Getter
+    @EqualsAndHashCode.Include
     @Column(name = "LAST_NAME", length = 45, nullable = false)
     private String lastName;
 
     @Setter
     @Getter
+    @EqualsAndHashCode.Include
     @CreationTimestamp
     @Column(name = "CREATE_DATE", nullable = false)
     private LocalDateTime createDate;
@@ -84,6 +87,7 @@ public class Customer implements Serializable, Comparable<Customer> {
     private LocalDateTime lastUpdate;
 
     @Setter
+    @ToString.Exclude
     @OneToMany(targetEntity = Invoice.class, mappedBy = "customer", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
@@ -100,30 +104,30 @@ public class Customer implements Serializable, Comparable<Customer> {
         }
         invoice.setCustomer(this);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return Objects.equals(firstName, customer.firstName)
-                && Objects.equals(lastName, customer.lastName)
-                && Objects.equals(createDate, customer.createDate)
-                && Objects.equals(address, customer.address);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName, createDate, address);
-    }
-
-    @Override
-    public String toString() {
-        return "Customer{" + "customerId=" + customerId +
-                ", firstName='" + firstName + '\'' + ", lastName='" +
-                lastName + '\'' + ", createDate='" + createDate + '\'' +
-                ", address=" + address + ", lastUpdate=" + lastUpdate + //", invoiceList=" + invoiceList +
-                '}';
-    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Customer customer = (Customer) o;
+//        return Objects.equals(firstName, customer.firstName)
+//                && Objects.equals(lastName, customer.lastName)
+//                && Objects.equals(createDate, customer.createDate)
+//                && Objects.equals(address, customer.address);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(firstName, lastName, createDate, address);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Customer{" + "customerId=" + customerId +
+//                ", firstName='" + firstName + '\'' + ", lastName='" +
+//                lastName + '\'' + ", createDate='" + createDate + '\'' +
+//                ", address=" + address + ", lastUpdate=" + lastUpdate + //", invoiceList=" + invoiceList +
+//                '}';
+//    }
 
     @Override
     public int compareTo(Customer customer) {

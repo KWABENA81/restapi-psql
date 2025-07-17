@@ -11,23 +11,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDateTime;
-import java.util.*;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Arrays;
+import java.util.List;
 
 
 @SpringBootTest
 public class CountryServiceUnitTest {
 
     private final Country countryCanada = Country.builder()
-            .countryId(16L).
-            lastUpdate(LocalDateTime.now())
+            // .countryId(16L)
+            .lastUpdate(LocalDateTime.now())
             .country("Canada")
             .build();
     private final Country countryNaija = Country.builder()
-            .countryId(23L)
+            // .countryId(23L)
             .lastUpdate(LocalDateTime.now())
             .country("Nigeria")
             .build();
@@ -47,7 +44,7 @@ public class CountryServiceUnitTest {
 
     @AfterEach
     public void tearDown() {
-   }
+    }
 //    @Test
 //    void testCountryService_save() {
 //        Long id = 130L;

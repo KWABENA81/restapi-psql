@@ -4,6 +4,7 @@ import com.asksef.entity.core.Address;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,8 +17,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Relation(collectionRelation = "customers")
 public class CustomerModel extends RepresentationModel<CustomerModel> {
-    private Long customerId;
+    private String id;
     private String firstName;
     private String lastName;
     private Address address;

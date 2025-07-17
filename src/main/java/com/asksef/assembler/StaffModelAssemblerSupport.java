@@ -5,8 +5,8 @@ import com.asksef.entity.core.Order;
 import com.asksef.entity.core.Payment;
 import com.asksef.entity.core.Staff;
 import com.asksef.entity.core.Store;
-import com.asksef.entity.model.PaymentModel;
 import com.asksef.entity.model.OrderModel;
+import com.asksef.entity.model.PaymentModel;
 import com.asksef.entity.model.StaffModel;
 import com.asksef.entity.model.StoreModel;
 import org.springframework.hateoas.CollectionModel;
@@ -31,8 +31,16 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
     @Override
     public StaffModel toModel(@NonNull Staff entity) {
         StaffModel staffModel = instantiateModel(entity);
+
+        staffModel.setFirstName(entity.getFirstName());
+        staffModel.setLastName(entity.getLastName());
+        staffModel.setUsername(entity.getUsername());
+        staffModel.setLastUpdate(entity.getLastUpdate());
+        //staffModel.setAddress(entity.getA);
+        staffModel.setOrderModelList(toOrderCollectionModel(entity.getOrderList()));
+        staffModel.setPaymentModelList(toPaymentCollectionModel(entity.getPaymentList()));
+        staffModel.setStoreModelList(toStoreCollectionModel(entity.getStoreList()));
         //
-        staffModel.add(linkTo(methodOn(StaffController.class).one(entity.getStaffId())).withSelfRel());
         staffModel.add(linkTo(methodOn(StaffController.class).all()).withRel("all"));
         staffModel.add(linkTo(methodOn(StaffController.class).one(entity.getStaffId())).withSelfRel());
         //staffModel.add(linkTo(methodOn(StaffController.class).add(entity)).withRel("add"));
@@ -42,16 +50,8 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
         staffModel.add(linkTo(methodOn(StaffController.class).findStaffOrders(entity.getStaffId())).withRel("Sales"));
         staffModel.add(linkTo(methodOn(StaffController.class).findStaffPayments(entity.getStaffId())).withRel("Payments"));
         staffModel.add(linkTo(methodOn(StaffController.class).findStaffStores(entity.getStaffId())).withRel("Stores"));
+        staffModel.add(linkTo(methodOn(StaffController.class).one(entity.getStaffId())).withSelfRel());
 
-        staffModel.setStaffId(entity.getStaffId());
-        staffModel.setFirstName(entity.getFirstName());
-        staffModel.setLastName(entity.getLastName());
-        staffModel.setUsername(entity.getUsername());
-        staffModel.setLastUpdate(entity.getLastUpdate());
-        //staffModel.setAddress(entity.getA);
-        staffModel.setOrderModelList(toSaleCollectionModel(entity.getOrderList()));
-        staffModel.setPaymentModelList(toPaymentCollectionModel(entity.getPaymentList()));
-        staffModel.setStoreModelList(toStoreCollectionModel(entity.getStoreList()));
         return staffModel;
     }
 
@@ -61,7 +61,6 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
         }
         return paymentList.stream()
                 .map(pay -> PaymentModel.builder()
-                        .paymentId(pay.getPaymentId())
                         .paymentNr(pay.getPaymentNr())
                         .paymentDate(pay.getPaymentDate())
                         .amount(pay.getAmount())
@@ -78,7 +77,6 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
         }
         return storeList.stream()
                 .map(st -> StoreModel.builder()
-                        .storeId(st.getStoreId())
                         .storeName(st.getStoreName())
                         .address(st.getAddress())
                         //.inventoryModelList(st.getInventoryList()
@@ -89,13 +87,12 @@ public class StaffModelAssemblerSupport extends RepresentationModelAssemblerSupp
                                 .withRel("one"))).toList();
     }
 
-    private List<OrderModel> toSaleCollectionModel(List<Order> orderList) {
+    private List<OrderModel> toOrderCollectionModel(List<Order> orderList) {
         if (orderList == null || orderList.isEmpty()) {
             return Collections.emptyList();
         }
         return orderList.stream()
                 .map(od -> OrderModel.builder()
-                        .orderId(od.getOrderId())
                         .orderDate(od.getOrderDate())
                         .orderNr(od.getOrderNr())
                         .staff(od.getStaff())

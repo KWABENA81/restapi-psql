@@ -13,7 +13,11 @@ import com.asksef.entity.repository.ItemRepository;
 import com.asksef.entity.service_impl.ItemService;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +33,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ItemController {
     private final ItemService itemService;
     private final ItemRepository itemRepository;
+    private final PagedResourcesAssembler<Item> pagedResourcesAssembler;
     private final ItemModelAssemblerSupport itemModelAssemblerSupport;
 
     public ItemController(ItemService itemService, ItemRepository itemRepository,
+                          PagedResourcesAssembler<Item> pagedResourcesAssembler,
                           ItemModelAssemblerSupport itemModelAssemblerSupport) {
         this.itemService = itemService;
         this.itemRepository = itemRepository;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.itemModelAssemblerSupport = itemModelAssemblerSupport;
     }
 
@@ -117,5 +124,13 @@ public class ItemController {
         List<Order> orderList = itemService.findItemOrders(id);
         CollectionModel<OrderModel> orderModels = new OrderModelAssemblerSupport().toCollectionModel(orderList);
         return new ResponseEntity<>(orderModels, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<PagedModel<ItemModel>> pageable(Pageable pageable) {
+        Page<Item> entityPage = itemService.findAll(pageable);
+
+        PagedModel<ItemModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, itemModelAssemblerSupport);
+        return new ResponseEntity<>(pagedModel, HttpStatus.OK);
     }
 }

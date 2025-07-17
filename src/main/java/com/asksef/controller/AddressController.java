@@ -4,20 +4,18 @@ import com.asksef.assembler.AddressModelAssemblerSupport;
 import com.asksef.assembler.CityModelAssemblerSupport;
 import com.asksef.assembler.CustomerModelAssemblerSupport;
 import com.asksef.assembler.StoreModelAssemblerSupport;
-import com.asksef.entity.core.Address;
-import com.asksef.entity.core.City;
-import com.asksef.entity.core.Customer;
-import com.asksef.entity.core.Store;
-import com.asksef.entity.model.AddressModel;
-import com.asksef.entity.model.CityModel;
-import com.asksef.entity.model.CustomerModel;
-import com.asksef.entity.model.StoreModel;
+import com.asksef.entity.core.*;
+import com.asksef.entity.model.*;
 import com.asksef.entity.repository.AddressRepository;
 import com.asksef.entity.service_impl.AddressService;
 import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,12 +35,15 @@ public class AddressController {
 
     private final AddressService addressService;
     private final AddressRepository addressRepository;
+    private final PagedResourcesAssembler<Address> pagedResourcesAssembler;
     private final AddressModelAssemblerSupport addressModelAssemblerSupport;
 
     public AddressController(AddressService addressServ, AddressRepository addressRepository,
-                             AddressModelAssemblerSupport addressModelAssemblerSupport) {
+                             AddressModelAssemblerSupport addressModelAssemblerSupport,
+                             PagedResourcesAssembler<Address> pagedResourcesAssembler) {
         this.addressService = addressServ;
         this.addressRepository = addressRepository;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.addressModelAssemblerSupport = addressModelAssemblerSupport;
     }
 
@@ -135,6 +136,13 @@ public class AddressController {
         List<Customer> customerList = addressService.findAddressCustomers(id);
         @NonNull CollectionModel<CustomerModel> customerModels = new CustomerModelAssemblerSupport().toCollectionModel(customerList);
         return new ResponseEntity<>(customerModels, HttpStatus.OK);
+    }
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<PagedModel<AddressModel>> pageable(Pageable pageable) {
+        Page<Address> entityPage = addressService.findAll(pageable);
+
+        PagedModel<AddressModel> addressModels = pagedResourcesAssembler.toModel(entityPage, addressModelAssemblerSupport);
+        return new ResponseEntity<>(addressModels, HttpStatus.OK);
     }
 }
 

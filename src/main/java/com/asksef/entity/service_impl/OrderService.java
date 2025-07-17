@@ -13,7 +13,9 @@ import jakarta.validation.Valid;
 import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -42,6 +44,10 @@ public class OrderService implements SaleServiceInterface {
         return this.orderRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Order> findAll(Pageable pageable) {
+        return this.orderRepository.findAll(pageable);
+    }
+
     @Override
     public Order findById(Long id) {
         Order order = this.orderRepository.findById(id).orElseThrow(
@@ -60,7 +66,6 @@ public class OrderService implements SaleServiceInterface {
     @Transactional
     public Order save(@Valid OrderModel orderModel) {
         Order order = Order.builder()
-                .orderId(orderModel.getOrderId())
                 .orderDate(orderModel.getOrderDate())
                 .orderNr(orderModel.getOrderNr())
                 .staff(orderModel.getStaff())
@@ -125,24 +130,26 @@ public class OrderService implements SaleServiceInterface {
     }
 
     public Order findBySaleNr(String nr) {
-        return this.orderRepository.findBySaleNr(nr);
+        return this.orderRepository.findByOrderNumber(nr).orElseThrow(
+                () -> new CustomResourceNotFoundException("Order", "nr", null, nr)
+        );
     }
 
     public Staff findOrderStaff(Long id) {
-        return orderRepository.findStaffOfSale(id).orElseThrow(
+        return this.orderRepository.findStaffOfOrder(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Order", "id", null, id)
         );
     }
 
     public @NonNull List<Invoice> findOrderInvoices(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(
+        Order order = this.orderRepository.findById(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Order", "id", null, id)
         );
         return order.getInvoiceList();
     }
 
     public @NonNull Item findOrderItem(Long id) {
-        return orderRepository.findItemOfSale(id).orElseThrow(
+        return this.orderRepository.findItemInOrder(id).orElseThrow(
                 () -> new CustomResourceNotFoundException("Order", "id", null, id)
         );
     }

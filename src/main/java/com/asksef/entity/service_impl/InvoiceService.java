@@ -14,7 +14,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -43,6 +45,10 @@ public class InvoiceService implements InvoiceServiceInterface {
         return this.invoiceRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Invoice> findAll(Pageable pageable) {
+        return this.invoiceRepository.findAll(pageable);
+    }
+
     @Override
     public Invoice findById(Long id) {
         Invoice invoice = this.invoiceRepository.findById(id).orElseThrow(
@@ -55,7 +61,6 @@ public class InvoiceService implements InvoiceServiceInterface {
     @Transactional
     public Invoice save(@Valid InvoiceModel invoiceModel) {
         Invoice invoice = Invoice.builder()
-                .invoiceId(invoiceModel.getInvoiceId())
                 .invoiceNr(invoiceModel.getInvoiceNr())
                 .customer(invoiceModel.getCustomer())
                 .lastUpdate(invoiceModel.getLastUpdate())

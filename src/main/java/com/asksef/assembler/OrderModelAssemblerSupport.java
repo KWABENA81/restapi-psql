@@ -21,14 +21,18 @@ public class OrderModelAssemblerSupport extends RepresentationModelAssemblerSupp
     @Override
     public OrderModel toModel(@NonNull Order entity) {
         OrderModel orderModel = instantiateModel(entity);
-        orderModel.add(linkTo(methodOn(OrderController.class).one(entity.getOrderId())).withSelfRel());
 
-        orderModel.setOrderId(entity.getOrderId());
         orderModel.setOrderDate(entity.getOrderDate());
         orderModel.setOrderNr(entity.getOrderNr());
         orderModel.setLastUpdate(entity.getLastUpdate());
         orderModel.setStaff(entity.getStaff());
         orderModel.setItem(entity.getItem());
+
+        orderModel.add(linkTo(methodOn(OrderController.class).one(entity.getOrderId())).withSelfRel());
+        orderModel.add(linkTo(methodOn(OrderController.class).all()).withRel("orders"));
+        orderModel.add(linkTo(methodOn(OrderController.class).findOrderStaff(entity.getOrderId())).withRel("orders staff"));
+        orderModel.add(linkTo(methodOn(OrderController.class).findOrderItem(entity.getOrderId())).withRel("order item"));
+        // orderModel.add(linkTo(methodOn(OrderController.class).findOrderItem(entity.getOrderId())).withRel("order item"));
         return orderModel;
     }
 

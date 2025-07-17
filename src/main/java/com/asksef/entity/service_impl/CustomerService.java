@@ -2,6 +2,7 @@ package com.asksef.entity.service_impl;
 
 
 import com.asksef.entity.core.Address;
+import com.asksef.entity.core.Country;
 import com.asksef.entity.core.Customer;
 import com.asksef.entity.core.Invoice;
 import com.asksef.entity.model.CustomerModel;
@@ -12,7 +13,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -40,6 +43,10 @@ public class CustomerService implements CustomerServiceInterface {
     public Collection<Customer> findAll(int pageNumber, int pageSize) {
         log.info("Find all customers from page {} of {}", pageNumber, pageSize);
         return customerRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
+    }
+
+    public Page<Customer> findAll(Pageable pageable) {
+        return this.customerRepository.findAll(pageable);
     }
 
     @Override

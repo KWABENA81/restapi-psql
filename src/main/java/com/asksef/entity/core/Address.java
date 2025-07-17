@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serial;
@@ -18,7 +16,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
+@Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Entity
 @Table(name = "ADDRESS", schema = "rest_app")
 public class Address implements Serializable, Comparable<Address> {
@@ -30,8 +31,8 @@ public class Address implements Serializable, Comparable<Address> {
     }
 
     @Builder
-    public Address(Long addressId, String gpsCode, String phone, City city, LocalDateTime lastUpdate) {
-        this.addressId = addressId;
+    public Address(String gpsCode, String phone, City city, LocalDateTime lastUpdate, Long id) {
+        this.addressId = id;
         this.gpsCode = gpsCode;
         this.phone = phone;
         this.city = city;
@@ -47,11 +48,13 @@ public class Address implements Serializable, Comparable<Address> {
 
     @Getter
     @Setter
+    @EqualsAndHashCode.Include
     @Column(name = "GPS_CODE", length = 10, nullable = false)
     private String gpsCode;
 
     @Setter
     @Getter
+    @EqualsAndHashCode.Include
     @Column(name = "PHONE", length = 20, nullable = false)
     private String phone;
 
@@ -67,7 +70,8 @@ public class Address implements Serializable, Comparable<Address> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Store.class, mappedBy = "address", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @OneToMany(targetEntity = Store.class, mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JsonIgnore
     private List<Store> storeList;
@@ -85,7 +89,8 @@ public class Address implements Serializable, Comparable<Address> {
     }
 
     @Setter
-    @OneToMany(targetEntity = Customer.class, mappedBy = "address", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @OneToMany(targetEntity = Customer.class, mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JsonIgnore
     private List<Customer> customerList;
@@ -113,25 +118,25 @@ public class Address implements Serializable, Comparable<Address> {
         return lastUpdate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Address address = (Address) o;
-        return Objects.equals(gpsCode, address.gpsCode) && Objects.equals(phone, address.phone);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(gpsCode, phone);
-    }
-
-    @Override
-    public String toString() {
-        return "Address{" +
-                "addressId=" + addressId +
-                ", gpsCode= " + gpsCode +
-                ", phone= " + phone + "}";
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Address address = (Address) o;
+//        return Objects.equals(gpsCode, address.gpsCode) && Objects.equals(phone, address.phone);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(gpsCode, phone);
+//    }
+//
+//    @Override
+//    public String toString() {
+//        return "Address{" +
+//                "addressId=" + addressId +
+//                ", gpsCode= " + gpsCode +
+//                ", phone= " + phone + "}";
+//    }
 
     @Override
     public int compareTo(Address address) {

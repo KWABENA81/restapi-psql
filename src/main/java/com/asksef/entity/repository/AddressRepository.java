@@ -5,6 +5,7 @@ import com.asksef.entity.core.Address;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public interface AddressRepository extends JpaRepository<Address, Long> {
+public interface AddressRepository extends JpaRepository<Address, Long>, PagingAndSortingRepository<Address, Long> {
 
     @Query("SELECT a from Address a WHERE a.gpsCode=(:code)")
     Collection<Address> findByCode(@Param("code") String code);
@@ -21,12 +22,6 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     @Query("SELECT a from Address a WHERE a.phone=(:phone)")
     Optional<Address> findByPhone(@Param("phone") String phone);
 
-//    @Query(
-//            nativeQuery = true,
-//            value = "SELECT ct.city_id, ct.city, ct.country_id, ct.last_update " +
-//                    "FROM rest_app.Address adr " +
-//                    "INNER JOIN rest_app.City ct ON ct.city_id = adr.city_id WHERE ct.address_id=:addressId")
-//    Optional<City> findCityOfAddress(@Param("addressId") Long addressId);
 
     @Query(
             nativeQuery = true,

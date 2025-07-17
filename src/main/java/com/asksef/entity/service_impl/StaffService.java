@@ -11,7 +11,9 @@ import com.asksef.errors.CustomResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -41,6 +43,10 @@ public class StaffService implements StaffServiceInterface {
         return this.staffRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Staff> findAll(Pageable pageable) {
+        return this.staffRepository.findAll(pageable);
+    }
+
     @Override
     public Staff findById(Long id) {
         Staff staff = staffRepository.findById(id).orElseThrow(
@@ -59,7 +65,6 @@ public class StaffService implements StaffServiceInterface {
     @Transactional
     public Staff save(@Valid StaffModel staffModel) {
         Staff staff = Staff.builder()
-                .staffId(staffModel.getStaffId())
                 .firstName(staffModel.getFirstName())
                 .lastName(staffModel.getLastName())
                 .username(staffModel.getUsername())
@@ -141,9 +146,4 @@ public class StaffService implements StaffServiceInterface {
         return staff.getStoreList();
     }
 
-//    public Address findAddressOfCustomer(Long id) {
-//        return this.staffRepository.findAddressOfCustomer(id).orElseThrow(
-//                () -> new CustomResourceNotFoundException("staff", "id", null, id)
-//        );
-//    }
 }

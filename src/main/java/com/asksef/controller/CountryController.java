@@ -10,7 +10,11 @@ import com.asksef.entity.repository.CountryRepository;
 import com.asksef.entity.service_impl.CountryService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +30,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CountryController {
     private final CountryService countryService;
     private final CountryRepository countryRepository;
+    private final PagedResourcesAssembler<Country> pagedResourcesAssembler;
     private final CountryModelAssemblerSupport countryModelAssemblerSupport;
 
-    public CountryController(CountryService service, CountryRepository repo, CountryModelAssemblerSupport cmas) {
+    public CountryController(CountryService service, CountryRepository repo, CountryModelAssemblerSupport mas,
+                             PagedResourcesAssembler<Country> pagedResourcesAssembler) {
         this.countryService = service;
         this.countryRepository = repo;
-        this.countryModelAssemblerSupport = cmas;
+        this.countryModelAssemblerSupport = mas;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @GetMapping(value = "/all", produces = "application/hal+json")
@@ -39,6 +46,7 @@ public class CountryController {
         List<Country> entityList = this.countryService.findAll().stream().toList();
         return new ResponseEntity<>(this.countryModelAssemblerSupport.toCollectionModel(entityList), HttpStatus.OK);
     }
+
 
     @GetMapping(value = "/{id}", produces = "application/hal+json")
     public ResponseEntity<CountryModel> one(@PathVariable("id") Long id) {
@@ -95,4 +103,11 @@ public class CountryController {
         return new ResponseEntity<>(cityModels, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<PagedModel<CountryModel>> pageable(Pageable pageable) {
+        Page<Country> entityPage = countryService.findAll(pageable);
+
+        PagedModel<CountryModel> countryModels = pagedResourcesAssembler.toModel(entityPage, countryModelAssemblerSupport);
+        return new ResponseEntity<>(countryModels, HttpStatus.OK);
+    }
 }

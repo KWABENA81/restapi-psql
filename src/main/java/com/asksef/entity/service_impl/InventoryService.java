@@ -10,7 +10,9 @@ import com.asksef.errors.CustomResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -37,6 +39,10 @@ public class InventoryService implements InventoryServiceInterface {
         return inventoryRepository.findAll(PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
+    public Page<Inventory> findAll(Pageable pageable) {
+        return this.inventoryRepository.findAll(pageable);
+    }
+
     @Override
     public Inventory findById(Long id) {
         return inventoryRepository.findById(id).orElseThrow(
@@ -53,7 +59,6 @@ public class InventoryService implements InventoryServiceInterface {
     @Transactional
     public Inventory save(@Valid InventoryModel inventoryModel) {
         Inventory inventory = Inventory.builder()
-                .inventoryId(inventoryModel.getInventoryId())
                 .item(inventoryModel.getItem())
                 .store(inventoryModel.getStore())
                 .lastUpdate(inventoryModel.getLastUpdate())

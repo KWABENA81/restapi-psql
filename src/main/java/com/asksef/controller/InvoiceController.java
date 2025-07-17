@@ -4,10 +4,7 @@ import com.asksef.assembler.CustomerModelAssemblerSupport;
 import com.asksef.assembler.InvoiceModelAssemblerSupport;
 import com.asksef.assembler.OrderModelAssemblerSupport;
 import com.asksef.assembler.PaymentModelAssemblerSupport;
-import com.asksef.entity.core.Customer;
-import com.asksef.entity.core.Invoice;
-import com.asksef.entity.core.Order;
-import com.asksef.entity.core.Payment;
+import com.asksef.entity.core.*;
 import com.asksef.entity.model.CustomerModel;
 import com.asksef.entity.model.InvoiceModel;
 import com.asksef.entity.model.OrderModel;
@@ -17,7 +14,11 @@ import com.asksef.entity.service_impl.InvoiceService;
 import jakarta.servlet.ServletResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,12 +34,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class InvoiceController {
     private final InvoiceService invoiceService;
     private final InvoiceRepository invoiceRepository;
+    private final PagedResourcesAssembler<Invoice> pagedResourcesAssembler;
     private final InvoiceModelAssemblerSupport invoiceModelAssemblerSupport;
 
     public InvoiceController(InvoiceService invoiceService, InvoiceRepository invoiceRepository,
+                             PagedResourcesAssembler<Invoice> pagedResourcesAssembler,
                              InvoiceModelAssemblerSupport invoiceModelAssemblerSupport) {
         this.invoiceService = invoiceService;
         this.invoiceRepository = invoiceRepository;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.invoiceModelAssemblerSupport = invoiceModelAssemblerSupport;
     }
 
@@ -108,5 +112,13 @@ public class InvoiceController {
         List<Payment> paymentList = invoiceService.findInvoicePayments(id);
         CollectionModel<PaymentModel> paymentModels = new PaymentModelAssemblerSupport().toCollectionModel(paymentList);
         return new ResponseEntity<>(paymentModels, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/pageable")
+    public ResponseEntity<PagedModel<InvoiceModel>> pageable(Pageable pageable) {
+        Page<Invoice> entityPage = invoiceService.findAll(pageable);
+
+        PagedModel<InvoiceModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, invoiceModelAssemblerSupport);
+        return new ResponseEntity<>(pagedModel, HttpStatus.OK);
     }
 }
