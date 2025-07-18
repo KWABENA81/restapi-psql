@@ -111,8 +111,8 @@ public class StaffController {
         return new ResponseEntity<>(storeModels, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/pageable")
-    public ResponseEntity<PagedModel<StaffModel>> pageable(Pageable pageable) {
+    @GetMapping(value = "/paged")
+    public ResponseEntity<PagedModel<StaffModel>> paged(Pageable pageable) {
         Page<Staff> entityPage = staffService.findAll(pageable);
 
         PagedModel<StaffModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, staffModelAssemblerSupport);

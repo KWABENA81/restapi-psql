@@ -121,8 +121,8 @@ public class StoreController {
         return new ResponseEntity<>(inventoryModels, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/pageable")
-    public ResponseEntity<PagedModel<StoreModel>> pageable(Pageable pageable) {
+    @GetMapping(value = "/paged")
+    public ResponseEntity<PagedModel<StoreModel>> paged(Pageable pageable) {
         Page<Store> entityPage = storeService.findAll(pageable);
 
         PagedModel<StoreModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, storeModelAssemblerSupport);

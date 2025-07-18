@@ -4,7 +4,6 @@ import com.asksef.assembler.AddressModelAssemblerSupport;
 import com.asksef.assembler.CustomerModelAssemblerSupport;
 import com.asksef.assembler.InvoiceModelAssemblerSupport;
 import com.asksef.entity.core.Address;
-import com.asksef.entity.core.Country;
 import com.asksef.entity.core.Customer;
 import com.asksef.entity.core.Invoice;
 import com.asksef.entity.model.AddressModel;
@@ -99,8 +98,8 @@ public class CustomerController {
         return new ResponseEntity<>(invoiceModels, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/pageable")
-    public ResponseEntity<PagedModel<CustomerModel>> pageable(Pageable pageable) {
+    @GetMapping(value = "/paged")
+    public ResponseEntity<PagedModel<CustomerModel>> paged(Pageable pageable) {
         Page<Customer> entityPage = customerService.findAll(pageable);
 
         PagedModel<CustomerModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, customerModelAssemblerSupport);

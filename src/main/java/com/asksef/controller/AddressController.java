@@ -137,8 +137,8 @@ public class AddressController {
         @NonNull CollectionModel<CustomerModel> customerModels = new CustomerModelAssemblerSupport().toCollectionModel(customerList);
         return new ResponseEntity<>(customerModels, HttpStatus.OK);
     }
-    @GetMapping(value = "/pageable")
-    public ResponseEntity<PagedModel<AddressModel>> pageable(Pageable pageable) {
+    @GetMapping(value = "/paged")
+    public ResponseEntity<PagedModel<AddressModel>> paged(Pageable pageable) {
         Page<Address> entityPage = addressService.findAll(pageable);
 
         PagedModel<AddressModel> addressModels = pagedResourcesAssembler.toModel(entityPage, addressModelAssemblerSupport);

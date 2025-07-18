@@ -113,8 +113,8 @@ public class PaymentController {
         return new ResponseEntity<>(invoiceModel, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/pageable")
-    public ResponseEntity<PagedModel<PaymentModel>> pageable(Pageable pageable) {
+    @GetMapping(value = "/paged")
+    public ResponseEntity<PagedModel<PaymentModel>> paged(Pageable pageable) {
         Page<Payment> entityPage = paymentService.findAll(pageable);
 
         PagedModel<PaymentModel> pagedModel = pagedResourcesAssembler.toModel(entityPage, paymentModelAssemblerSupport);

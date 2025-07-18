@@ -103,8 +103,8 @@ public class CountryController {
         return new ResponseEntity<>(cityModels, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/pageable")
-    public ResponseEntity<PagedModel<CountryModel>> pageable(Pageable pageable) {
+    @GetMapping(value = "/paged")
+    public ResponseEntity<PagedModel<CountryModel>> paged(Pageable pageable) {
         Page<Country> entityPage = countryService.findAll(pageable);
 
         PagedModel<CountryModel> countryModels = pagedResourcesAssembler.toModel(entityPage, countryModelAssemblerSupport);

@@ -104,8 +104,8 @@ public class CityController {
         return new ResponseEntity<>(addressModels, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/pageable")
-    public ResponseEntity<PagedModel<CityModel>> pageable(Pageable pageable) {
+    @GetMapping(value = "/paged")
+    public ResponseEntity<PagedModel<CityModel>> paged(Pageable pageable) {
         Page<City> entityPage = cityService.findAll(pageable);
 
         PagedModel<CityModel> cityModels = pagedResourcesAssembler.toModel(entityPage, cityModelAssemblerSupport);
